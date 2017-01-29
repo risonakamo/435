@@ -1,0 +1,48 @@
+  +--------------------------------------------------------+
+  |___    15%           README comment or file             |
+  |       ___      1%   Submitted a readme file            |
+  |       ___      3%   Description of assignment          |
+  |       ___      2%   Clean submission(no .o .d files)   |  
+  |       ___      2%   Statement of help                  |
+  |       ___      5%   Code Comments                      |
+  |       ___      2%   Regular commits and log entries    |
+  +--------------------------------------------------------+
+  |___   15%         Implementation                        |
+  |      ___   10%   Compiles and executes w/o errors      |
+  |      ___    5%   Written in C/C++;                     |
+  +--------------------------------------------------------+
+  |___   20%         Input/output                          |
+  |      ___    5%   Correctly parses nff file             |
+  |      ___    5%   Outputs valid ppm image               |
+  |      ___   10%   Outputs correct image                 |
+  +--------------------------------------------------------+
+  |___   10%         Field of view                         |
+  |      ___    5%   Converts fov angle to radians         |
+  |      ___    5%   Calculates l,r,b,t correctly          |
+  +--------------------------------------------------------+
+  |___   15%         Camera coordinate system              |
+  |      ___    3%   w is +/- direction camera looking     |
+  |      ___    3%   u is left/right                       |
+  |      ___    3%   v is as close to up as possible       |
+  |      ___    4%   orthonormal                           |
+  |      ___    2%   right handed                          |
+  +--------------------------------------------------------+
+  |___   10%         Positioning rays                      |
+  |      ___    2%   u_s from i                            |
+  |      ___    2%   v_s from j                            |
+  |      ___    2%   w_s with correct sign                 |
+  |      ___    4%   d=u_s*u + v_s*v + w_s*w               |
+  +--------------------------------------------------------+
+  |___   15%         Ray-triangle intersection             |
+  |      ___    10%  Computes alpha, beta, t               |
+  |      ___    5%   Bounds checking                       |
+  +--------------------------------------------------------+
+  |___   10%         (Ex) Concave polygons intersection    |
+  |      ___    10%  Concave polygons                 	   |
+  +--------------------------------------------------------+
+  |___   10%         (Ex) Ray-sphere intersection          |
+  |      ___    5%   Discriminant                          |
+  |      ___    5%   First & second intersections          |
+  +--------------------------------------------------------+
+  |___               Total (of 100)                        |
+  +--------------------------------------------------------+
