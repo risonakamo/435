@@ -2,24 +2,27 @@
 #include <fstream>
 #include <string>
 
+#include "rayd.h"
+
 using namespace std;
 
 int main()
 {
-  cout<<"boop"<<endl;
+  rayd* bob=new rayd;
 
-  ifstream infile;
-  infile.open("a.nff");
+  bob->argParse("b");
+  bob->argParse("1");
+  bob->argParse(".132");
+  bob->argParse("3");
 
-  string a;
-  infile>>a;
-  cout<<a<<endl;
+  bob->argParse("angle");
+  bob->argParse("32");
 
-  infile>>a;
-  cout<<a<<endl;
-  
-  infile>>a;
-  cout<<a<<endl;
+  bob->argParse("resolution");
+  bob->argParse("512");
+  bob->argParse("50000.2");
+
+  bob->printd();
   
   return 0;
 }
