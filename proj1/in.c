@@ -4,6 +4,7 @@
 
 #include "rayd.h"
 #include "pogn.h"
+#include "../common/slVector.H"
 
 using namespace std;
 
@@ -25,10 +26,14 @@ int main()
 
   bob->printd();
 
-  pogn* bob2=new pogn("3");
-  bob2->load(-123.5);
-  bob2->load("-.012924302");
-  bob2->vprint();
+  pogn* succ=new pogn("3");
+  succ->load(-123.5);
+  succ->load("-.012924302");
+  succ->vprint();
+
+  printf("\n");
+  SlVector3* bill=new SlVector3(1,2,3);
+  cout<<*bill;
   
   return 0;
 }
