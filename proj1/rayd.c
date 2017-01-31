@@ -28,6 +28,12 @@ rayd::rayd()
 //a for argument
 void rayd::argParse(string a)
 {
+  if (m_mode==10)
+    {
+      
+    }
+  
+  //currently does not include L for light!!!
   if (m_mode==1 || m_mode==2 || m_mode==3
       || m_mode==4 || m_mode==7 || m_mode==9)
     {
@@ -104,9 +110,16 @@ void rayd::argParse(string a)
       return;
     }
 
-    if (a=="f")
+  if (a=="f")
     {
       m_mode=9;
+      m_mc=0;
+      return;
+    }
+
+  if (a=="p")
+    {
+      m_mode=10;
       m_mc=0;
       return;
     }

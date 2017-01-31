@@ -3,6 +3,7 @@
 #include <string>
 
 #include "rayd.h"
+#include "pogn.h"
 
 using namespace std;
 
@@ -23,6 +24,11 @@ int main()
   bob->argParse("50000.2");
 
   bob->printd();
+
+  pogn* bob2=new pogn("3");
+  bob2->load(-123.5);
+  bob2->load("-.012924302");
+  bob2->vprint();
   
   return 0;
 }

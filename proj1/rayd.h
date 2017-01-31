@@ -8,6 +8,7 @@
 
 using namespace std;
 
+//rayd for ray data
 class rayd
 {
  public:
@@ -31,7 +32,8 @@ class rayd
     6=hither
     7=resolution
     8=l
-    9=f (fill)
+    9=f for fill
+    10=p for polygon
    */
   int m_mode;
   int m_mc; //mode count
