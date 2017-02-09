@@ -17,10 +17,10 @@ int main()
   float rat[3]={0,0,0};
   float rup[3]={0,0,1};
   int rangle=90;
-  int rdim=50;
+  int rdim=4;
 
   float* cdata[1];
-  float c[4]={-2,0,0,1};
+  float c[4]={-2,0,0,20};
   cdata[0]=c;
   
   rayd2 bob(rfrom,rat,rup,rangle,rdim);
