@@ -1,14 +1,13 @@
-in: in.o rayd.o pogn.o slVector.o
-	g++ in.o rayd.o pogn.o slVector.o -o in
+ofiles=in.o slVector.o rayd2.o
+
+in: $(ofiles)
+	g++ $(ofiles) -o in
 
 in.o: in.c
 	g++ -c in.c
 
-rayd.o: rayd.c rayd.h
-	g++ -c rayd.c
-
-pogn.o: pogn.c pogn.h
-	g++ -c pogn.c
+rayd2.o: rayd2.c rayd2.h
+	g++ -c rayd2.c
 
 slVector.o: ../common/slVector.H ../common/slVector.cpp
 	g++ -c ../common/slVector.cpp

@@ -3,9 +3,8 @@
 #include <string>
 #include <cmath>
 
-#include "rayd.h"
-#include "pogn.h"
 #include "../common/slVector.H"
+#include "rayd2.h"
 
 using namespace std;
 
@@ -14,34 +13,21 @@ float rSphere(SlVector3 ray,SlVector3 from,float* sOrigin,float r);
 
 int main()
 {
-  /* rayd* bob=new rayd; */
+  float rfrom[3]={1,0,0};
+  float rat[3]={0,0,0};
+  float rup[3]={0,0,1};
+  int rangle=90;
+  int rdim=3;
 
-  /* bob->argParse("b"); */
-  /* bob->argParse("1"); */
-  /* bob->argParse(".132"); */
-  /* bob->argParse("3"); */
+  rayd2 bob(rfrom,rat,rup,rangle,rdim);
+  bob.calcVec();
+  bob.genPpoints();
+  bob.printPars();
+  bob.printPpoints();
 
-  /* bob->argParse("angle"); */
-  /* bob->argParse("32"); */
-
-  /* bob->argParse("resolution"); */
-  /* bob->argParse("512"); */
-  /* bob->argParse("50000.2"); */
-
-  /* bob->printd(); */
-
-  /* pogn* succ=new pogn("3"); */
-  /* succ->load(-123.5); */
-  /* succ->load("-.012924302"); */
-  /* succ->vprint(); */
-
-  /* printf("\n"); */
-  /* SlVector3* bill=new SlVector3(1,2,3); */
-  /* cout<<(*bill)<<endl; */
-
-  /* normalize(*bill); */
-  /* cout<<*bill<<endl; */
-
+  cout<<"--------"<<endl;
+  cout<<endl;
+  
   SlVector3 from(1,0,0);
   SlVector3 at(0,0,0);
   SlVector3 up(0,0,1);
@@ -54,7 +40,7 @@ int main()
   SlVector3 v=cross(w,u);
 
   float d=mag(from-at);
-  float m=tan(angle*(3.14/180)*.5)*d;
+  float m=tan(angle*(M_PI/180)*.5)*d;
   
   normalize(w);
   normalize(u);
@@ -69,15 +55,13 @@ int main()
   cout<<"m:"<<m<<endl;
   cout<<endl;
   
-  float* r;
-  float* ppoints[psize];
-  SlVector3 ppointsV[psize];
+  float r[2];
+  SlVector3* ppointsV=new SlVector3[psize];
   int x=0;
   int y=0;
 
   for (int z=0;z<psize;z++)
     {
-      r=new float[2];
       r[0]=-m+(x*((2*m)/dim))+(m/dim);
       r[1]=-m+(y*((2*m)/dim))+(m/dim);
 
@@ -92,6 +76,7 @@ int main()
       /* cout<<r[0]<<" "<<r[1]<<endl; */
       
       ppointsV[z]=(r[0]*u)-(r[1]*v)-(d*w);
+      cout<<ppointsV[z]<<endl;
     }
 
   /* cout<<(ppoints[4][0]*u)-(ppoints[4][1]*v)-(d*w)<<endl; */
@@ -99,6 +84,13 @@ int main()
   rSphere(ppointsV[4],from,SlVector3(-2,0,0),1);
   
   return 0;
+}
+
+//rsphere with size 4 array for sphere (x,y,z,r)
+//where x y z is centre coordinate
+float rSphere(SlVector3 ray,SlVector3 from,float* sOrigin)
+{
+  return rSphere(ray,from,sOrigin,sOrigin[3]);
 }
 
 float rSphere(SlVector3 ray,SlVector3 from,SlVector3 sOrigin,float r)
