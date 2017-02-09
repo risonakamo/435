@@ -17,8 +17,6 @@ class rayd2
   rayd2();
 
   rayd2(float* from,float* at,float* up,int angle,int dim);
-
-  void loadCircles(float** cdata);
   
   void calcVec(); //calculate vectors and other things too
   void genPpoints(); //generate pixel points
@@ -26,7 +24,12 @@ class rayd2
   void printPars();
   void printPpoints();
   
+  void loadCircles(float** cdata,int size);
+  void iSphere();
+  
  private:
+  float rSphere(SlVector3 ray,float* sOrigin);
+  
   //given values
   SlVector3 m_from;
   SlVector3 m_at;
@@ -44,6 +47,8 @@ class rayd2
 
   SlVector3* m_ppointsV; //pixel points vector
                          //size should be psize
+
+  int m_csize;
   float** m_cdata; //circle data [x,y,z,r] arrays
 };
 

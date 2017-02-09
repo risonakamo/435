@@ -86,9 +86,15 @@ void rayd2::printPars()
   cout<<endl;
 }
 
-void rayd2::loadCircles(float** cdata)
+void rayd2::loadCircles(float** cdata,int size)
 {
+  m_csize=size;
   m_cdata=cdata;
+
+  /* for (int x=0;x<m_csize;x++) */
+  /*   { */
+  /*     cout<<m_cdata[x][3]<<endl; */
+  /*   } */
 }
 
 void rayd2::printPpoints()
@@ -99,4 +105,42 @@ void rayd2::printPpoints()
     }
 
   cout<<endl;
+}
+
+void rayd2::iSphere()
+{
+  for (int x=0;x<m_psize;x++)
+    {
+      for (int y=0;y<m_csize;y++)
+        {
+          rSphere(m_ppointsV[x],m_cdata[y]);
+        }
+    }
+}
+
+float rayd2::rSphere(SlVector3 ray,float* sOrigin)
+{
+  SlVector3 iPoint=ray+m_from;
+
+  float a=0;
+  float b=0;
+  float c1=0;
+  float c2=0;
+  float c3=0;
+  for (int x=0;x<3;x++)
+    {
+      a+=pow(ray[x],2);
+      b+=ray[x]*(m_from[x]-sOrigin[x]);
+      c1+=pow(sOrigin[x],2);
+      c2+=pow(m_from[x],2);
+      c3+=sOrigin[x]*m_from[x];
+    }
+
+  b*=2;
+  c1=c1+c2+(-2*c3-pow(sOrigin[3],2));
+
+  float dis=pow(b,2)-(4*a*c1);
+  
+  /* cout<<"rsphere:"<<dis<<endl; */
+  return dis;
 }
