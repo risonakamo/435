@@ -9,6 +9,8 @@
 
 using namespace std;
 
+int rSphere(SlVector3 ray,SlVector3 from,SlVector3 sOrigin,float r);
+
 int main()
 {
   /* rayd* bob=new rayd; */
@@ -44,6 +46,7 @@ int main()
   SlVector3 up(0,0,1);
   int angle=90;
   int dim=3; //number of side pixels
+  int psize=pow(dim,2);
   
   SlVector3 w=from-at;
   SlVector3 u=cross(up,w);
@@ -59,15 +62,18 @@ int main()
   cout<<w<<endl;
   cout<<u<<endl;
   cout<<v<<endl;
+  cout<<endl;
+  
   cout<<d<<endl;
   cout<<m<<endl;
-
+  cout<<endl;
   
   float* r;
-  float** ppoints;
+  float* ppoints[psize];
   int x=0;
-  int y=0;  
-  for (int z=0;z<pow(dim,2);z++)
+  int y=0;
+
+  for (int z=0;z<psize;z++)
     {
       r=new float[2];
       r[0]=-m+(x*((2*m)/dim))+(m/dim);
@@ -80,9 +86,43 @@ int main()
           y++;
         }
 
+      ppoints[z]=r;
       cout<<r[0]<<" "<<r[1]<<endl;
     }
 
+  /* cout<<(ppoints[4][0]*u)-(ppoints[4][1]*v)-(d*w)<<endl; */
+
+  rSphere((ppoints[4][0]*u)-(ppoints[4][1]*v)-(d*w),from,SlVector3(-2,0,0),1);
   
+  return 0;
+}
+
+
+int rSphere(SlVector3 ray,SlVector3 from,SlVector3 sOrigin,float r)
+{
+  SlVector3 iPoint=ray+from;
+
+  cout<<"rsphere"<<endl;
+
+  float a=0;
+  float b=0;
+  float c1=0;
+  float c2=0;
+  float c3=0;
+  for (int x=0;x<3;x++)
+    {
+      a+=pow(ray[x],2);
+      b+=ray[x]*(from[x]-sOrigin[x]);
+      c1+=pow(sOrigin[x],2);
+      c2+=pow(from[x],2);
+      c3+=sOrigin[x]*from[x];
+    }
+
+  b*=2;
+  c1=c1+c2+(-2*c3-pow(r,2));
+
+  float dis=pow(b,2)-(4*a*c1);
+  
+  cout<<dis<<endl;
   return 0;
 }
