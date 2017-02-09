@@ -9,7 +9,8 @@
 
 using namespace std;
 
-int rSphere(SlVector3 ray,SlVector3 from,SlVector3 sOrigin,float r);
+float rSphere(SlVector3 ray,SlVector3 from,SlVector3 sOrigin,float r);
+float rSphere(SlVector3 ray,SlVector3 from,float* sOrigin,float r);
 
 int main()
 {
@@ -59,17 +60,18 @@ int main()
   normalize(u);
   normalize(v);
   
-  cout<<w<<endl;
-  cout<<u<<endl;
-  cout<<v<<endl;
+  cout<<"w:"<<w<<endl;
+  cout<<"u:"<<u<<endl;
+  cout<<"v:"<<v<<endl;
   cout<<endl;
   
-  cout<<d<<endl;
-  cout<<m<<endl;
+  cout<<"d:"<<d<<endl;
+  cout<<"m:"<<m<<endl;
   cout<<endl;
   
   float* r;
   float* ppoints[psize];
+  SlVector3 ppointsV[psize];
   int x=0;
   int y=0;
 
@@ -86,23 +88,33 @@ int main()
           y++;
         }
 
-      ppoints[z]=r;
-      cout<<r[0]<<" "<<r[1]<<endl;
+      /* ppoints[z]=r; */
+      /* cout<<r[0]<<" "<<r[1]<<endl; */
+      
+      ppointsV[z]=(r[0]*u)-(r[1]*v)-(d*w);
     }
 
   /* cout<<(ppoints[4][0]*u)-(ppoints[4][1]*v)-(d*w)<<endl; */
 
-  rSphere((ppoints[4][0]*u)-(ppoints[4][1]*v)-(d*w),from,SlVector3(-2,0,0),1);
+  rSphere(ppointsV[4],from,SlVector3(-2,0,0),1);
   
   return 0;
 }
 
+float rSphere(SlVector3 ray,SlVector3 from,SlVector3 sOrigin,float r)
+{
+  float sOriginF[3]; //sphere origin float
+  for (int x=0;x<3;x++)
+    {
+      sOriginF[x]=sOrigin[x];
+    }
 
-int rSphere(SlVector3 ray,SlVector3 from,SlVector3 sOrigin,float r)
+  return rSphere(ray,from,sOriginF,r);
+}
+
+float rSphere(SlVector3 ray,SlVector3 from,float* sOrigin,float r)
 {
   SlVector3 iPoint=ray+from;
-
-  cout<<"rsphere"<<endl;
 
   float a=0;
   float b=0;
@@ -123,6 +135,6 @@ int rSphere(SlVector3 ray,SlVector3 from,SlVector3 sOrigin,float r)
 
   float dis=pow(b,2)-(4*a*c1);
   
-  cout<<dis<<endl;
+  cout<<"rsphere:"<<dis<<endl;
   return 0;
 }
