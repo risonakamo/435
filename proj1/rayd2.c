@@ -19,6 +19,17 @@ rayd2::rayd2(float* from,float* at,float* up,int angle,int dim)
     }
 }
 
+rayd2::rayd2(rayp* raypars)
+:m_angle(raypars->m_angle),m_dim(raypars->m_res[0]),m_cdata2(raypars->m_cdata)
+{
+  for (int x=0;x<3;x++)
+    {
+      m_from[x]=raypars->m_from[x];
+      m_at[x]=raypars->m_at[x];
+      m_up[x]=raypars->m_up[x];      
+    }
+}
+
 void rayd2::calcVec()
 {
   if (m_dim==0)
@@ -92,6 +103,11 @@ void rayd2::loadCircles(float** cdata,int size)
   m_cdata=cdata;
 }
 
+void rayd2::loadCircles(flink* cdata)
+{
+  m_cdata2=cdata;
+}
+
 void rayd2::printPpoints()
 {
   for (int x=0;x<m_psize;x++)
@@ -103,12 +119,44 @@ void rayd2::printPpoints()
 }
 
 void rayd2::iSphere()
-{  
+{
+  int i;
+  flink* t;
+  FILE* f=fopen("test.ppm","w");
+  fprintf(f,"P3 %d %d 255\n",m_dim,m_dim);
   for (int x=0;x<m_psize;x++)
     {
-      for (int y=0;y<m_csize;y++)
+      /* for (int y=0;y<m_csize;y++) */
+      /*   { */
+      /*     rSphere(m_ppointsV[x],m_cdata[y]); */
+      /*   } */
+
+      i=0;
+      t=m_cdata2;
+      while (1)
         {
-          rSphere(m_ppointsV[x],m_cdata[y]);
+          if (!t)
+            {
+              break;
+            }
+          
+          if (rSphere(m_ppointsV[x],t->m_data)>1)
+            {
+              i=1;
+              break;
+            }
+
+          t=t->m_next;
+        }
+
+      if (i==1)
+        {
+          fprintf(f,"255 255 255 ");
+        }
+
+      else
+        {
+          fprintf(f,"0 0 0 ");
         }
     }
 }

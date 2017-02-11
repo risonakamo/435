@@ -34,6 +34,15 @@ class rayp
 
   void printd(); //print data
   void printc(); //print circles
+
+  //public variables
+  float m_from[3];
+  float m_at[3];
+  float m_up[3];
+  int m_angle;
+  int m_res[2];
+
+  flink* m_cdata; //circle data
   
  private:
   void arrayParse(int mmode,string a);
@@ -56,18 +65,11 @@ class rayp
   int m_mode;
   int m_mc; //mode count
   
-  float m_background[3];
-  
-  float m_from[3];
-  float m_at[3];
-  float m_up[3];
-  int m_angle;
+  float m_background[3]; 
   int m_hither;
-  int m_res[2];
   float m_fill[8];
 
   float* m_tc; //tc temp circle
-  flink* m_cdata; //circle data
 };
 
 #endif

@@ -14,26 +14,32 @@ float rSphere(SlVector3 ray,SlVector3 from,float* sOrigin,float r);
 
 int main()
 {
-  float rfrom[3]={1,0,0};
-  float rat[3]={0,0,0};
-  float rup[3]={0,0,1};
-  int rangle=90;
-  int rdim=100;
+  /* float rfrom[3]={1,0,0}; */
+  /* float rat[3]={0,0,0}; */
+  /* float rup[3]={0,0,1}; */
+  /* int rangle=90; */
+  /* int rdim=100; */
 
-  float* cdata[1];
-  float c[4]={-2,0,0,20};
-  cdata[0]=c;
+  /* float* cdata[1]; */
+  /* float c[4]={-2,0,0,20}; */
+  /* cdata[0]=c; */
   
-  rayd2 bob(rfrom,rat,rup,rangle,rdim);
+  /* rayd2 bob(rfrom,rat,rup,rangle,rdim); */
+  /* bob.calcVec(); */
+  /* bob.genPpoints(); */
+  /* bob.printPars(); */
+
+  /* bob.loadCircles(cdata,1); */
+  /* bob.iSphere(); */
+
+  rayp* bill=new rayp;
+  bill->loadFile("a.nff");
+
+  rayd2 bob(bill);
   bob.calcVec();
   bob.genPpoints();
   bob.printPars();
-
-  bob.loadCircles(cdata,1);
   bob.iSphere();
-
-  rayp bill;
-  bill.loadFile("a.nff");
   
   return 0;
 }

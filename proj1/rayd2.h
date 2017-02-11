@@ -8,6 +8,7 @@
 #include <cmath>
 
 #include "../common/slVector.H"
+#include "rayp.h"
 
 using namespace std;
 
@@ -15,8 +16,8 @@ class rayd2
 {
  public:
   rayd2();
-
   rayd2(float* from,float* at,float* up,int angle,int dim);
+  rayd2(rayp* raypars);
   
   void calcVec(); //calculate vectors and other things too
   void genPpoints(); //generate pixel points
@@ -25,6 +26,7 @@ class rayd2
   void printPpoints();
   
   void loadCircles(float** cdata,int size);
+  void loadCircles(flink* cdata);
   void iSphere();
   
  private:
@@ -50,6 +52,8 @@ class rayd2
 
   int m_csize;
   float** m_cdata; //circle data [x,y,z,r] arrays
+
+  flink* m_cdata2;
 };
 
 #endif
