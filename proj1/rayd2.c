@@ -90,11 +90,6 @@ void rayd2::loadCircles(float** cdata,int size)
 {
   m_csize=size;
   m_cdata=cdata;
-
-  /* for (int x=0;x<m_csize;x++) */
-  /*   { */
-  /*     cout<<m_cdata[x][3]<<endl; */
-  /*   } */
 }
 
 void rayd2::printPpoints()
@@ -108,27 +103,14 @@ void rayd2::printPpoints()
 }
 
 void rayd2::iSphere()
-{
-  FILE* f=fopen("test.ppm","w");
-  fprintf(f,"P3 %d %d 255\n",m_dim,m_dim);
-  
+{  
   for (int x=0;x<m_psize;x++)
     {
       for (int y=0;y<m_csize;y++)
         {
-          if (rSphere(m_ppointsV[x],m_cdata[y])>0)
-            {
-              fprintf(f,"255 255 255 ");
-            }
-
-          else
-            {
-              fprintf(f,"0 0 0 ");
-            }
+          rSphere(m_ppointsV[x],m_cdata[y]);
         }
     }
-
-  fclose(f);
 }
 
 float rayd2::rSphere(SlVector3 ray,float* sOrigin)
