@@ -27,10 +27,10 @@ class rayd2
   
   void loadCircles(float** cdata,int size);
   void loadCircles(flink* cdata);
-  void iSphere();
+  void iSphere(); //intersect with stuff
   
  private:
-  float rSphere(SlVector3 ray,float* sOrigin);
+  float rSphere(SlVector3 ray,float* sOrigin); //intRsect sphere
   
   //given values
   SlVector3 m_from;

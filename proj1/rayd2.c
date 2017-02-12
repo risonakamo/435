@@ -163,6 +163,8 @@ void rayd2::iSphere()
     }
 }
 
+//pixel ray vector, sphere array [x,y,z,r]
+//sorigin for sphere origin
 float rayd2::rSphere(SlVector3 ray,float* sOrigin)
 {
   SlVector3 iPoint=ray+m_from;
