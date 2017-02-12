@@ -47,6 +47,8 @@ class rayp
  private:
   void arrayParse(int mmode,string a);
   int arrayParseFill(int mmode,string a);
+  void cparse(string &a);
+  void pparse(string &a);
   
   /*mode:
     0=no mode

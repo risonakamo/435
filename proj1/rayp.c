@@ -46,27 +46,14 @@ rayp::rayp()
 //a for argument
 void rayp::argParse(string a)
 {
-  if (m_mode==11)
+  if (m_mode==10)
     {
-      if (m_mc==0)
-        {
-          m_tc=new float[4];          
-        }
       
-      m_tc[m_mc]=atof(a.c_str());
-      m_mc++;
-
-      if (m_mc>3)
-        {
-          m_mc=0;
-          m_mode=0;
-
-          flink* newf=new flink(m_tc);
-          newf->m_next=m_cdata;
-          m_cdata=newf;
-          m_tc=NULL;
-        }
-      
+    }
+  
+  if (m_mode==11)
+    {      
+      cparse(a);      
       return;
     }
   
@@ -281,4 +268,31 @@ void rayp::loadFile(string filename)
 
   printd();
 
+}
+
+void rayp::cparse(string &a)
+{
+  if (m_mc==0)
+    {
+      m_tc=new float[4];          
+    }
+      
+  m_tc[m_mc]=atof(a.c_str());
+  m_mc++;
+
+  if (m_mc>3)
+    {
+      m_mc=0;
+      m_mode=0;
+
+      flink* newf=new flink(m_tc);
+      newf->m_next=m_cdata;
+      m_cdata=newf;
+      m_tc=NULL;
+    }
+}
+
+void rayp::pparse(string &a)
+{
+  
 }

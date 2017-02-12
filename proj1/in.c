@@ -16,14 +16,14 @@ float rTri(SlVector3 &ray,SlVector3 &from,SlVector3 p1,SlVector3 p2,SlVector3 p3
 
 int main()
 {
-  /* rayp* bill=new rayp; */
-  /* bill->loadFile("a.nff"); */
+  rayp* bill=new rayp;
+  bill->loadFile("a.nff");
 
-  /* rayd2 bob(bill); */
-  /* bob.calcVec(); */
-  /* bob.genPpoints(); */
-  /* bob.printPars(); */
-  /* bob.iSphere(); */
+  rayd2 bob(bill);
+  bob.calcVec();
+  bob.genPpoints();
+  bob.printPars();
+  bob.iSphere();
 
   float p1[3]={2,0,1};
   float p2[3]={2,1,-1};
