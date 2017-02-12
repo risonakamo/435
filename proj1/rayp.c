@@ -294,5 +294,28 @@ void rayp::cparse(string &a)
 
 void rayp::pparse(string &a)
 {
+  if (m_mc==0)
+    {
+      m_pc=atoi(a.c_str());
+      m_tpg=new (float*)(m_pc);
+      m_pctr=0;
+      m_pctr2=0;
+      m_mc++;
+      return;
+    }
   
+  m_tpg[m_pctr][m_pctr2]=atof(a.c_str());
+
+  m_pctr2++;
+  if (m_pctr2>2)
+    {
+      m_pctr2=0;
+      m_pctr++;
+    }
+
+  if (m_pctr>=m_pc)
+    {
+      m_mode=0;
+      //<add to some big array of polygons>
+    }
 }

@@ -35,7 +35,7 @@ class rayp
   void printd(); //print data
   void printc(); //print circles
 
-  //public variables
+  /*--public vars--*/
   float m_from[3];
   float m_at[3];
   float m_up[3];
@@ -71,7 +71,15 @@ class rayp
   int m_hither;
   float m_fill[8];
 
+  /*--circle temps--*/
   float* m_tc; //tc temp circle
+
+  /*--polygon temps--*/
+  int m_pc; //max point count of current polygon
+  float** m_tpg; //temp polygon
+  float* m_tp; //tp temp point
+  int m_pctr; //point counter
+  int m_pctr2; //point counter2
 };
 
 #endif
