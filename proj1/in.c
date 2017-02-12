@@ -33,7 +33,7 @@ int main()
   /* bob.iSphere(); */
 
   rayp* bill=new rayp;
-  bill->loadFile("a.nff");
+  bill->loadFile("balls.nff");
 
   rayd2 bob(bill);
   bob.calcVec();

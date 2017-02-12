@@ -120,6 +120,7 @@ void rayd2::printPpoints()
 
 void rayd2::iSphere()
 {
+
   int i;
   flink* t;
   FILE* f=fopen("test.ppm","w");
@@ -131,6 +132,7 @@ void rayd2::iSphere()
       /*     rSphere(m_ppointsV[x],m_cdata[y]); */
       /*   } */
 
+      printf("\r    \r%.2f%%",((float)x/(float)m_psize)*100);
       i=0;
       t=m_cdata2;
       while (1)
@@ -140,7 +142,7 @@ void rayd2::iSphere()
               break;
             }
           
-          if (rSphere(m_ppointsV[x],t->m_data)>1)
+          if (rSphere(m_ppointsV[x],t->m_data)>=0)
             {
               i=1;
               break;
@@ -148,7 +150,7 @@ void rayd2::iSphere()
 
           t=t->m_next;
         }
-
+      
       if (i==1)
         {
           fprintf(f,"255 255 255 ");
