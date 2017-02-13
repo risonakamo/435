@@ -22,6 +22,32 @@ class flink
   flink* m_next;  
 };
 
+template <class T>
+class flink2
+{
+ public:
+  flink2();
+
+  flink2(T data);
+
+  T m_data;
+  flink2<T>* m_next;
+};
+
+template <class T>
+flink2<T>::flink2()
+:m_next(NULL)
+{
+
+}
+
+template <class T>
+flink2<T>::flink2(T data)
+:m_data(data),m_next(NULL)
+{
+
+}
+
 //rayp for ray data
 class rayp
 {

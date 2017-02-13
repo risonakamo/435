@@ -19,7 +19,7 @@ flink& flink::operator=(float* data)
   m_data=data;
   return (*this);
 }
-  
+
 rayp::rayp()
 :m_mode(0),m_mc(0),m_angle(0),m_hither(0),m_cdata(NULL)
 {
@@ -297,7 +297,7 @@ void rayp::pparse(string &a)
   if (m_mc==0)
     {
       m_pc=atoi(a.c_str());
-      m_tpg=new (float*)(m_pc);
+      m_tpg=new float*[m_pc];
       m_pctr=0;
       m_pctr2=0;
       m_mc++;
