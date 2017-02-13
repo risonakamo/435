@@ -122,12 +122,17 @@ void rayd2::printPpoints()
 
 void rayd2::iSphere()
 {
-
+  for (int x=0;x<3;x++)
+    {
+      m_background[x]=0;
+      m_colour[x]=255;
+    }
+    
   int i;
   flink2<float*>* t;
   flink2<float**>* t2;
   FILE* f=fopen("test.ppm","w");
-  fprintf(f,"P3 %d %d 255\n",m_dim,m_dim);
+  fprintf(f,"P6 %d %d 255\n",m_dim,m_dim);
   for (int x=0;x<m_psize;x++)
     {
       /* for (int y=0;y<m_csize;y++) */
@@ -171,12 +176,12 @@ void rayd2::iSphere()
       
       if (i==1)
         {
-          fprintf(f,"255 255 255 ");
+          fwrite(m_colour,1,3,f);
         }
 
       else
         {
-          fprintf(f,"0 0 0 ");
+          fwrite(m_background,1,3,f);
         }
     }
 }

@@ -42,6 +42,9 @@ class rayd2
   int m_angle;
   int m_dim;
 
+  unsigned char m_background[3];
+  unsigned char m_colour[3];
+
   /*--calculated values for mathyness--*/
   int m_psize; //pixel grid size
   SlVector3 m_w;
