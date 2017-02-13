@@ -25,8 +25,8 @@ class rayd2
   void printPars();
   void printPpoints();
   
-  void loadCircles(float** cdata,int size);
-  void loadCircles(flink* cdata);
+  /* void loadCircles(float** cdata,int size); */
+  void loadCircles(flink2<float*>* cdata);
   void iSphere(); //intersect with stuff
   
  private:
@@ -53,7 +53,8 @@ class rayd2
   int m_csize;
   float** m_cdata; //circle data [x,y,z,r] arrays
 
-  flink* m_cdata2;
+  flink2<float*>* m_cdata2;
+  flink2<float**>* m_pdata;
 };
 
 #endif

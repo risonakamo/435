@@ -8,20 +8,21 @@
 
 using namespace std;
 
-//float link
-class flink
-{
- public:
-  flink();
+/* //float link */
+/* class flink */
+/* { */
+/*  public: */
+/*   flink(); */
 
-  flink(float* data);
+/*   flink(float* data); */
 
-  flink &operator=(float* data);
+/*   flink &operator=(float* data); */
 
-  float* m_data;
-  flink* m_next;  
-};
+/*   float* m_data; */
+/*   flink* m_next;   */
+/* }; */
 
+//float link 2, now with templates
 template <class T>
 class flink2
 {
@@ -69,6 +70,7 @@ class rayp
   int m_res[2];
 
   flink2<float*>* m_cdata; //circle data
+  flink2<float**>* m_pdata; //polygon data
   
  private:
   void arrayParse(int mmode,string a);

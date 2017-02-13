@@ -2,26 +2,26 @@
 
 using namespace std;
 
-flink::flink()
-:m_data(NULL),m_next(NULL)
-{
+/* flink::flink() */
+/* :m_data(NULL),m_next(NULL) */
+/* { */
 
-}
+/* } */
 
-flink::flink(float* data)
-:m_data(data),m_next(NULL)
-{
+/* flink::flink(float* data) */
+/* :m_data(data),m_next(NULL) */
+/* { */
 
-}
+/* } */
 
-flink& flink::operator=(float* data)
-{
-  m_data=data;
-  return (*this);
-}
+/* flink& flink::operator=(float* data) */
+/* { */
+/*   m_data=data; */
+/*   return (*this); */
+/* } */
 
 rayp::rayp()
-:m_mode(0),m_mc(0),m_angle(0),m_hither(0),m_cdata(NULL)
+:m_mode(0),m_mc(0),m_angle(0),m_hither(0),m_cdata(NULL),m_pdata(NULL)
 {
   int x;
 
@@ -316,6 +316,8 @@ void rayp::pparse(string &a)
   if (m_pctr>=m_pc)
     {
       m_mode=0;
-      //<add to some big array of polygons>
+      flink2<float**>* t=new flink2<float**>(m_tpg);
+      t->m_next=m_pdata;
+      m_pdata=t;
     }
 }

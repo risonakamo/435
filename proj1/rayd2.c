@@ -3,7 +3,8 @@
 using namespace std;
 
 rayd2::rayd2()
-:m_from(0,0,0),m_at(0,0,0),m_up(0,0,0),m_angle(0),m_dim(0)
+:m_from(0,0,0),m_at(0,0,0),m_up(0,0,0),m_angle(0),m_dim(0),
+  m_cdata2(NULL),m_pdata(NULL)
 {
 
 }
@@ -20,7 +21,8 @@ rayd2::rayd2(float* from,float* at,float* up,int angle,int dim)
 }
 
 rayd2::rayd2(rayp* raypars)
-:m_angle(raypars->m_angle),m_dim(raypars->m_res[0]),m_cdata2(raypars->m_cdata)
+:m_angle(raypars->m_angle),m_dim(raypars->m_res[0]),m_cdata2(raypars->m_cdata),
+  m_pdata(raypars->m_pdata)
 {
   for (int x=0;x<3;x++)
     {
@@ -97,13 +99,13 @@ void rayd2::printPars()
   cout<<endl;
 }
 
-void rayd2::loadCircles(float** cdata,int size)
-{
-  m_csize=size;
-  m_cdata=cdata;
-}
+/* void rayd2::loadCircles(float** cdata,int size) */
+/* { */
+/*   m_csize=size; */
+/*   m_cdata=cdata; */
+/* } */
 
-void rayd2::loadCircles(flink* cdata)
+void rayd2::loadCircles(flink2<float*>* cdata)
 {
   m_cdata2=cdata;
 }
@@ -122,7 +124,7 @@ void rayd2::iSphere()
 {
 
   int i;
-  flink* t;
+  flink2<float*>* t;
   FILE* f=fopen("test.ppm","w");
   fprintf(f,"P3 %d %d 255\n",m_dim,m_dim);
   for (int x=0;x<m_psize;x++)
