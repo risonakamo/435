@@ -48,7 +48,8 @@ void rayp::argParse(string a)
 {
   if (m_mode==10)
     {
-      
+      pparse(a);
+      return;
     }
   
   if (m_mode==11)
@@ -297,6 +298,7 @@ void rayp::pparse(string &a)
   if (m_mc==0)
     {
       m_pc=atoi(a.c_str());
+      printf("pc: %i\n",m_pc);
       m_tpg=new float*[m_pc];
       m_pctr=0;
       m_pctr2=0;
@@ -304,8 +306,14 @@ void rayp::pparse(string &a)
       return;
     }
   
+  printf("c:%i c2:%i\n",m_pctr,m_pctr2);
+  if (m_pctr2==0)
+    {
+      m_tpg[m_pctr]=new float[3];
+    }
+  
   m_tpg[m_pctr][m_pctr2]=atof(a.c_str());
-
+  
   m_pctr2++;
   if (m_pctr2>2)
     {

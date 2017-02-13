@@ -31,15 +31,18 @@ class rayd2
   
  private:
   float rSphere(SlVector3 ray,float* sOrigin); //intRsect sphere
+
+  int rTri(SlVector3 &ray,float** p);
+  int rTri(SlVector3 &ray,SlVector3* p);
   
-  //given values
+  /*--given values--*/
   SlVector3 m_from;
   SlVector3 m_at;
   SlVector3 m_up;
   int m_angle;
   int m_dim;
 
-  //calculated values
+  /*--calculated values for mathyness--*/
   int m_psize; //pixel grid size
   SlVector3 m_w;
   SlVector3 m_u;
@@ -47,14 +50,19 @@ class rayd2
   float m_d;
   float m_m;
 
+  /*--data arrays--*/
   SlVector3* m_ppointsV; //pixel points vector
                          //size should be psize
 
-  int m_csize;
-  float** m_cdata; //circle data [x,y,z,r] arrays
+  /* int m_csize; */
+  /* float** m_cdata; //circle data [x,y,z,r] arrays */
 
-  flink2<float*>* m_cdata2;
-  flink2<float**>* m_pdata;
+  flink2<float*>* m_cdata2; //circle data
+  flink2<float**>* m_pdata; //polygon data
+
+  /*--rtri temps--*/
+  SlVector3 m_rvecs[5];
+  float m_rflots[3];
 };
 
 #endif

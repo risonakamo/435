@@ -125,6 +125,7 @@ void rayd2::iSphere()
 
   int i;
   flink2<float*>* t;
+  flink2<float**>* t2;
   FILE* f=fopen("test.ppm","w");
   fprintf(f,"P3 %d %d 255\n",m_dim,m_dim);
   for (int x=0;x<m_psize;x++)
@@ -137,20 +138,35 @@ void rayd2::iSphere()
       printf("\r    \r%.2f%%",((float)x/(float)m_psize)*100);
       i=0;
       t=m_cdata2;
+      t2=m_pdata;
       while (1)
         {
-          if (!t)
+          if (t)
             {
-              break;
-            }
-          
-          if (rSphere(m_ppointsV[x],t->m_data)>=0)
-            {
-              i=1;
-              break;
+              if (rSphere(m_ppointsV[x],t->m_data)>=0)
+                {
+                  i=1;
+                  break;
+                }
+
+              t=t->m_next;
             }
 
-          t=t->m_next;
+          if (t2)
+            {
+              if (rTri(m_ppointsV[x],t2->m_data)==1)
+                {
+                  i=1;
+                  break;
+                }
+
+              t2=t2->m_next;
+            }
+
+          if (!t && !t2)
+            {
+              break;
+            }
         }
       
       if (i==1)
@@ -190,4 +206,57 @@ float rayd2::rSphere(SlVector3 ray,float* sOrigin)
   
   /* cout<<"rsphere:"<<dis<<endl; */
   return dis;
+}
+
+int rayd2::rTri(SlVector3 &ray,float** p)
+{
+  SlVector3 pgons[3];
+  for (int x=0;x<3;x++)
+    {
+      for (int y=0;y<3;y++)
+        {
+          pgons[x][y]=p[x][y];
+        }
+    }
+
+  int a=rTri(ray,pgons);
+  return a;
+}
+
+//uses arrays for efficiency
+int rayd2::rTri(SlVector3 &ray,SlVector3* p)
+{
+  m_rvecs[0]=p[1]-p[0];
+  m_rvecs[1]=p[2]-p[0];
+  
+  m_rvecs[2]=cross(ray,m_rvecs[1]);
+  m_rflots[0]=dot(m_rvecs[0],m_rvecs[2]);
+
+  if (m_rflots[0]==0)
+    {
+      return 0;
+    }
+
+  m_rvecs[3]=m_from-p[0];
+  m_rflots[1]=dot(m_rvecs[3],m_rvecs[2])/m_rflots[0];
+
+  if (m_rflots[1]<0.0 || m_rflots[1]>1.0)
+    {
+      return 0;
+    }
+
+  m_rvecs[4]=cross(m_rvecs[3],m_rvecs[0]);
+  m_rflots[2]=dot(ray,m_rvecs[4])/m_rflots[0];
+
+  if (m_rflots[2]<0.0 || m_rflots[1]+m_rflots[2]>1.0)
+    {
+      return 0;
+    }
+
+  if ((dot(m_rvecs[1],m_rvecs[4])/m_rflots[0])>0.0)
+    {
+      return 1;
+    }
+
+  return 0;
 }
