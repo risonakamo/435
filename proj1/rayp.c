@@ -235,7 +235,7 @@ void rayp::printd()
 
 void rayp::printc()
 {
-  flink* t=m_cdata;
+  flink2<float*>* t=m_cdata;
   while (1)
     {
       if (!t)
@@ -285,7 +285,7 @@ void rayp::cparse(string &a)
       m_mc=0;
       m_mode=0;
 
-      flink* newf=new flink(m_tc);
+      flink2<float*>* newf=new flink2<float*>(m_tc);
       newf->m_next=m_cdata;
       m_cdata=newf;
       m_tc=NULL;

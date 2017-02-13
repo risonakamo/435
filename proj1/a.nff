@@ -4,6 +4,6 @@ from 1 0 0
 at 0 0 0
 up 0 0 1
 angle 90
-resolution 100 100
+resolution 512 512
 s -2 0 0 1
 s -2 1 0 1

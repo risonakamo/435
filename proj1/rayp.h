@@ -68,7 +68,7 @@ class rayp
   int m_angle;
   int m_res[2];
 
-  flink* m_cdata; //circle data
+  flink2<float*>* m_cdata; //circle data
   
  private:
   void arrayParse(int mmode,string a);
