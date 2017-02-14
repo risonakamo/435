@@ -231,7 +231,7 @@ void rayp::printd()
   printf("angle %i\n",m_angle);
   printf("hither %i\n",m_hither);
   printf("res %i %i\n",m_res[0],m_res[1]);
-  printf("fill %i %i %i %i %i %i %i %i\n",m_fill[0],m_fill[1],m_fill[2],m_fill[3],m_fill[4],m_fill[5],m_fill[6],m_fill[7]);
+  printf("fill %f %f %f %f %f %f %f %f\n",m_fill[0],m_fill[1],m_fill[2],m_fill[3],m_fill[4],m_fill[5],m_fill[6],m_fill[7]);
 }
 
 void rayp::printc()
@@ -298,7 +298,6 @@ void rayp::pparse(string &a)
   if (m_mc==0)
     {
       m_pc=atoi(a.c_str());
-      printf("pc: %i\n",m_pc);
       m_tpg=new float*[m_pc];
       m_pctr=0;
       m_pctr2=0;
@@ -306,7 +305,6 @@ void rayp::pparse(string &a)
       return;
     }
   
-  printf("c:%i c2:%i\n",m_pctr,m_pctr2);
   if (m_pctr2==0)
     {
       m_tpg[m_pctr]=new float[3];

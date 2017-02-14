@@ -69,6 +69,11 @@ class rayp
   int m_angle;
   int m_res[2];
 
+  float m_background[3]; 
+  int m_hither;
+  float m_fill[8];
+
+  /*--data stuff--*/
   flink2<float*>* m_cdata; //circle data
   flink2<float**>* m_pdata; //polygon data
   
@@ -95,10 +100,6 @@ class rayp
   int m_mode;
   int m_mc; //mode count
   
-  float m_background[3]; 
-  int m_hither;
-  float m_fill[8];
-
   /*--circle temps--*/
   float* m_tc; //tc temp circle
 

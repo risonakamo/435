@@ -16,7 +16,7 @@ class rayd2
 {
  public:
   rayd2();
-  rayd2(float* from,float* at,float* up,int angle,int dim);
+  /* rayd2(float* from,float* at,float* up,int angle,int dim); */
   rayd2(rayp* raypars);
   
   void calcVec(); //calculate vectors and other things too
@@ -26,11 +26,11 @@ class rayd2
   void printPpoints();
   
   /* void loadCircles(float** cdata,int size); */
-  void loadCircles(flink2<float*>* cdata);
-  void iSphere(); //intersect with stuff
+  /* void loadCircles(flink2<float*>* cdata); */
+  void isect(); //intersect with stuff
   
  private:
-  float rSphere(SlVector3 ray,float* sOrigin); //intRsect sphere
+  float rSphere(SlVector3 &ray,float* sOrigin); //intRsect sphere
 
   int rTri(SlVector3 &ray,float** p);
   int rTri(SlVector3 &ray,SlVector3* p);

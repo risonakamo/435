@@ -17,37 +17,13 @@ float rTri(SlVector3 &ray,SlVector3 &from,SlVector3 p1,SlVector3 p2,SlVector3 p3
 int main()
 {
   rayp* bill=new rayp;
-  bill->loadFile("tetra-3.nff");
+  bill->loadFile("a.nff");
 
   rayd2 bob(bill);
   bob.calcVec();
   bob.genPpoints();
   bob.printPars();
-  bob.iSphere();
-
-  float p1[3]={2,0,1};
-  float p2[3]={2,1,-1};
-  float p3[3]={2,-1,-1};
-
-  float p4[3]={0,1,1};
-  float p5[3]={1,1,-1};
-  float p6[3]={-1,1,-1};
-
-  float p7[3]={-2,0,1};
-  float p8[3]={-2,1,-1};
-  float p9[3]={-2,-1,-1};
-
-  float p10[3]={-2,0,1};
-  float p11[3]={0,-1,0};
-  float p12[3]={-3,0,-1};
-  
-  SlVector3 r(1,0,0);
-  SlVector3 from(0,0,0);
-
-  cout<<rTri(r,from,p1,p2,p3)<<endl;
-  cout<<rTri(r,from,p4,p5,p6)<<endl;
-  cout<<rTri(r,from,p7,p8,p9)<<endl;
-  cout<<rTri(r,from,p10,p11,p12)<<endl;
+  bob.isect();
   
   return 0;
 }
@@ -228,4 +204,28 @@ int oldtestmain()
 
   /* bob.loadCircles(cdata,1); */
   /* bob.iSphere(); */
+
+  /*   float p1[3]={2,0,1}; */
+  /* float p2[3]={2,1,-1}; */
+  /* float p3[3]={2,-1,-1}; */
+
+  /* float p4[3]={0,1,1}; */
+  /* float p5[3]={1,1,-1}; */
+  /* float p6[3]={-1,1,-1}; */
+
+  /* float p7[3]={-2,0,1}; */
+  /* float p8[3]={-2,1,-1}; */
+  /* float p9[3]={-2,-1,-1}; */
+
+  /* float p10[3]={-2,0,1}; */
+  /* float p11[3]={0,-1,0}; */
+  /* float p12[3]={-3,0,-1}; */
+  
+  /* SlVector3 r(1,0,0); */
+  /* SlVector3 from(0,0,0); */
+
+  /* cout<<rTri(r,from,p1,p2,p3)<<endl; */
+  /* cout<<rTri(r,from,p4,p5,p6)<<endl; */
+  /* cout<<rTri(r,from,p7,p8,p9)<<endl; */
+  /* cout<<rTri(r,from,p10,p11,p12)<<endl; */
 }

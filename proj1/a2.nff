@@ -1,9 +1,10 @@
-b 1 2 3
+b 0 0 0
 v
 from 1 0 0
 at 0 0 0
 up 0 0 1
 angle 90
+fill 1 1 1 0 0 0 0 0
 resolution 512 512
 p 3
 -2 0 1

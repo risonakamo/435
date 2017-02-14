@@ -9,16 +9,16 @@ rayd2::rayd2()
 
 }
 
-rayd2::rayd2(float* from,float* at,float* up,int angle,int dim)
-:m_angle(angle),m_dim(dim)
-{
-  for (int x=0;x<3;x++)
-    {
-      m_from[x]=from[x];
-      m_at[x]=at[x];
-      m_up[x]=up[x];      
-    }
-}
+/* rayd2::rayd2(float* from,float* at,float* up,int angle,int dim) */
+/* :m_angle(angle),m_dim(dim) */
+/* { */
+/*   for (int x=0;x<3;x++) */
+/*     { */
+/*       m_from[x]=from[x]; */
+/*       m_at[x]=at[x]; */
+/*       m_up[x]=up[x];       */
+/*     } */
+/* } */
 
 rayd2::rayd2(rayp* raypars)
 :m_angle(raypars->m_angle),m_dim(raypars->m_res[0]),m_cdata2(raypars->m_cdata),
@@ -28,7 +28,9 @@ rayd2::rayd2(rayp* raypars)
     {
       m_from[x]=raypars->m_from[x];
       m_at[x]=raypars->m_at[x];
-      m_up[x]=raypars->m_up[x];      
+      m_up[x]=raypars->m_up[x];
+      m_background[x]=raypars->m_background[x]*255;
+      m_colour[x]=raypars->m_fill[x]*255;
     }
 }
 
@@ -105,10 +107,10 @@ void rayd2::printPars()
 /*   m_cdata=cdata; */
 /* } */
 
-void rayd2::loadCircles(flink2<float*>* cdata)
-{
-  m_cdata2=cdata;
-}
+/* void rayd2::loadCircles(flink2<float*>* cdata) */
+/* { */
+/*   m_cdata2=cdata; */
+/* } */
 
 void rayd2::printPpoints()
 {
@@ -120,14 +122,8 @@ void rayd2::printPpoints()
   cout<<endl;
 }
 
-void rayd2::iSphere()
-{
-  for (int x=0;x<3;x++)
-    {
-      m_background[x]=0;
-      m_colour[x]=255;
-    }
-    
+void rayd2::isect()
+{    
   int i;
   flink2<float*>* t;
   flink2<float**>* t2;
@@ -188,7 +184,7 @@ void rayd2::iSphere()
 
 //pixel ray vector, sphere array [x,y,z,r]
 //sorigin for sphere origin
-float rayd2::rSphere(SlVector3 ray,float* sOrigin)
+float rayd2::rSphere(SlVector3 &ray,float* sOrigin)
 {
   float a=0;
   float b=0;
