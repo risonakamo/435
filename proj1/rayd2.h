@@ -32,7 +32,7 @@ class rayd2
  private:
   float rSphere(SlVector3 &ray,float* sOrigin); //intRsect sphere
 
-  int rTri(SlVector3 &ray,float** p);
+  int rTri(SlVector3 &ray,float** p); //inteRsect Triangle
   int rTri(SlVector3 &ray,SlVector3* p);
   
   /*--given values--*/
