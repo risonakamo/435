@@ -14,10 +14,16 @@ float rSphere(SlVector3 ray,SlVector3 from,float* sOrigin,float r);
 float rTri(SlVector3 &ray,SlVector3 &from,float* p1,float* p2,float* p3);
 float rTri(SlVector3 &ray,SlVector3 &from,SlVector3 p1,SlVector3 p2,SlVector3 p3);
 
-int main()
+int main(int argc,char* argv[])
 {
+  if (argc!=3)
+    {
+      cout<<"rat <input nff filename> <output ppm filename"<<endl;
+      return 0;
+    }
+  
   rayp* bill=new rayp;
-  bill->loadFile("a.nff");
+  bill->loadFile(argv[1],argv[2]);
 
   rayd2 bob(bill);
   bob.calcVec();

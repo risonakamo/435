@@ -36,6 +36,7 @@ class rayd2
   int rTri(SlVector3 &ray,SlVector3* p);
   
   /*--given values--*/
+  string m_ofile;
   SlVector3 m_from;
   SlVector3 m_at;
   SlVector3 m_up;
@@ -43,7 +44,7 @@ class rayd2
   int m_dim;
 
   unsigned char m_background[3];
-  unsigned char m_colour[3];
+  unsigned char m_colour[3]; //for windows computer  G B R colour endianess
 
   /*--calculated values for mathyness--*/
   int m_psize; //pixel grid size
@@ -63,6 +64,9 @@ class rayd2
   flink2<float*>* m_cdata2; //circle data
   flink2<float**>* m_pdata; //polygon data
 
+  /*--rsphere temps--*/
+  float m_sflots[5];
+  
   /*--rtri temps--*/
   SlVector3 m_rvecs[5];
   float m_rflots[3];

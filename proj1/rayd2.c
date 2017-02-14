@@ -4,7 +4,7 @@ using namespace std;
 
 rayd2::rayd2()
 :m_from(0,0,0),m_at(0,0,0),m_up(0,0,0),m_angle(0),m_dim(0),
-  m_cdata2(NULL),m_pdata(NULL)
+  m_cdata2(NULL),m_pdata(NULL),m_ofile("output.ppm")
 {
 
 }
@@ -22,7 +22,7 @@ rayd2::rayd2()
 
 rayd2::rayd2(rayp* raypars)
 :m_angle(raypars->m_angle),m_dim(raypars->m_res[0]),m_cdata2(raypars->m_cdata),
-  m_pdata(raypars->m_pdata)
+  m_pdata(raypars->m_pdata),m_ofile(raypars->m_ofile)
 {
   for (int x=0;x<3;x++)
     {
@@ -127,7 +127,7 @@ void rayd2::isect()
   int i;
   flink2<float*>* t;
   flink2<float**>* t2;
-  FILE* f=fopen("test.ppm","w");
+  FILE* f=fopen(m_ofile.c_str(),"w");
   fprintf(f,"P6 %d %d 255\n",m_dim,m_dim);
   for (int x=0;x<m_psize;x++)
     {
@@ -186,24 +186,30 @@ void rayd2::isect()
 //sorigin for sphere origin
 float rayd2::rSphere(SlVector3 &ray,float* sOrigin)
 {
-  float a=0;
-  float b=0;
-  float c1=0;
-  float c2=0;
-  float c3=0;
+  m_sflots[0]=0;
+  m_sflots[1]=0;
+  m_sflots[2]=0;
+  m_sflots[3]=0;
+  m_sflots[4]=0;
+  
+  /* float a=0; */
+  /* float b=0; */
+  /* float c1=0; */
+  /* float c2=0; */
+  /* float c3=0; */
   for (int x=0;x<3;x++)
     {
-      a+=pow(ray[x],2);
-      b+=ray[x]*(m_from[x]-sOrigin[x]);
-      c1+=pow(sOrigin[x],2);
-      c2+=pow(m_from[x],2);
-      c3+=sOrigin[x]*m_from[x];
+      m_sflots[0]+=pow(ray[x],2);
+      m_sflots[1]+=ray[x]*(m_from[x]-sOrigin[x]);
+      m_sflots[2]+=pow(sOrigin[x],2);
+      m_sflots[3]+=pow(m_from[x],2);
+      m_sflots[4]+=sOrigin[x]*m_from[x];
     }
 
-  b*=2;
-  c1=c1+c2+(-2*c3-pow(sOrigin[3],2));
+  m_sflots[1]*=2;
+  m_sflots[2]=m_sflots[2]+m_sflots[3]+(-2*m_sflots[4]-pow(sOrigin[3],2));
 
-  float dis=pow(b,2)-(4*a*c1);
+  float dis=pow(m_sflots[1],2)-(4*m_sflots[0]*m_sflots[2]);
   
   /* cout<<"rsphere:"<<dis<<endl; */
   return dis;

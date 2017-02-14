@@ -21,7 +21,8 @@ using namespace std;
 /* } */
 
 rayp::rayp()
-:m_mode(0),m_mc(0),m_angle(0),m_hither(0),m_cdata(NULL),m_pdata(NULL)
+:m_mode(0),m_mc(0),m_angle(0),m_hither(0),m_cdata(NULL),m_pdata(NULL),
+  m_ofile("output.ppm")
 {
   int x;
 
@@ -268,7 +269,12 @@ void rayp::loadFile(string filename)
   }
 
   printd();
+}
 
+void rayp::loadFile(string filename,string ofile)
+{
+  loadFile(filename);
+  m_ofile=ofile;
 }
 
 void rayp::cparse(string &a)

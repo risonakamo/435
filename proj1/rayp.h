@@ -54,12 +54,13 @@ class rayp
 {
  public:
   rayp();
-
+  
   void loadFile(string filename);
+  void loadFile(string filename,string ofile);
   
   void argParse(string a);
 
-  void printd(); //print data
+  void printd(); //print relevant data stored
   void printc(); //print circles
 
   /*--public vars--*/
@@ -72,6 +73,8 @@ class rayp
   float m_background[3]; 
   int m_hither;
   float m_fill[8];
+
+  string m_ofile;
 
   /*--data stuff--*/
   flink2<float*>* m_cdata; //circle data
