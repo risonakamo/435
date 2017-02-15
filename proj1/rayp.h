@@ -109,6 +109,7 @@ class rayp
   /*--polygon temps--*/
   int m_pc; //max point count of current polygon
   float** m_tpg; //temp polygon
+  float** m_tpg2;
   float* m_tp; //tp temp point
   int m_pctr; //point counter
   int m_pctr2; //point counter2

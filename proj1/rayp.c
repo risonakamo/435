@@ -325,6 +325,14 @@ void rayp::pparse(string &a)
       m_pctr++;
     }
 
+  /* if (m_pctr>=3) */
+  /*   { */
+  /*     m_tpg2=new float*[3]; */
+  /*     m_tpg2[0]=m_tpg[0]; */
+  /*     m_tpg2[1]=m_tpg[m_pctr-2]; */
+  /*     m_tpg2[2]=m_tpg[m_pctr-1]; */
+  /*   } */
+  
   if (m_pctr>=m_pc)
     {
       m_mode=0;
