@@ -62,6 +62,7 @@ class rayp
 
   void printd(); //print relevant data stored
   void printc(); //print circles
+  void printt(); //print triangles
 
   /*--public vars--*/
   float m_from[3];

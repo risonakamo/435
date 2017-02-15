@@ -24,6 +24,7 @@ int main(int argc,char* argv[])
   
   rayp* bill=new rayp;
   bill->loadFile(argv[1],argv[2]);
+  bill->printt();
 
   rayd2 bob(bill);
   bob.calcVec();

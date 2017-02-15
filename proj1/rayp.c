@@ -323,21 +323,45 @@ void rayp::pparse(string &a)
     {
       m_pctr2=0;
       m_pctr++;
-    }
 
-  /* if (m_pctr>=3) */
-  /*   { */
-  /*     m_tpg2=new float*[3]; */
-  /*     m_tpg2[0]=m_tpg[0]; */
-  /*     m_tpg2[1]=m_tpg[m_pctr-2]; */
-  /*     m_tpg2[2]=m_tpg[m_pctr-1]; */
-  /*   } */
+      if (m_pctr>=3)
+        {
+          cout<<"wat"<<endl;
+          m_tpg2=new float*[3];
+          m_tpg2[0]=m_tpg[0];
+          m_tpg2[1]=m_tpg[m_pctr-2];
+          m_tpg2[2]=m_tpg[m_pctr-1];
+
+          flink2<float**>* t=new flink2<float**>(m_tpg2);
+          t->m_next=m_pdata;
+          m_pdata=t;      
+        }      
+    }
   
   if (m_pctr>=m_pc)
     {
       m_mode=0;
-      flink2<float**>* t=new flink2<float**>(m_tpg);
-      t->m_next=m_pdata;
-      m_pdata=t;
+    }
+}
+
+void rayp::printt()
+{
+  flink2<float**>* t=m_pdata;
+  cout<<"triangles:"<<endl;
+  while (1)
+    {
+      if (!t)
+        {
+          return;
+        }
+
+      for (int x=0;x<3;x++)
+        {          
+          printf("%f %f %f\n",t->m_data[x][0],t->m_data[x][1],t->m_data[x][2]);          
+        }
+
+      cout<<endl;
+
+      t=t->m_next;
     }
 }
