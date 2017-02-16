@@ -326,7 +326,6 @@ void rayp::pparse(string &a)
 
       if (m_pctr>=3)
         {
-          cout<<"wat"<<endl;
           m_tpg2=new float*[3];
           m_tpg2[0]=m_tpg[0];
           m_tpg2[1]=m_tpg[m_pctr-2];
