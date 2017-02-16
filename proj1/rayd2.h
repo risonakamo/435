@@ -44,7 +44,7 @@ class rayd2
   int m_dim;
 
   unsigned char m_background[3];
-  unsigned char m_colour[3]; //for windows computer  G B R colour endianess
+  unsigned char m_colour[3]; //my windows computer -> G B R colour for some reason (correct in gl)
 
   /*--calculated values for mathyness--*/
   int m_psize; //pixel grid size

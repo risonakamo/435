@@ -129,6 +129,7 @@ void rayd2::isect()
   flink2<float**>* t2;
   FILE* f=fopen(m_ofile.c_str(),"w");
   fprintf(f,"P6 %d %d 255\n",m_dim,m_dim);
+  
   for (int x=0;x<m_psize;x++)
     {
       /* for (int y=0;y<m_csize;y++) */
