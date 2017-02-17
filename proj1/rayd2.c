@@ -9,6 +9,8 @@ rayd2::rayd2()
 
 }
 
+//rayp constructor
+//takes data gathered by rayp object
 rayd2::rayd2(rayp* raypars)
 :m_angle(raypars->m_angle),m_dim(raypars->m_res[0]),m_cdata2(raypars->m_cdata),
   m_pdata(raypars->m_pdata),m_ofile(raypars->m_ofile)
@@ -23,8 +25,12 @@ rayd2::rayd2(rayp* raypars)
     }
 }
 
+//calculate various vectors
+//the letter choices are from class
 void rayd2::calcVec()
 {
+  //lazy check only meant for if default constructor
+  //was called
   if (m_dim==0)
     {
       cout<<"rayd2 calcvec: not all variables set"<<endl;
@@ -45,8 +51,11 @@ void rayd2::calcVec()
   normalize(m_v);
 }
 
+//calculate pixel intersection points
+//using method from class
 void rayd2::genPpoints()
-{  
+{
+  //m_psize was calculated off dimensions earlier
   m_ppointsV=new SlVector3[m_psize];
 
   float r[2]; //temp vars random letters
@@ -100,6 +109,7 @@ void rayd2::printPpoints()
   cout<<endl;
 }
 
+//main intersection function
 void rayd2::isect()
 {    
   int i;
@@ -114,6 +124,9 @@ void rayd2::isect()
       i=0;
       t=m_cdata2;
       t2=m_pdata;
+
+      //for this proj, when sees intersection immediately
+      //breaks and writes colour
       while (1)
         {
           if (t)
@@ -158,6 +171,7 @@ void rayd2::isect()
 
 //pixel ray vector, sphere array [x,y,z,r]
 //sorigin for sphere origin
+//using t and discriminent method from the book
 float rayd2::rSphere(SlVector3 &ray,float* sOrigin)
 {
   m_sflots[0]=0;
@@ -178,12 +192,15 @@ float rayd2::rSphere(SlVector3 &ray,float* sOrigin)
   m_sflots[1]*=2;
   m_sflots[2]=m_sflots[2]+m_sflots[3]+(-2*m_sflots[4]-pow(sOrigin[3],2));
 
-  float dis=pow(m_sflots[1],2)-(4*m_sflots[0]*m_sflots[2]);
-  
-  /* cout<<"rsphere:"<<dis<<endl; */
-  return dis;
+  //discriminentnant:
+  //if greater than 0 intersects twice
+  //is 0 intersects once (tangent)
+  //else no intersect
+  //but isect handles this, so just return it
+  return pow(m_sflots[1],2)-(4*m_sflots[0]*m_sflots[2]);
 }
 
+//overload version
 int rayd2::rTri(SlVector3 &ray,float** p)
 {
   SlVector3 pgons[3];
@@ -199,21 +216,24 @@ int rayd2::rTri(SlVector3 &ray,float** p)
   return a;
 }
 
-//uses arrays for efficiency
+//used arrays to be hopefully faster
 int rayd2::rTri(SlVector3 &ray,SlVector3* p)
 {
   m_rvecs[0]=p[1]-p[0];
   m_rvecs[1]=p[2]-p[0];
   
   m_rvecs[2]=cross(ray,m_rvecs[1]);
-  m_rflots[0]=dot(m_rvecs[0],m_rvecs[2]);
+  m_rflots[0]=dot(m_rvecs[0],m_rvecs[2]); //determinant
 
+  //if 0 its paralelele
   if (m_rflots[0]==0)
     {
       return 0;
     }
 
   m_rvecs[3]=m_from-p[0];
+
+  //alpha (or greek r(?) from the book
   m_rflots[1]=dot(m_rvecs[3],m_rvecs[2])/m_rflots[0];
 
   if (m_rflots[1]<0.0 || m_rflots[1]>1.0)
@@ -222,13 +242,14 @@ int rayd2::rTri(SlVector3 &ray,SlVector3* p)
     }
 
   m_rvecs[4]=cross(m_rvecs[3],m_rvecs[0]);
-  m_rflots[2]=dot(ray,m_rvecs[4])/m_rflots[0];
+  m_rflots[2]=dot(ray,m_rvecs[4])/m_rflots[0]; //beta
 
-  if (m_rflots[2]<0.0 || m_rflots[1]+m_rflots[2]>1.0)
+  if (m_rflots[2]<0.0 || m_rflots[1]+m_rflots[2]>1.0) 
     {
       return 0;
     }
 
+  //t
   if ((dot(m_rvecs[1],m_rvecs[4])/m_rflots[0])>0.0)
     {
       return 1;

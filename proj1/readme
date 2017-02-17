@@ -1,16 +1,34 @@
 khang ngo
+khang4@umbc.edu
 compsci 435 proj 1
 
 description:
 basic raytracer handling nff files
 with basic colouring and object intersection
 
+program description:
+-rayp object parses file
+-rayd2 takes rayp's data and does math
+
 usage:
 -make to compile
--executable name is rtrace
--rtrace <input nff file> <output nff file>
+-requires slvector to be in ../common
+-executable name is rat
+-rat <input nff file> <output nff file>
+-note that it does pretty much no error checking on files
+
+-make clean to clean .o and binary
 
 extra credit:
 -sphere intersection (nff s command)
 
 references:
+textbook
+
+(websites i read)
+http://www.cs.colostate.edu/~cs410/yr2013fa/more_progress/L15_Raypolygon.pdf
+https://www.cs.princeton.edu/courses/archive/fall00/cs426/lectures/raycast/sld017.htm
+http://graphics.cs.cmu.edu/nsp/course/15-462/Spring04/slides/13-ray.pdf
+http://paulbourke.net/geometry/polygonmesh/
+http://www.eng.utah.edu/~cs5610/ppm.html
+https://www.siggraph.org/education/materials/HyperGraph/raytrace/raypolygon_intersection.htm

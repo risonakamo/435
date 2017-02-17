@@ -1,4 +1,8 @@
-//rayd2 ray data 2 because 1 didnt work out so well
+/*rayd2.h ray data v2
+  because v1 didnt work out so well
+  handles the calulating part after recieving data
+  from rayp object*/
+
 #ifndef rayd2_h
 #define rayd2_h
 
@@ -21,8 +25,8 @@ class rayd2
   void calcVec(); //calculate vectors and other things too
   void genPpoints(); //generate pixel points
   
-  void printPars();
-  void printPpoints();
+  void printPars(); //print out stored values like from, ect.
+  void printPpoints(); //print out pixel intersection points
   
   void isect(); //intersect with stuff
   
@@ -59,11 +63,11 @@ class rayd2
   flink2<float**>* m_pdata; //polygon data
 
   /*--rsphere temps--*/
-  float m_sflots[5];
+  float m_sflots[5]; //sphere floats
   
   /*--rtri temps--*/
-  SlVector3 m_rvecs[5];
-  float m_rflots[3];
+  SlVector3 m_rvecs[5]; //tRi vectors
+  float m_rflots[3]; //tRi floats
 };
 
 #endif

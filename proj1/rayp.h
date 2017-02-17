@@ -1,3 +1,8 @@
+/*rayp.h ray parse
+  includes rayp object and flink2.  rayp object handles
+  nff file parsing to be passed onto the rayd which does
+  the math work*/
+
 #ifndef rayp_h
 #define rayp_h
 
@@ -9,6 +14,7 @@
 using namespace std;
 
 //float link 2, now with templates
+//its just a linked list
 template <class T>
 class flink2
 {
@@ -35,7 +41,6 @@ flink2<T>::flink2(T data)
 
 }
 
-//rayp for ray data
 class rayp
 {
  public:
@@ -44,13 +49,14 @@ class rayp
   void loadFile(string filename);
   void loadFile(string filename,string ofile);
   
-  void argParse(string a);
+  void argParse(string a); //parse an arg
 
   void printd(); //print relevant data stored
   void printc(); //print circles
   void printt(); //print triangles
 
   /*--public vars--*/
+  //various math-related data terms
   float m_from[3];
   float m_at[3];
   float m_up[3];
@@ -96,7 +102,7 @@ class rayp
   /*--polygon temps--*/
   int m_pc; //max point count of current polygon
   float** m_tpg; //temp polygon
-  float** m_tpg2;
+  float** m_tpg2; //temp polygon 2
   float* m_tp; //tp temp point
   int m_pctr; //point counter
   int m_pctr2; //point counter2
