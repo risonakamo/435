@@ -2,30 +2,13 @@
 
 using namespace std;
 
-/* flink::flink() */
-/* :m_data(NULL),m_next(NULL) */
-/* { */
-
-/* } */
-
-/* flink::flink(float* data) */
-/* :m_data(data),m_next(NULL) */
-/* { */
-
-/* } */
-
-/* flink& flink::operator=(float* data) */
-/* { */
-/*   m_data=data; */
-/*   return (*this); */
-/* } */
-
 rayp::rayp()
 :m_mode(0),m_mc(0),m_angle(0),m_hither(0),m_cdata(NULL),m_pdata(NULL),
   m_ofile("output.ppm")
 {
   int x;
 
+  //init things 0 jus in case
   for (x=0;x<3;x++)
     {
       m_background[x]=0;
@@ -267,8 +250,6 @@ void rayp::loadFile(string filename)
   {
     argParse(a);
   }
-
-  printd();
 }
 
 void rayp::loadFile(string filename,string ofile)
@@ -277,6 +258,7 @@ void rayp::loadFile(string filename,string ofile)
   m_ofile=ofile;
 }
 
+//parse circles
 void rayp::cparse(string &a)
 {
   if (m_mc==0)
@@ -301,29 +283,37 @@ void rayp::cparse(string &a)
 
 void rayp::pparse(string &a)
 {
+  //right after seeing a p command
   if (m_mc==0)
     {
-      m_pc=atoi(a.c_str());
+      m_pc=atoi(a.c_str()); //store number as number of vertices
       m_tpg=new float*[m_pc];
-      m_pctr=0;
+      m_pctr=0; //reset counters
       m_pctr2=0;
       m_mc++;
       return;
     }
-  
+
+  //pctr 2 goes to 0 to 2 for xyz of point
+  //makes new point at 0
   if (m_pctr2==0)
     {
       m_tpg[m_pctr]=new float[3];
     }
-  
+
+  //setting x y or z
   m_tpg[m_pctr][m_pctr2]=atof(a.c_str());
   
   m_pctr2++;
+
+  //moving on to next point
   if (m_pctr2>2)
     {
       m_pctr2=0;
       m_pctr++;
 
+      //if greater than 3rd point, start splitting
+      //up triangles
       if (m_pctr>=3)
         {
           m_tpg2=new float*[3];
@@ -331,18 +321,21 @@ void rayp::pparse(string &a)
           m_tpg2[1]=m_tpg[m_pctr-2];
           m_tpg2[2]=m_tpg[m_pctr-1];
 
+          //adding to linked list of triangles
           flink2<float**>* t=new flink2<float**>(m_tpg2);
           t->m_next=m_pdata;
           m_pdata=t;      
         }      
     }
-  
+
+  //reached max vertex count
   if (m_pctr>=m_pc)
     {
       m_mode=0;
     }
 }
 
+//print triangle data
 void rayp::printt()
 {
   flink2<float**>* t=m_pdata;

@@ -16,7 +16,6 @@ class rayd2
 {
  public:
   rayd2();
-  /* rayd2(float* from,float* at,float* up,int angle,int dim); */
   rayd2(rayp* raypars);
   
   void calcVec(); //calculate vectors and other things too
@@ -25,8 +24,6 @@ class rayd2
   void printPars();
   void printPpoints();
   
-  /* void loadCircles(float** cdata,int size); */
-  /* void loadCircles(flink2<float*>* cdata); */
   void isect(); //intersect with stuff
   
  private:
@@ -57,9 +54,6 @@ class rayd2
   /*--data arrays--*/
   SlVector3* m_ppointsV; //pixel points vector
                          //size should be psize
-
-  /* int m_csize; */
-  /* float** m_cdata; //circle data [x,y,z,r] arrays */
 
   flink2<float*>* m_cdata2; //circle data
   flink2<float**>* m_pdata; //polygon data

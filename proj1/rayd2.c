@@ -9,17 +9,6 @@ rayd2::rayd2()
 
 }
 
-/* rayd2::rayd2(float* from,float* at,float* up,int angle,int dim) */
-/* :m_angle(angle),m_dim(dim) */
-/* { */
-/*   for (int x=0;x<3;x++) */
-/*     { */
-/*       m_from[x]=from[x]; */
-/*       m_at[x]=at[x]; */
-/*       m_up[x]=up[x];       */
-/*     } */
-/* } */
-
 rayd2::rayd2(rayp* raypars)
 :m_angle(raypars->m_angle),m_dim(raypars->m_res[0]),m_cdata2(raypars->m_cdata),
   m_pdata(raypars->m_pdata),m_ofile(raypars->m_ofile)
@@ -101,17 +90,6 @@ void rayd2::printPars()
   cout<<endl;
 }
 
-/* void rayd2::loadCircles(float** cdata,int size) */
-/* { */
-/*   m_csize=size; */
-/*   m_cdata=cdata; */
-/* } */
-
-/* void rayd2::loadCircles(flink2<float*>* cdata) */
-/* { */
-/*   m_cdata2=cdata; */
-/* } */
-
 void rayd2::printPpoints()
 {
   for (int x=0;x<m_psize;x++)
@@ -132,11 +110,6 @@ void rayd2::isect()
   
   for (int x=0;x<m_psize;x++)
     {
-      /* for (int y=0;y<m_csize;y++) */
-      /*   { */
-      /*     rSphere(m_ppointsV[x],m_cdata[y]); */
-      /*   } */
-
       printf("\r    \r%.2f%%",((float)x/(float)m_psize)*100);
       i=0;
       t=m_cdata2;
@@ -193,11 +166,6 @@ float rayd2::rSphere(SlVector3 &ray,float* sOrigin)
   m_sflots[3]=0;
   m_sflots[4]=0;
   
-  /* float a=0; */
-  /* float b=0; */
-  /* float c1=0; */
-  /* float c2=0; */
-  /* float c3=0; */
   for (int x=0;x<3;x++)
     {
       m_sflots[0]+=pow(ray[x],2);

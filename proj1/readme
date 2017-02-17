@@ -1,0 +1,16 @@
+khang ngo
+compsci 435 proj 1
+
+description:
+basic raytracer handling nff files
+with basic colouring and object intersection
+
+usage:
+-make to compile
+-executable name is rtrace
+-rtrace <input nff file> <output nff file>
+
+extra credit:
+-sphere intersection (nff s command)
+
+references:
