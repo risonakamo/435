@@ -136,7 +136,8 @@ void rayd2::isect()
   //for every ray in m_ppointsV
   for (int x=0;x<m_psize;x++)
     {
-      printf("\r    \r%.2f%%",((float)x/(float)m_psize)*100);
+      //debug progress indicator
+      /* printf("\r    \r%.2f%%",((float)x/(float)m_psize)*100); */
       i=0;
       t=m_cdata2;
       t2=m_pdata;
