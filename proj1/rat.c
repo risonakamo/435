@@ -1,4 +1,6 @@
-/*rat.c RAy Trace
+/*rat.c - RAy Tracer
+  khang ngo
+  cmsc 435 proj 1
   driver program
   uses rayp and rayd to raytrace input file
   needs to be provided input file and ouput name*/
@@ -31,7 +33,7 @@ int main(int argc,char* argv[])
   
   else
     {
-      cout<<"using default output: output.ppm"<<endl;
+      cout<<"using default output file name: output.ppm"<<endl;
     }
   
   rayp* data=new rayp;

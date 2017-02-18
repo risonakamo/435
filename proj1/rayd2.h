@@ -1,5 +1,6 @@
-/*rayd2.h ray data v2
-  because v1 didnt work out so well
+/*rayd2.h - ray data v2
+  khang ngo 
+  cmsc 435 proj 1
   handles the calulating part after recieving data
   from rayp object*/
 

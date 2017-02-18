@@ -1,4 +1,9 @@
-//rayp.c
+/*rayp.c - ray parser
+  khang ngo
+  cmsc 435 proj 1
+  includes rayp object and flink2.  rayp object handles
+  nff file parsing to be passed onto the rayd which does
+  the math work*/
 
 #include "rayp.h"
 
@@ -220,6 +225,7 @@ void rayp::printd()
   printf("fill %f %f %f %f %f %f %f %f\n",m_fill[0],m_fill[1],m_fill[2],m_fill[3],m_fill[4],m_fill[5],m_fill[6],m_fill[7]);
 }
 
+//print all circle data
 void rayp::printc()
 {
   flink2<float*>* t=m_cdata;
@@ -241,6 +247,7 @@ void rayp::printc()
     }
 }
 
+//load file and parse all commands
 void rayp::loadFile(string filename)
 {
   fstream infile;
@@ -254,6 +261,7 @@ void rayp::loadFile(string filename)
   }
 }
 
+//also load output filename
 void rayp::loadFile(string filename,string ofile)
 {
   loadFile(filename);
@@ -271,11 +279,12 @@ void rayp::cparse(string &a)
   m_tc[m_mc]=atof(a.c_str());
   m_mc++;
 
+  //adding to a flink2 linked list
   if (m_mc>3)
     {
       m_mc=0;
       m_mode=0;
-
+      
       flink2<float*>* newf=new flink2<float*>(m_tc);
       newf->m_next=m_cdata;
       m_cdata=newf;
@@ -283,6 +292,8 @@ void rayp::cparse(string &a)
     }
 }
 
+//parse polygons
+//i think i made this kind of badly
 void rayp::pparse(string &a)
 {
   //right after seeing a p command

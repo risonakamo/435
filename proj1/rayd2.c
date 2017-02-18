@@ -1,3 +1,9 @@
+/*rayd2.c - ray data v2
+  khang ngo 
+  cmsc 435 proj 1
+  handles the calulating part after recieving data
+  from rayp object*/
+
 #include "rayd2.h"
 
 using namespace std;
@@ -37,12 +43,15 @@ void rayd2::calcVec()
       return;
     }
 
+  //pixel grid size, supports only squares right now
   m_psize=pow(m_dim,2);
-  
+
+  //camera point u v w thing
   m_w=m_from-m_at;
   m_u=cross(m_up,m_w);
   m_v=cross(m_w,m_u);
 
+  //fov and pixel grid distance from camera
   m_d=mag(m_from-m_at);
   m_m=tan(m_angle*(M_PI/180)*.5)*m_d;
 
@@ -78,6 +87,7 @@ void rayd2::genPpoints()
     }
 }
 
+//debug print
 void rayd2::printPars()
 {
   cout<<"from:"<<m_from<<endl;
@@ -99,6 +109,7 @@ void rayd2::printPars()
   cout<<endl;
 }
 
+//debug print all calculated pixel points
 void rayd2::printPpoints()
 {
   for (int x=0;x<m_psize;x++)
@@ -109,15 +120,20 @@ void rayd2::printPpoints()
   cout<<endl;
 }
 
-//main intersection function
+//main intersection function, produces output
 void rayd2::isect()
 {    
   int i;
+  
+  //linked lists of triangles/spheres
   flink2<float*>* t;
   flink2<float**>* t2;
+
+  //preparing output
   FILE* f=fopen(m_ofile.c_str(),"w");
   fprintf(f,"P6 %d %d 255\n",m_dim,m_dim);
-  
+
+  //for every ray in m_ppointsV
   for (int x=0;x<m_psize;x++)
     {
       printf("\r    \r%.2f%%",((float)x/(float)m_psize)*100);
@@ -126,11 +142,12 @@ void rayd2::isect()
       t2=m_pdata;
 
       //for this proj, when sees intersection immediately
-      //breaks and writes colour
+      //writes colour to file(doesnt store in big array)
       while (1)
         {
           if (t)
             {
+              //intersect every sphere
               if (rSphere(m_ppointsV[x],t->m_data)>=0)
                 {
                   i=1;
@@ -142,6 +159,7 @@ void rayd2::isect()
 
           if (t2)
             {
+              //intersect triangle
               if (rTri(m_ppointsV[x],t2->m_data)==1)
                 {
                   i=1;
@@ -151,17 +169,20 @@ void rayd2::isect()
               t2=t2->m_next;
             }
 
+          //no more left
           if (!t && !t2)
             {
               break;
             }
         }
-      
+
+      //found intersection, writing colour
       if (i==1)
         {
           fwrite(m_colour,1,3,f);
         }
 
+      //or write background colour
       else
         {
           fwrite(m_background,1,3,f);
@@ -179,7 +200,8 @@ float rayd2::rSphere(SlVector3 &ray,float* sOrigin)
   m_sflots[2]=0;
   m_sflots[3]=0;
   m_sflots[4]=0;
-  
+
+  //solving for abc
   for (int x=0;x<3;x++)
     {
       m_sflots[0]+=pow(ray[x],2);

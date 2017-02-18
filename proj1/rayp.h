@@ -1,4 +1,6 @@
-/*rayp.h ray parse
+/*rayp.h - ray parser
+  khang ngo
+  cmsc 435 proj 1
   includes rayp object and flink2.  rayp object handles
   nff file parsing to be passed onto the rayd which does
   the math work*/

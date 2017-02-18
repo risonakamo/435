@@ -11,13 +11,13 @@ program description:
 -rayd2 takes rayp's data and does math
 
 usage:
--make to compile
+-'make' to compile
 -requires slvector to be in ../common
 -executable name is rat
--rat <input nff file> <output nff file>
+-'rat <input nff file> <output nff file>'
 -note that it does pretty much no error checking on files
 
--make clean to clean .o and binary
+-'make clean' to clean .o and binary
 
 extra credit:
 -sphere intersection (nff s command)
