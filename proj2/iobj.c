@@ -11,3 +11,36 @@ iobj::iobj(int type,float* data,float* colour,iobj* next)
 {
 
 }
+
+void iobj::print()
+{
+  if (m_type==0)
+    {
+      cout<<"uninitialised object"<<endl;
+      return;
+    }
+
+  cout<<"type: "<<m_type<<endl;
+  
+  if (m_type==1)
+    {
+      printf("data: %f %f %f %f\n",m_data[0],m_data[1],m_data[2],m_data[3]);
+    }
+
+  else if (m_type==2)
+    {
+      printf("data: ");
+      for (int x=0;x<9;x++)
+        {
+          printf("%f ",m_data[x]);
+        }
+      cout<<endl;
+    }
+
+  printf("colour: ");
+  for (int x=0;x<8;x++)
+    {
+      printf("%f ",m_colour[x]);
+    }
+  cout<<endl;
+}

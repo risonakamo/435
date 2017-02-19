@@ -28,6 +28,7 @@ class rayp
   void argParse(string a); //parse an arg
 
   void printd(); //print relevant data stored
+  void printad();
   /* void printc(); //print circles */
   /* void printt(); //print triangles */
 
@@ -55,9 +56,9 @@ class rayp
   void arrayParse(int mmode,string a); //parse array like data
   int arrayParseFill(int mmode,string a); //helper
   void cparse(string &a); //parse spheres
-  void pparse(string &a); //parse polygons
+  void pparse(string &a,int dims); //parse polygons
 
-  void fanTriangle();
+  void fanTriangle(int dim);
   
   /*mode:
     0=no mode

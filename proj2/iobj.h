@@ -1,6 +1,9 @@
 #ifndef iobj_h
 #define iobj_h
 
+#include <iostream>
+#include <string>
+#include <fstream>
 #include <cstdlib>
 
 using namespace std;
@@ -11,6 +14,8 @@ class iobj
   iobj();
 
   iobj(int type,float* data,float* colour,iobj* next);
+
+  void print();
   
   /*type of shape thing:
    0=undefined

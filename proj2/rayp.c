@@ -34,7 +34,7 @@ void rayp::argParse(string a)
 {
   if (m_mode==10)
     {
-      pparse(a);
+      pparse(a,3);
       return;
     }
   
@@ -194,7 +194,7 @@ int rayp::arrayParseFill(int mmode,string a)
   if (mmode==4)
     {
       m_up[m_mc]=atof(a.c_str());
-      return 3;          
+      return 3;
     }
 
   if (mmode==7)
@@ -224,6 +224,25 @@ void rayp::printd()
   printf("angle %i\n",m_angle);
   printf("hither %i\n",m_hither);
   printf("res %i %i\n",m_res[0],m_res[1]);
+}
+
+void rayp::printad()
+{
+  iobj* a;
+  a=m_adata;
+
+  while (1)
+    {
+      if (!a)
+        {
+          return;
+        }
+
+      a->print();
+      cout<<endl;
+      
+      a=a->m_next;
+    }
 }
 
 /* //print all circle data */
@@ -288,13 +307,12 @@ void rayp::cparse(string &a)
       
       iobj* t=new iobj(1,m_tc,m_fill,m_adata);
       m_adata=t;
-      m_tc=NULL;
     }
 }
 
 //parse polygons
 //i think i made this kind of badly
-void rayp::pparse(string &a)
+void rayp::pparse(string &a,int dim)
 {
   //right after seeing a p command
   if (m_mc==0)
@@ -307,11 +325,11 @@ void rayp::pparse(string &a)
       return;
     }
 
-  //pctr 2 goes to 0 to 2 for xyz of point
+  //pctr 2 goes to 0 to 2 (or 3 for pp) for xyz of point
   //makes new point at 0
   if (m_pctr2==0)
     {
-      m_tpg[m_pctr]=new float[3];
+      m_tpg[m_pctr]=new float[dim];
     }
 
   //setting x y or z
@@ -320,7 +338,7 @@ void rayp::pparse(string &a)
   m_pctr2++;
 
   //moving on to next point
-  if (m_pctr2>2)
+  if (m_pctr2>dim-1)
     {
       m_pctr2=0;
       m_pctr++;
@@ -329,7 +347,7 @@ void rayp::pparse(string &a)
       //up triangles
       if (m_pctr>=3)
         {
-          fanTriangle();
+          fanTriangle(3);
         }      
     }
 
@@ -363,21 +381,51 @@ void rayp::pparse(string &a)
 /*     } */
 /* } */
 
-void rayp::fanTriangle()
+void rayp::fanTriangle(int dim)
 {
-  m_tp=new float[9];
-  m_tp[0]=m_tpg[0][0];
-  m_tp[1]=m_tpg[0][1];
-  m_tp[2]=m_tpg[0][2];
-  
-  m_tp[3]=m_tpg[m_pctr-2][0];
-  m_tp[4]=m_tpg[m_pctr-2][1];
-  m_tp[5]=m_tpg[m_pctr-2][2];
-  
-  m_tp[6]=m_tpg[m_pctr-1][0];
-  m_tp[7]=m_tpg[m_pctr-1][1];
-  m_tp[8]=m_tpg[m_pctr-1][2];
+  dim*=3;
+  m_tp=new float[dim];
 
+  int y=0;
+  int z=0;
+  for (int x=0;x<dim;x++)
+    {
+      if (y==0)
+        {
+          m_tp[x]=m_tpg[0][z];
+        }
+
+      else if (y==1)
+        {
+          m_tp[x]=m_tpg[m_pctr-2][z];
+        }
+
+      else
+        {
+          m_tp[x]=m_tpg[m_pctr-1][z];
+        }
+
+      z++;
+
+      if (z>2)
+        {
+          z=0;
+          y++;
+        }
+    }
+  
+  /* m_tp[0]=m_tpg[0][0]; */
+  /* m_tp[1]=m_tpg[0][1]; */
+  /* m_tp[2]=m_tpg[0][2]; */
+  
+  /* m_tp[3]=m_tpg[m_pctr-2][0]; */
+  /* m_tp[4]=m_tpg[m_pctr-2][1]; */
+  /* m_tp[5]=m_tpg[m_pctr-2][2]; */
+  
+  /* m_tp[6]=m_tpg[m_pctr-1][0]; */
+  /* m_tp[7]=m_tpg[m_pctr-1][1]; */
+  /* m_tp[8]=m_tpg[m_pctr-1][2];  */
+  
   //adding to linked list of triangles
   iobj* t=new iobj(2,m_tp,m_fill,m_adata);
   m_adata=t;

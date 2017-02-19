@@ -27,7 +27,6 @@ rayd2::rayd2(rayp* raypars)
       m_at[x]=raypars->m_at[x];
       m_up[x]=raypars->m_up[x];
       m_background[x]=raypars->m_background[x]*255;
-      m_colour[x]=raypars->m_fill[x]*255;
     }
 }
 
@@ -129,7 +128,7 @@ void rayd2::isect()
   iobj* obj;
 
   //preparing output
-  FILE* f=fopen(m_ofile.c_str(),"w");
+  FILE* f=fopen(m_ofile.c_str(),"w");  
   fprintf(f,"P6 %d %d 255\n",m_dim,m_dim);
 
   //for every ray in m_ppointsV
@@ -197,8 +196,13 @@ void rayd2::isect()
         }
 
       //found intersection, writing colour
+      //CHANGE THIS LATER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       if (i==1)
         {
+          m_colour[0]=obj->m_colour[0]*255;
+          m_colour[1]=obj->m_colour[1]*255;
+          m_colour[2]=obj->m_colour[2]*255;
+          
           fwrite(m_colour,1,3,f);
         }
 
