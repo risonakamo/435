@@ -13,35 +13,9 @@
 #include <string>
 #include <cstdlib>
 
+#include "iobj.h"
+
 using namespace std;
-
-//float link 2, now with templates
-//its just a linked list
-template <class T>
-class flink2
-{
- public:
-  flink2();
-
-  flink2(T data);
-
-  T m_data;
-  flink2<T>* m_next;
-};
-
-template <class T>
-flink2<T>::flink2()
-:m_next(NULL)
-{
-
-}
-
-template <class T>
-flink2<T>::flink2(T data)
-:m_data(data),m_next(NULL)
-{
-
-}
 
 class rayp
 {
@@ -54,8 +28,8 @@ class rayp
   void argParse(string a); //parse an arg
 
   void printd(); //print relevant data stored
-  void printc(); //print circles
-  void printt(); //print triangles
+  /* void printc(); //print circles */
+  /* void printt(); //print triangles */
 
   /*--public vars--*/
   //various math-related data terms
@@ -67,19 +41,23 @@ class rayp
 
   float m_background[3]; 
   int m_hither;
-  float m_fill[8];
+  float* m_fill;
 
   string m_ofile;
 
   /*--data stuff--*/
-  flink2<float*>* m_cdata; //circle data
-  flink2<float**>* m_pdata; //polygon data
+  /* flink2<float*>* m_cdata; //circle data */
+  /* flink2<float**>* m_pdata; //polygon data */
+
+  iobj* m_adata;
   
  private:
   void arrayParse(int mmode,string a); //parse array like data
   int arrayParseFill(int mmode,string a); //helper
   void cparse(string &a); //parse spheres
   void pparse(string &a); //parse polygons
+
+  void fanTriangle();
   
   /*mode:
     0=no mode

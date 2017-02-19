@@ -10,8 +10,8 @@
 using namespace std;
 
 rayp::rayp()
-:m_mode(0),m_mc(0),m_angle(0),m_hither(0),m_cdata(NULL),m_pdata(NULL),
-  m_ofile("output.ppm")
+:m_mode(0),m_mc(0),m_angle(0),m_hither(0),/*m_cdata(NULL),m_pdata(NULL),*/
+  m_ofile("output.ppm"),m_adata(NULL),m_fill(NULL)
 {
   int x;
 
@@ -26,11 +26,6 @@ rayp::rayp()
   for (x=0;x<2;x++)
     {
       m_res[x]=0;
-    }
-
-  for (x=0;x<8;x++)
-    {
-      m_fill[x]=0;
     }
 }
 
@@ -174,11 +169,13 @@ void rayp::arrayParse(int mmode,string a)
 //puts things into arrays, returns the size
 //of the array being filled up so the upper
 //arrayparse knows when to stop
+//usable on arrays with specific size and non infinite
 int rayp::arrayParseFill(int mmode,string a)
 {
   if (mmode==1)
     {
       m_background[m_mc]=atof(a.c_str());
+      //return the max size of the array being filled
       return 3;
     }
 
@@ -208,6 +205,11 @@ int rayp::arrayParseFill(int mmode,string a)
 
   if (mmode==9)
     {
+      if (m_mc==0)
+        {
+          m_fill=new float[8];
+        }
+
       m_fill[m_mc]=atof(a.c_str());
       return 8;
     }
@@ -222,30 +224,29 @@ void rayp::printd()
   printf("angle %i\n",m_angle);
   printf("hither %i\n",m_hither);
   printf("res %i %i\n",m_res[0],m_res[1]);
-  printf("fill %f %f %f %f %f %f %f %f\n",m_fill[0],m_fill[1],m_fill[2],m_fill[3],m_fill[4],m_fill[5],m_fill[6],m_fill[7]);
 }
 
-//print all circle data
-void rayp::printc()
-{
-  flink2<float*>* t=m_cdata;
-  while (1)
-    {
-      if (!t)
-        {
-          return;
-        }
+/* //print all circle data */
+/* void rayp::printc() */
+/* { */
+/*   flink2<float*>* t=m_cdata; */
+/*   while (1) */
+/*     { */
+/*       if (!t) */
+/*         { */
+/*           return; */
+/*         } */
 
-      cout<<"c ";
-      for (int x=0;x<4;x++)
-        {          
-          printf("%f ",t->m_data[x]);
-        }
+/*       cout<<"c "; */
+/*       for (int x=0;x<4;x++) */
+/*         {           */
+/*           printf("%f ",t->m_data[x]); */
+/*         } */
 
-      cout<<endl;
-      t=t->m_next;      
-    }
-}
+/*       cout<<endl; */
+/*       t=t->m_next;       */
+/*     } */
+/* } */
 
 //load file and parse all commands
 void rayp::loadFile(string filename)
@@ -279,15 +280,14 @@ void rayp::cparse(string &a)
   m_tc[m_mc]=atof(a.c_str());
   m_mc++;
 
-  //adding to a flink2 linked list
+  //adding to adata
   if (m_mc>3)
     {
       m_mc=0;
       m_mode=0;
       
-      flink2<float*>* newf=new flink2<float*>(m_tc);
-      newf->m_next=m_cdata;
-      m_cdata=newf;
+      iobj* t=new iobj(1,m_tc,m_fill,m_adata);
+      m_adata=t;
       m_tc=NULL;
     }
 }
@@ -329,15 +329,7 @@ void rayp::pparse(string &a)
       //up triangles
       if (m_pctr>=3)
         {
-          m_tpg2=new float*[3];
-          m_tpg2[0]=m_tpg[0];
-          m_tpg2[1]=m_tpg[m_pctr-2];
-          m_tpg2[2]=m_tpg[m_pctr-1];
-
-          //adding to linked list of triangles
-          flink2<float**>* t=new flink2<float**>(m_tpg2);
-          t->m_next=m_pdata;
-          m_pdata=t;      
+          fanTriangle();
         }      
     }
 
@@ -348,25 +340,45 @@ void rayp::pparse(string &a)
     }
 }
 
-//print triangle data
-void rayp::printt()
+/* //print triangle data */
+/* void rayp::printt() */
+/* { */
+/*   flink2<float**>* t=m_pdata; */
+/*   cout<<"triangles:"<<endl; */
+/*   while (1) */
+/*     { */
+/*       if (!t) */
+/*         { */
+/*           return; */
+/*         } */
+
+/*       for (int x=0;x<3;x++) */
+/*         {           */
+/*           printf("%f %f %f\n",t->m_data[x][0],t->m_data[x][1],t->m_data[x][2]);           */
+/*         } */
+
+/*       cout<<endl; */
+
+/*       t=t->m_next; */
+/*     } */
+/* } */
+
+void rayp::fanTriangle()
 {
-  flink2<float**>* t=m_pdata;
-  cout<<"triangles:"<<endl;
-  while (1)
-    {
-      if (!t)
-        {
-          return;
-        }
+  m_tp=new float[9];
+  m_tp[0]=m_tpg[0][0];
+  m_tp[1]=m_tpg[0][1];
+  m_tp[2]=m_tpg[0][2];
+  
+  m_tp[3]=m_tpg[m_pctr-2][0];
+  m_tp[4]=m_tpg[m_pctr-2][1];
+  m_tp[5]=m_tpg[m_pctr-2][2];
+  
+  m_tp[6]=m_tpg[m_pctr-1][0];
+  m_tp[7]=m_tpg[m_pctr-1][1];
+  m_tp[8]=m_tpg[m_pctr-1][2];
 
-      for (int x=0;x<3;x++)
-        {          
-          printf("%f %f %f\n",t->m_data[x][0],t->m_data[x][1],t->m_data[x][2]);          
-        }
-
-      cout<<endl;
-
-      t=t->m_next;
-    }
+  //adding to linked list of triangles
+  iobj* t=new iobj(2,m_tp,m_fill,m_adata);
+  m_adata=t;
 }

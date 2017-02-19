@@ -10,7 +10,7 @@ using namespace std;
 
 rayd2::rayd2()
 :m_from(0,0,0),m_at(0,0,0),m_up(0,0,0),m_angle(0),m_dim(0),
-  m_cdata2(NULL),m_pdata(NULL),m_ofile("output.ppm")
+  /*m_cdata2(NULL),m_pdata(NULL),*/m_ofile("output.ppm"),m_adata(NULL)
 {
 
 }
@@ -18,8 +18,8 @@ rayd2::rayd2()
 //rayp constructor
 //takes data gathered by rayp object
 rayd2::rayd2(rayp* raypars)
-:m_angle(raypars->m_angle),m_dim(raypars->m_res[0]),m_cdata2(raypars->m_cdata),
-  m_pdata(raypars->m_pdata),m_ofile(raypars->m_ofile)
+:m_angle(raypars->m_angle),m_dim(raypars->m_res[0]),/*m_cdata2(raypars->m_cdata),*/
+  /*m_pdata(raypars->m_pdata),*/m_ofile(raypars->m_ofile),m_adata(raypars->m_adata)
 {
   for (int x=0;x<3;x++)
     {
@@ -126,8 +126,7 @@ void rayd2::isect()
   int i;
   
   //linked lists of triangles/spheres
-  flink2<float*>* t;
-  flink2<float**>* t2;
+  iobj* obj;
 
   //preparing output
   FILE* f=fopen(m_ofile.c_str(),"w");
@@ -137,44 +136,64 @@ void rayd2::isect()
   for (int x=0;x<m_psize;x++)
     {
       //debug progress indicator
-      /* printf("\r    \r%.2f%%",((float)x/(float)m_psize)*100); */
+      printf("\r    \r%.2f%%",((float)x/(float)m_psize)*100);
       i=0;
-      t=m_cdata2;
-      t2=m_pdata;
+      /* t=m_cdata2; */
+      /* t2=m_pdata; */
+      obj=m_adata;
 
       //for this proj, when sees intersection immediately
       //writes colour to file(doesnt store in big array)
       while (1)
         {
-          if (t)
-            {
-              //intersect every sphere
-              if (rSphere(m_ppointsV[x],t->m_data)>=0)
-                {
-                  i=1;
-                  break;
-                }
-
-              t=t->m_next;
-            }
-
-          if (t2)
-            {
-              //intersect triangle
-              if (rTri(m_ppointsV[x],t2->m_data)==1)
-                {
-                  i=1;
-                  break;
-                }
-
-              t2=t2->m_next;
-            }
-
-          //no more left
-          if (!t && !t2)
+          if (!obj)
             {
               break;
             }
+
+          if (obj->m_type==1 && rSphere(m_ppointsV[x],obj->m_data)>=0)
+            {
+              i=1;
+              break;
+            }
+
+          if (obj->m_type==2 && rTri(m_ppointsV[x],obj->m_data)==1)
+            {
+              i=1;
+              break;
+            }
+
+          obj=obj->m_next;
+          
+          /* if (t) */
+          /*   { */
+          /*     //intersect every sphere */
+          /*     if (rSphere(m_ppointsV[x],t->m_data)>=0) */
+          /*       { */
+          /*         i=1; */
+          /*         break; */
+          /*       } */
+
+          /*     t=t->m_next; */
+          /*   } */
+
+          /* if (t2) */
+          /*   { */
+          /*     //intersect triangle */
+          /*     if (rTri(m_ppointsV[x],t2->m_data)==1) */
+          /*       { */
+          /*         i=1; */
+          /*         break; */
+          /*       } */
+
+          /*     t2=t2->m_next; */
+          /*   } */
+
+          /* //no more left */
+          /* if (!t && !t2) */
+          /*   { */
+          /*     break; */
+          /*   } */
         }
 
       //found intersection, writing colour
@@ -224,14 +243,16 @@ float rayd2::rSphere(SlVector3 &ray,float* sOrigin)
 }
 
 //overload version
-int rayd2::rTri(SlVector3 &ray,float** p)
+int rayd2::rTri(SlVector3 &ray,float* p)
 {
+  int z=0;
   SlVector3 pgons[3];
   for (int x=0;x<3;x++)
     {
       for (int y=0;y<3;y++)
         {
-          pgons[x][y]=p[x][y];
+          pgons[x][y]=p[z];
+          z++;
         }
     }
 

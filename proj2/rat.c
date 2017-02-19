@@ -38,7 +38,8 @@ int main(int argc,char* argv[])
   
   rayp* data=new rayp;
   data->loadFile(argv[1],oname);
-
+  data->printd();
+  
   rayd2 trace(data);
   trace.calcVec();
   trace.genPpoints();

@@ -14,6 +14,7 @@
 
 #include "../common/slVector.H"
 #include "rayp.h"
+#include "iobj.h"
 
 using namespace std;
 
@@ -34,7 +35,7 @@ class rayd2
  private:
   float rSphere(SlVector3 &ray,float* sOrigin); //intRsect sphere
 
-  int rTri(SlVector3 &ray,float** p); //inteRsect Triangle
+  int rTri(SlVector3 &ray,float* p); //inteRsect Triangle
   int rTri(SlVector3 &ray,SlVector3* p);
   
   /*--given values--*/
@@ -60,8 +61,9 @@ class rayd2
   SlVector3* m_ppointsV; //pixel points vector
                          //size should be psize
 
-  flink2<float*>* m_cdata2; //circle data
-  flink2<float**>* m_pdata; //polygon data
+  /* flink2<float*>* m_cdata2; //circle data */
+  /* flink2<float**>* m_pdata; //polygon data */
+  iobj* m_adata;
 
   /*--rsphere temps--*/
   float m_sflots[5]; //sphere floats
