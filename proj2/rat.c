@@ -39,7 +39,6 @@ int main(int argc,char* argv[])
   rayp* data=new rayp;
   data->loadFile(argv[1],oname);
   data->printd();
-  data->printad();
   
   rayd2 trace(data);
   trace.calcVec();

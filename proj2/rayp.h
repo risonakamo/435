@@ -73,6 +73,7 @@ class rayp
     9=f for fill
     10=p for polygon
     11=s for circle
+    12=pp polygon patch
   */
   int m_mode;
   int m_mc; //mode count

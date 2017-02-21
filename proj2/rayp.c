@@ -43,6 +43,12 @@ void rayp::argParse(string a)
       cparse(a);      
       return;
     }
+
+  if (m_mode==12)
+    {
+      pparse(a,4);
+      return;
+    }
   
   //currently does not include L for light!!!
   if (m_mode==1 || m_mode==2 || m_mode==3
@@ -77,6 +83,13 @@ void rayp::argParse(string a)
       m_mode=11;
       m_mc=0;
       return;
+    }
+
+  if (a=="pp")
+    {
+      m_mode=12;
+      m_mc=0;
+      return;      
     }
   
   if (a=="b")
@@ -311,7 +324,6 @@ void rayp::cparse(string &a)
 }
 
 //parse polygons
-//i think i made this kind of badly
 void rayp::pparse(string &a,int dim)
 {
   //right after seeing a p command
@@ -325,7 +337,7 @@ void rayp::pparse(string &a,int dim)
       return;
     }
 
-  //pctr 2 goes to 0 to 2 (or 3 for pp) for xyz of point
+  //pctr 2 goes to 0 to dim-1 for xyz of point
   //makes new point at 0
   if (m_pctr2==0)
     {
