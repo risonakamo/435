@@ -46,7 +46,7 @@ void rayp::argParse(string a)
 
   if (m_mode==12)
     {
-      pparse(a,4);
+      pparse(a,6);
       return;
     }
   

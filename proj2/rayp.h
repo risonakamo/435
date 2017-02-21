@@ -53,6 +53,7 @@ class rayp
   iobj* m_adata;
   
  private:
+  /*--private functions--*/
   void arrayParse(int mmode,string a); //parse array like data
   int arrayParseFill(int mmode,string a); //helper
   void cparse(string &a); //parse spheres
@@ -60,7 +61,7 @@ class rayp
 
   void fanTriangle(int dim);
   
-  /*mode:
+  /*--mode:--
     0=no mode
     1=background
     2=from

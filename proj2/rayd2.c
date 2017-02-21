@@ -122,27 +122,23 @@ void rayd2::printPpoints()
 //main intersection function, produces output
 void rayd2::isect()
 {    
-  int i;
-  
-  //linked lists of triangles/spheres
-  iobj* obj;
-
   //preparing output
   FILE* f=fopen(m_ofile.c_str(),"w");  
   fprintf(f,"P6 %d %d 255\n",m_dim,m_dim);
 
+  float i=-1; //i intersection value
+  float t=-1; //t value
+  iobj* obj; //current obj
+  iobj* cobj=NULL; //closest object
+  
   //for every ray in m_ppointsV
   for (int x=0;x<m_psize;x++)
     {
       //debug progress indicator
       printf("\r    \r%.2f%%",((float)x/(float)m_psize)*100);
-      i=0;
-      /* t=m_cdata2; */
-      /* t2=m_pdata; */
+      
       obj=m_adata;
-
-      //for this proj, when sees intersection immediately
-      //writes colour to file(doesnt store in big array)
+      t=-1;      
       while (1)
         {
           if (!obj)
@@ -150,58 +146,33 @@ void rayd2::isect()
               break;
             }
 
-          if (obj->m_type==1 && rSphere(m_ppointsV[x],obj->m_data)>=0)
-            {
-              i=1;
-              break;
+          if (obj->m_type==1)
+            {              
+              i=rSphere(m_ppointsV[x],obj->m_data);
             }
 
-          if (obj->m_type==2 && rTri(m_ppointsV[x],obj->m_data)==1)
+          else if (obj->m_type==2)
             {
-              i=1;
-              break;
+              i=rTri(m_ppointsV[x],obj->m_data);
             }
-
-          obj=obj->m_next;
           
-          /* if (t) */
-          /*   { */
-          /*     //intersect every sphere */
-          /*     if (rSphere(m_ppointsV[x],t->m_data)>=0) */
-          /*       { */
-          /*         i=1; */
-          /*         break; */
-          /*       } */
+          t=max(t,i);
 
-          /*     t=t->m_next; */
-          /*   } */
-
-          /* if (t2) */
-          /*   { */
-          /*     //intersect triangle */
-          /*     if (rTri(m_ppointsV[x],t2->m_data)==1) */
-          /*       { */
-          /*         i=1; */
-          /*         break; */
-          /*       } */
-
-          /*     t2=t2->m_next; */
-          /*   } */
-
-          /* //no more left */
-          /* if (!t && !t2) */
-          /*   { */
-          /*     break; */
-          /*   } */
+          if (t==i)
+            {
+              cobj=obj;
+            }
+          
+          obj=obj->m_next;         
         }
 
       //found intersection, writing colour
       //CHANGE THIS LATER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      if (i==1)
+      if ((cobj->m_type==1 && t>=0.0) || (cobj->m_type==2 && t>0.0))
         {
-          m_colour[0]=obj->m_colour[0]*255;
-          m_colour[1]=obj->m_colour[1]*255;
-          m_colour[2]=obj->m_colour[2]*255;
+          m_colour[0]=cobj->m_colour[0]*255;
+          m_colour[1]=cobj->m_colour[1]*255;
+          m_colour[2]=cobj->m_colour[2]*255;
           
           fwrite(m_colour,1,3,f);
         }
@@ -242,12 +213,17 @@ float rayd2::rSphere(SlVector3 &ray,float* sOrigin)
   //if greater than 0 intersects twice
   //is 0 intersects once (tangent)
   //else no intersect
-  //but isect handles this, so just return it
-  return pow(m_sflots[1],2)-(4*m_sflots[0]*m_sflots[2]);
+  if (pow(m_sflots[1],2)-(4*m_sflots[0]*m_sflots[2])<0.0)
+    {
+      return -1;
+    }
+
+  //returning t if intersect
+  return ((-m_sflots[1])-pow((pow(m_sflots[1],2)-(4*m_sflots[0]*m_sflots[2])),.5))/(2*m_sflots[0]);
 }
 
 //overload version
-int rayd2::rTri(SlVector3 &ray,float* p)
+float rayd2::rTri(SlVector3 &ray,float* p)
 {
   int z=0;
   SlVector3 pgons[3];
@@ -260,12 +236,11 @@ int rayd2::rTri(SlVector3 &ray,float* p)
         }
     }
 
-  int a=rTri(ray,pgons);
-  return a;
+  return rTri(ray,pgons);
 }
 
 //used arrays to be hopefully faster
-int rayd2::rTri(SlVector3 &ray,SlVector3* p)
+float rayd2::rTri(SlVector3 &ray,SlVector3* p)
 {
   m_rvecs[0]=p[1]-p[0];
   m_rvecs[1]=p[2]-p[0];
@@ -276,7 +251,7 @@ int rayd2::rTri(SlVector3 &ray,SlVector3* p)
   //if 0 its paralelele
   if (m_rflots[0]==0)
     {
-      return 0;
+      return -1;
     }
 
   m_rvecs[3]=m_from-p[0];
@@ -286,7 +261,7 @@ int rayd2::rTri(SlVector3 &ray,SlVector3* p)
 
   if (m_rflots[1]<0.0 || m_rflots[1]>1.0)
     {
-      return 0;
+      return -1;
     }
 
   m_rvecs[4]=cross(m_rvecs[3],m_rvecs[0]);
@@ -294,14 +269,16 @@ int rayd2::rTri(SlVector3 &ray,SlVector3* p)
 
   if (m_rflots[2]<0.0 || m_rflots[1]+m_rflots[2]>1.0) 
     {
-      return 0;
+      return -1;
     }
 
+  return dot(m_rvecs[1],m_rvecs[4])/m_rflots[0];
+  
   //t
-  if ((dot(m_rvecs[1],m_rvecs[4])/m_rflots[0])>0.0)
-    {
-      return 1;
-    }
+  /* if ((dot(m_rvecs[1],m_rvecs[4])/m_rflots[0])>0.0) */
+  /*   { */
+  /*     return 1; */
+  /*   } */
 
-  return 0;
+  /* return 0; */
 }
