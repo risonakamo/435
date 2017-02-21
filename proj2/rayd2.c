@@ -128,6 +128,7 @@ void rayd2::isect()
 
   float i=-1; //i intersection value
   float t=-1; //t value
+  int found=0; //found intersection
   iobj* obj; //current obj
   iobj* cobj=NULL; //closest object
   
@@ -138,7 +139,7 @@ void rayd2::isect()
       printf("\r    \r%.2f%%",((float)x/(float)m_psize)*100);
       
       obj=m_adata;
-      t=-1;      
+      found=0;
       while (1)
         {
           if (!obj)
@@ -155,20 +156,33 @@ void rayd2::isect()
             {
               i=rTri(m_ppointsV[x],obj->m_data);
             }
-          
-          t=max(t,i);
 
-          if (t==i)
+          if ((obj->m_type==1 && i>=0.0) || (obj->m_type==2 && i>0.0))
             {
-              cobj=obj;
-            }
+              if (found==0)
+                {
+                  found=1;
+                  t=i;
+                  cobj=obj;
+                }
+
+              else
+                {
+                  t=min(t,i);
+
+                  if (t==i)
+                    {
+                      cobj=obj;
+                    }
+                }
+            }         
           
           obj=obj->m_next;         
         }
 
       //found intersection, writing colour
       //CHANGE THIS LATER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      if ((cobj->m_type==1 && t>=0.0) || (cobj->m_type==2 && t>0.0))
+      if (found==1)
         {
           m_colour[0]=cobj->m_colour[0]*255;
           m_colour[1]=cobj->m_colour[1]*255;
