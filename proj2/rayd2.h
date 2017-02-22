@@ -31,18 +31,20 @@ class rayd2
   void printPpoints(); //print out pixel intersection points
   
   void isect(); //intersect with stuff
+  void iLight();
   
  private:
-  float rSphere(SlVector3 &ray,float* sOrigin); //intRsect sphere
+  float rSphere(SlVector3 &ray,SlVector3 &from,float* sOrigin); //intRsect sphere
 
-  float rTri(SlVector3 &ray,float* p); //inteRsect Triangle
-  float rTri(SlVector3 &ray,SlVector3* p);
+  float rTri(SlVector3 &ray,SlVector3 &from,float* p); //inteRsect Triangle
+  float rTri(SlVector3 &ray,SlVector3 &from,SlVector3* p);
   
   /*--given values--*/
   string m_ofile;
   SlVector3 m_from;
   SlVector3 m_at;
   SlVector3 m_up;
+  SlVector3 m_light;
   int m_angle;
   int m_dim;
 

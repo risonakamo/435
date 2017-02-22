@@ -10,7 +10,7 @@ using namespace std;
 
 rayd2::rayd2()
 :m_from(0,0,0),m_at(0,0,0),m_up(0,0,0),m_angle(0),m_dim(0),
-  /*m_cdata2(NULL),m_pdata(NULL),*/m_ofile("output.ppm"),m_adata(NULL)
+  m_ofile("output.ppm"),m_adata(NULL)
 {
 
 }
@@ -18,8 +18,8 @@ rayd2::rayd2()
 //rayp constructor
 //takes data gathered by rayp object
 rayd2::rayd2(rayp* raypars)
-:m_angle(raypars->m_angle),m_dim(raypars->m_res[0]),/*m_cdata2(raypars->m_cdata),*/
-  /*m_pdata(raypars->m_pdata),*/m_ofile(raypars->m_ofile),m_adata(raypars->m_adata)
+:m_angle(raypars->m_angle),m_dim(raypars->m_res[0]),
+  m_ofile(raypars->m_ofile),m_adata(raypars->m_adata)
 {
   for (int x=0;x<3;x++)
     {
@@ -27,6 +27,7 @@ rayd2::rayd2(rayp* raypars)
       m_at[x]=raypars->m_at[x];
       m_up[x]=raypars->m_up[x];
       m_background[x]=raypars->m_background[x]*255;
+      m_light[x]=raypars->m_light[x];
     }
 }
 
@@ -149,12 +150,12 @@ void rayd2::isect()
 
           if (obj->m_type==1)
             {              
-              i=rSphere(m_ppointsV[x],obj->m_data);
+              i=rSphere(m_ppointsV[x],m_from,obj->m_data);
             }
 
           else if (obj->m_type==2)
             {
-              i=rTri(m_ppointsV[x],obj->m_data);
+              i=rTri(m_ppointsV[x],m_from,obj->m_data);
             }
 
           if ((obj->m_type==1 && i>=0.0) || (obj->m_type==2 && i>0.0))
@@ -202,7 +203,7 @@ void rayd2::isect()
 //pixel ray vector, sphere array [x,y,z,r]
 //sorigin for sphere origin
 //using t and discriminent method from the book
-float rayd2::rSphere(SlVector3 &ray,float* sOrigin)
+float rayd2::rSphere(SlVector3 &ray,SlVector3 &from,float* sOrigin)
 {
   m_sflots[0]=0;
   m_sflots[1]=0;
@@ -214,10 +215,10 @@ float rayd2::rSphere(SlVector3 &ray,float* sOrigin)
   for (int x=0;x<3;x++)
     {
       m_sflots[0]+=pow(ray[x],2);
-      m_sflots[1]+=ray[x]*(m_from[x]-sOrigin[x]);
+      m_sflots[1]+=ray[x]*(from[x]-sOrigin[x]);
       m_sflots[2]+=pow(sOrigin[x],2);
-      m_sflots[3]+=pow(m_from[x],2);
-      m_sflots[4]+=sOrigin[x]*m_from[x];
+      m_sflots[3]+=pow(from[x],2);
+      m_sflots[4]+=sOrigin[x]*from[x];
     }
 
   m_sflots[1]*=2;
@@ -237,7 +238,7 @@ float rayd2::rSphere(SlVector3 &ray,float* sOrigin)
 }
 
 //overload version
-float rayd2::rTri(SlVector3 &ray,float* p)
+float rayd2::rTri(SlVector3 &ray,SlVector3 &from,float* p)
 {
   int z=0;
   SlVector3 pgons[3];
@@ -250,11 +251,11 @@ float rayd2::rTri(SlVector3 &ray,float* p)
         }
     }
 
-  return rTri(ray,pgons);
+  return rTri(ray,from,pgons);
 }
 
 //used arrays to be hopefully faster
-float rayd2::rTri(SlVector3 &ray,SlVector3* p)
+float rayd2::rTri(SlVector3 &ray,SlVector3 &from,SlVector3* p)
 {
   m_rvecs[0]=p[1]-p[0];
   m_rvecs[1]=p[2]-p[0];
@@ -268,7 +269,7 @@ float rayd2::rTri(SlVector3 &ray,SlVector3* p)
       return -1;
     }
 
-  m_rvecs[3]=m_from-p[0];
+  m_rvecs[3]=from-p[0];
 
   //alpha (or greek r(?) from the book
   m_rflots[1]=dot(m_rvecs[3],m_rvecs[2])/m_rflots[0];
@@ -295,4 +296,9 @@ float rayd2::rTri(SlVector3 &ray,SlVector3* p)
   /*   } */
 
   /* return 0; */
+}
+
+void rayd2::iLight()
+{
+  
 }

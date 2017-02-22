@@ -50,9 +50,8 @@ void rayp::argParse(string a)
       return;
     }
   
-  //currently does not include L for light!!!
   if (m_mode==1 || m_mode==2 || m_mode==3
-      || m_mode==4 || m_mode==7 || m_mode==9)
+      || m_mode==4 || m_mode==7 || m_mode==9 || m_mode==8)
     {
       arrayParse(m_mode,a);
     }
@@ -185,6 +184,17 @@ void rayp::arrayParse(int mmode,string a)
 //usable on arrays with specific size and non infinite
 int rayp::arrayParseFill(int mmode,string a)
 {
+  if (mmode==9)
+    {
+      if (m_mc==0)
+        {
+          m_fill=new float[8];
+        }
+
+      m_fill[m_mc]=atof(a.c_str());
+      return 8;
+    }
+  
   if (mmode==1)
     {
       m_background[m_mc]=atof(a.c_str());
@@ -216,16 +226,11 @@ int rayp::arrayParseFill(int mmode,string a)
       return 2;          
     }
 
-  if (mmode==9)
+  if (mmode==8)
     {
-      if (m_mc==0)
-        {
-          m_fill=new float[8];
-        }
-
-      m_fill[m_mc]=atof(a.c_str());
-      return 8;
-    }
+      m_light[m_mc]=atof(a.c_str());
+      return 3;
+    } 
 }
 
 void rayp::printd()

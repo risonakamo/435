@@ -37,6 +37,7 @@ class rayp
   float m_from[3];
   float m_at[3];
   float m_up[3];
+  float m_light[3];
   int m_angle;
   int m_res[2];
 
@@ -70,7 +71,7 @@ class rayp
     5=angle
     6=hither
     7=resolution
-    8=l
+    8=l light
     9=f for fill
     10=p for polygon
     11=s for circle
