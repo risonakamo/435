@@ -243,6 +243,7 @@ void rayp::printd()
   printf("up %f %f %f\n",m_up[0],m_up[1],m_up[2]);
   printf("angle %i\n",m_angle);
   printf("hither %i\n",m_hither);
+  printf("lights %i\n",m_maxLight);
   printf("res %i %i\n",m_res[0],m_res[1]);
 }
 

@@ -308,7 +308,7 @@ void rayd2::iLight(SlVector3 &ray,SlVector3 &from,float t,iobj* cobj)
 {
   iobj* obj;
   iobj* clight=m_light; //current light
-  int i=0;
+  int i=0; //intersections
 
   m_ipoint=from+(t*ray);
 
@@ -356,31 +356,27 @@ void rayd2::iLight(SlVector3 &ray,SlVector3 &from,float t,iobj* cobj)
       clight=clight->m_next;
     }
 
+  //tempoary colour calc
   float a;
-  if (m_maxLight-i<1)
+  if (i!=0)
     {
       for (int x=0;x<3;x++)
         {
           a=m_colour[x];
-          a*=.5;          
+
+          if (i==2)
+            {
+              a*=.25;
+            }
+
+          else
+            {
+              a*=.5;
+            }
+          
           m_colour[x]=(int)a;
         }
 
       return;
-    }
-
-  if (m_maxLight-i>1)
-    {
-      for (int x=0;x<3;x++)
-        {
-          a=m_colour[x];
-          a*=1+((m_maxLight-i-1)/10);
-          m_colour[x]=(int)a;
-
-          if (m_colour[x]>255)
-            {
-              m_colour[x]=255;
-            }
-        }
     }
 }
