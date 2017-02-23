@@ -31,13 +31,14 @@ class rayd2
   void printPpoints(); //print out pixel intersection points
   
   void isect(); //intersect with stuff
-  void iLight();
   
  private:
   float rSphere(SlVector3 &ray,SlVector3 &from,float* sOrigin); //intRsect sphere
 
   float rTri(SlVector3 &ray,SlVector3 &from,float* p); //inteRsect Triangle
   float rTri(SlVector3 &ray,SlVector3 &from,SlVector3* p);
+
+  void iLight(SlVector3 &ray,SlVector3 &from,float t,iobj* cobj);
   
   /*--given values--*/
   string m_ofile;
@@ -73,6 +74,14 @@ class rayd2
   /*--rtri temps--*/
   SlVector3 m_rvecs[5]; //tRi vectors
   float m_rflots[3]; //tRi floats
+
+  /*--isect temps--*/
+  SlVector3* m_iRay;
+  SlVector3* m_iFrom;
+
+  /*--ilight temps--*/
+  SlVector3 m_ipoint;
+  SlVector3 m_lray;
 };
 
 #endif

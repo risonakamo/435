@@ -51,7 +51,8 @@ void rayp::argParse(string a)
     }
   
   if (m_mode==1 || m_mode==2 || m_mode==3
-      || m_mode==4 || m_mode==7 || m_mode==9 || m_mode==8)
+      || m_mode==4 || m_mode==7 || m_mode==9
+      || m_mode==8)
     {
       arrayParse(m_mode,a);
     }
@@ -242,6 +243,7 @@ void rayp::printd()
   printf("angle %i\n",m_angle);
   printf("hither %i\n",m_hither);
   printf("res %i %i\n",m_res[0],m_res[1]);
+  printf("l %f %f %f\n",m_light[0],m_light[1],m_light[2]);
 }
 
 void rayp::printad()
@@ -262,28 +264,6 @@ void rayp::printad()
       a=a->m_next;
     }
 }
-
-/* //print all circle data */
-/* void rayp::printc() */
-/* { */
-/*   flink2<float*>* t=m_cdata; */
-/*   while (1) */
-/*     { */
-/*       if (!t) */
-/*         { */
-/*           return; */
-/*         } */
-
-/*       cout<<"c "; */
-/*       for (int x=0;x<4;x++) */
-/*         {           */
-/*           printf("%f ",t->m_data[x]); */
-/*         } */
-
-/*       cout<<endl; */
-/*       t=t->m_next;       */
-/*     } */
-/* } */
 
 //load file and parse all commands
 void rayp::loadFile(string filename)

@@ -132,6 +132,8 @@ void rayd2::isect()
   int found=0; //found intersection
   iobj* obj; //current obj
   iobj* cobj=NULL; //closest object
+
+  SlVector3 iRay;
   
   //for every ray in m_ppointsV
   for (int x=0;x<m_psize;x++)
@@ -165,6 +167,7 @@ void rayd2::isect()
                   found=1;
                   t=i;
                   cobj=obj;
+                  iRay=m_ppointsV[x];
                 }
 
               else
@@ -174,6 +177,7 @@ void rayd2::isect()
                   if (t==i)
                     {
                       cobj=obj;
+                      iRay=m_ppointsV[x];
                     }
                 }
             }         
@@ -188,6 +192,8 @@ void rayd2::isect()
           m_colour[0]=cobj->m_colour[0]*255;
           m_colour[1]=cobj->m_colour[1]*255;
           m_colour[2]=cobj->m_colour[2]*255;
+
+          iLight(iRay,m_from,t,cobj);
           
           fwrite(m_colour,1,3,f);
         }
@@ -298,7 +304,48 @@ float rayd2::rTri(SlVector3 &ray,SlVector3 &from,SlVector3* p)
   /* return 0; */
 }
 
-void rayd2::iLight()
+void rayd2::iLight(SlVector3 &ray,SlVector3 &from,float t,iobj* cobj)
 {
+  iobj* obj=m_adata;
+  int i=0;
+
+  m_ipoint=from+(t*ray);
+  m_lray=m_light-m_ipoint;
   
+  while (1)
+    {
+      if (!obj)
+        {
+          return;
+        }
+
+      if (obj!=cobj)
+        {
+          if (obj->m_type==1 && rSphere(m_lray,m_ipoint,obj->m_data)>=0.0)
+            {
+              i=1;
+              break;
+            }
+
+          if (obj->m_type==2 && rTri(m_lray,m_ipoint,obj->m_data)>0.0)
+            {
+              i=1;
+              break;
+            }
+        }
+      
+      obj=obj->m_next;
+    }
+
+  float a;
+  if (i==1)
+    {
+      for (int x=0;x<3;x++)
+        {
+          a=m_colour[x];
+          a*=.5;
+          
+          m_colour[x]=(int)a;
+        }
+    }  
 }
