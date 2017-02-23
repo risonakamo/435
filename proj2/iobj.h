@@ -21,7 +21,8 @@ class iobj
    0=undefined
    1=sphere
    2=triangle
-   3=patch*/
+   3=patch
+   4=light*/
   int m_type;
   float* m_data;
   float* m_colour;

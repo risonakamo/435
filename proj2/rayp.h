@@ -37,10 +37,9 @@ class rayp
   float m_from[3];
   float m_at[3];
   float m_up[3];
-  float m_light[3];
   int m_angle;
   int m_res[2];
-
+  
   float m_background[3]; 
   int m_hither;
   float* m_fill;
@@ -52,6 +51,8 @@ class rayp
   /* flink2<float**>* m_pdata; //polygon data */
 
   iobj* m_adata;
+  iobj* m_light;
+  int m_maxLight;
   
  private:
   /*--private functions--*/
@@ -59,8 +60,11 @@ class rayp
   int arrayParseFill(int mmode,string a); //helper
   void cparse(string &a); //parse spheres
   void pparse(string &a,int dims); //parse polygons
+  int lparse(string &a);
 
   void fanTriangle(int dim);
+
+  int checkFloat(string &a);
   
   /*--mode:--
     0=no mode

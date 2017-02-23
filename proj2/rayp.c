@@ -11,7 +11,7 @@ using namespace std;
 
 rayp::rayp()
 :m_mode(0),m_mc(0),m_angle(0),m_hither(0),/*m_cdata(NULL),m_pdata(NULL),*/
-  m_ofile("output.ppm"),m_adata(NULL),m_fill(NULL)
+  m_ofile("output.ppm"),m_adata(NULL),m_fill(NULL),m_maxLight(0)
 {
   int x;
 
@@ -49,10 +49,17 @@ void rayp::argParse(string a)
       pparse(a,6);
       return;
     }
+
+  if (m_mode==8)
+    {
+      if (lparse(a)==0)
+        {
+          return;
+        }
+    }
   
   if (m_mode==1 || m_mode==2 || m_mode==3
-      || m_mode==4 || m_mode==7 || m_mode==9
-      || m_mode==8)
+      || m_mode==4 || m_mode==7 || m_mode==9)
     {
       arrayParse(m_mode,a);
     }
@@ -226,12 +233,6 @@ int rayp::arrayParseFill(int mmode,string a)
       m_res[m_mc]=atoi(a.c_str());
       return 2;          
     }
-
-  if (mmode==8)
-    {
-      m_light[m_mc]=atof(a.c_str());
-      return 3;
-    } 
 }
 
 void rayp::printd()
@@ -243,7 +244,6 @@ void rayp::printd()
   printf("angle %i\n",m_angle);
   printf("hither %i\n",m_hither);
   printf("res %i %i\n",m_res[0],m_res[1]);
-  printf("l %f %f %f\n",m_light[0],m_light[1],m_light[2]);
 }
 
 void rayp::printad()
@@ -426,4 +426,68 @@ void rayp::fanTriangle(int dim)
   //adding to linked list of triangles
   iobj* t=new iobj(2,m_tp,m_fill,m_adata);
   m_adata=t;
+}
+
+int rayp::lparse(string &a)
+{
+  if (m_mc>=3 && checkFloat(a)==0)
+    {
+      m_mode=0;
+      m_mc=0;
+      return 1;
+    }      
+  
+  if (m_mc==0)
+    {
+      m_maxLight++;
+      float* newLightData=new float[6];
+      iobj* newLight=new iobj(4,newLightData,NULL,m_light);
+      m_light=newLight;
+    }
+  
+  m_light->m_data[m_mc]=atof(a.c_str());
+
+  m_mc++;
+
+  if (m_mc>=6)
+    {
+      m_mode=0;
+      m_mc=0;
+      return 0;      
+    }
+  
+  return 0;
+}
+
+int rayp::checkFloat(string &a)
+{
+  int x=0;
+  int foundpoint=0;
+  while (1)
+    {
+      if (x==0 && a[x]=='-')
+        {
+          x++;
+          continue;
+        }
+      
+      if (a[x]=='\0')
+        {
+          return 1;
+        }
+
+      if (a[x]=='.' && foundpoint==0)
+        {
+          foundpoint=1;
+          x++;
+          continue;
+        }
+      
+      if (a[x]<48 || a[x]>57)
+        {
+          return 0;
+        }
+
+      x++;
+    }
 }

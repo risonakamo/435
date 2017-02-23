@@ -19,7 +19,8 @@ rayd2::rayd2()
 //takes data gathered by rayp object
 rayd2::rayd2(rayp* raypars)
 :m_angle(raypars->m_angle),m_dim(raypars->m_res[0]),
-  m_ofile(raypars->m_ofile),m_adata(raypars->m_adata)
+  m_ofile(raypars->m_ofile),m_adata(raypars->m_adata),
+  m_light(raypars->m_light),m_maxLight(raypars->m_maxLight)
 {
   for (int x=0;x<3;x++)
     {
@@ -27,7 +28,6 @@ rayd2::rayd2(rayp* raypars)
       m_at[x]=raypars->m_at[x];
       m_up[x]=raypars->m_up[x];
       m_background[x]=raypars->m_background[x]*255;
-      m_light[x]=raypars->m_light[x];
     }
 }
 
@@ -306,46 +306,81 @@ float rayd2::rTri(SlVector3 &ray,SlVector3 &from,SlVector3* p)
 
 void rayd2::iLight(SlVector3 &ray,SlVector3 &from,float t,iobj* cobj)
 {
-  iobj* obj=m_adata;
+  iobj* obj;
+  iobj* clight=m_light; //current light
   int i=0;
 
   m_ipoint=from+(t*ray);
-  m_lray=m_light-m_ipoint;
-  
+
   while (1)
-    {
-      if (!obj)
+    {           
+      if (!clight)
         {
-          return;
+          break;
         }
 
-      if (obj!=cobj)
+      obj=m_adata;
+
+      for (int x=0;x<3;x++)
         {
-          if (obj->m_type==1 && rSphere(m_lray,m_ipoint,obj->m_data)>=0.0)
+          m_lray[x]=clight->m_data[x];          
+        }
+
+      m_lray=m_lray-m_ipoint;
+
+      while (1)
+        {
+          if (!obj)
             {
-              i=1;
               break;
             }
 
-          if (obj->m_type==2 && rTri(m_lray,m_ipoint,obj->m_data)>0.0)
+          if (obj!=cobj)
             {
-              i=1;
-              break;
+              if (obj->m_type==1 && rSphere(m_lray,m_ipoint,obj->m_data)>=0.0)
+                {
+                  i++;
+                  break;
+                }
+
+              if (obj->m_type==2 && rTri(m_lray,m_ipoint,obj->m_data)>0.0)
+                {
+                  i++;
+                  break;
+                }
             }
-        }
       
-      obj=obj->m_next;
+          obj=obj->m_next;
+        }
+          
+      clight=clight->m_next;
     }
 
   float a;
-  if (i==1)
+  if (m_maxLight-i<1)
     {
       for (int x=0;x<3;x++)
         {
           a=m_colour[x];
-          a*=.5;
-          
+          a*=.5;          
           m_colour[x]=(int)a;
         }
-    }  
+
+      return;
+    }
+
+  if (m_maxLight-i>1)
+    {
+      for (int x=0;x<3;x++)
+        {
+          a=m_colour[x];
+          a*=1+((m_maxLight-i-1)/10);
+          m_colour[x]=(int)a;
+
+          if (m_colour[x]>255)
+            {
+              m_colour[x]=255;
+            }
+        }
+    }
 }

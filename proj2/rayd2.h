@@ -45,7 +45,6 @@ class rayd2
   SlVector3 m_from;
   SlVector3 m_at;
   SlVector3 m_up;
-  SlVector3 m_light;
   int m_angle;
   int m_dim;
 
@@ -64,8 +63,8 @@ class rayd2
   SlVector3* m_ppointsV; //pixel points vector
                          //size should be psize
 
-  /* flink2<float*>* m_cdata2; //circle data */
-  /* flink2<float**>* m_pdata; //polygon data */
+  iobj* m_light;
+  int m_maxLight;
   iobj* m_adata;
 
   /*--rsphere temps--*/
