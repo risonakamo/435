@@ -34,21 +34,21 @@ class rayp
 
   /*--public vars--*/
   //various math-related data terms
-  float m_from[3];
-  float m_at[3];
-  float m_up[3];
+  double m_from[3];
+  double m_at[3];
+  double m_up[3];
   int m_angle;
   int m_res[2];
   
-  float m_background[3]; 
+  double m_background[3]; 
   int m_hither;
-  float* m_fill;
+  double* m_fill;
 
   string m_ofile;
 
   /*--data stuff--*/
-  /* flink2<float*>* m_cdata; //circle data */
-  /* flink2<float**>* m_pdata; //polygon data */
+  /* flink2<double*>* m_cdata; //circle data */
+  /* flink2<double**>* m_pdata; //polygon data */
 
   iobj* m_adata;
   iobj* m_light;
@@ -64,7 +64,7 @@ class rayp
 
   void fanTriangle(int dim);
 
-  int checkFloat(string &a);
+  int checkDouble(string &a);
   
   /*--mode:--
     0=no mode
@@ -85,13 +85,13 @@ class rayp
   int m_mc; //mode count
   
   /*--circle temps--*/
-  float* m_tc; //tc temp circle
+  double* m_tc; //tc temp circle
 
   /*--polygon temps--*/
   int m_pc; //max point count of current polygon
-  float** m_tpg; //temp polygon
-  float** m_tpg2; //temp polygon 2
-  float* m_tp; //tp temp point
+  double** m_tpg; //temp polygon
+  double** m_tpg2; //temp polygon 2
+  double* m_tp; //tp temp point
   int m_pctr; //point counter
   int m_pctr2; //point counter2
 };

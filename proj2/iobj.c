@@ -6,7 +6,7 @@ iobj::iobj()
   
 }
 
-iobj::iobj(int type,float* data,float* colour,iobj* next)
+iobj::iobj(int type,double* data,double* colour,iobj* next)
 :m_type(type),m_data(data),m_colour(colour),m_next(next)
 {
 

@@ -13,7 +13,7 @@ class iobj
  public:
   iobj();
 
-  iobj(int type,float* data,float* colour,iobj* next);
+  iobj(int type,double* data,double* colour,iobj* next);
 
   void print();
   
@@ -24,8 +24,8 @@ class iobj
    3=patch
    4=light*/
   int m_type;
-  float* m_data;
-  float* m_colour;
+  double* m_data;
+  double* m_colour;
   iobj* m_next;
 
  private:

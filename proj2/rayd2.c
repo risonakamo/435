@@ -67,7 +67,7 @@ void rayd2::genPpoints()
   //m_psize was calculated off dimensions earlier
   m_ppointsV=new SlVector3[m_psize];
 
-  float r[2]; //temp vars random letters
+  double r[2]; //temp vars random letters
   int x=0;
   int y=0;
 
@@ -127,8 +127,8 @@ void rayd2::isect()
   FILE* f=fopen(m_ofile.c_str(),"w");  
   fprintf(f,"P6 %d %d 255\n",m_dim,m_dim);
 
-  float i=-1; //i intersection value
-  float t=-1; //t value
+  double i=-1; //i intersection value
+  double t=-1; //t value
   int found=0; //found intersection
   iobj* obj; //current obj
   iobj* cobj=NULL; //closest object
@@ -139,7 +139,7 @@ void rayd2::isect()
   for (int x=0;x<m_psize;x++)
     {
       //debug progress indicator
-      printf("\r    \r%.2f%%",((float)x/(float)m_psize)*100);
+      printf("\r    \r%.2f%%",((double)x/(double)m_psize)*100);
       
       obj=m_adata;
       found=0;
@@ -222,7 +222,7 @@ void rayd2::isect()
 //pixel ray vector, sphere array [x,y,z,r]
 //sorigin for sphere origin
 //using t and discriminent method from the book
-float rayd2::rSphere(SlVector3 &ray,SlVector3 &from,float* sOrigin)
+double rayd2::rSphere(SlVector3 &ray,SlVector3 &from,double* sOrigin)
 {
   m_sflots[0]=0;
   m_sflots[1]=0;
@@ -257,7 +257,7 @@ float rayd2::rSphere(SlVector3 &ray,SlVector3 &from,float* sOrigin)
 }
 
 //overload version
-float rayd2::rTri(SlVector3 &ray,SlVector3 &from,float* p)
+double rayd2::rTri(SlVector3 &ray,SlVector3 &from,double* p)
 {
   int z=0;
   SlVector3 pgons[3];
@@ -274,7 +274,7 @@ float rayd2::rTri(SlVector3 &ray,SlVector3 &from,float* p)
 }
 
 //used arrays to be hopefully faster
-float rayd2::rTri(SlVector3 &ray,SlVector3 &from,SlVector3* p)
+double rayd2::rTri(SlVector3 &ray,SlVector3 &from,SlVector3* p)
 {
   m_rvecs[0]=p[1]-p[0];
   m_rvecs[1]=p[2]-p[0];
@@ -317,19 +317,19 @@ float rayd2::rTri(SlVector3 &ray,SlVector3 &from,SlVector3* p)
   /* return 0; */
 }
 
-void rayd2::iLight(SlVector3 &ray,SlVector3 &from,float t,iobj* cobj)
+void rayd2::iLight(SlVector3 &ray,SlVector3 &from,double t,iobj* cobj)
 {
   iobj* obj;
   iobj* clight=m_light; //current light
   int i=0; //intersections
 
-  float diff; //diffuse
-  float spec; //specular
+  double diff; //diffuse
+  double spec; //specular
   
 
   m_ipoint=from+(t*ray);
   objN(cobj);
-  m_ipoint+=m_objN[0]*.05;
+  m_ipoint+=m_objN[0]*.001;
 
   //for eahc light
   while (1)
@@ -387,7 +387,7 @@ void rayd2::iLight(SlVector3 &ray,SlVector3 &from,float t,iobj* cobj)
 
           for (int x=0;x<3;x++)
             {
-              m_colourF[x]+=((cobj->m_colour[3]*m_colourF[x]*diff)+(cobj->m_colour[4]*spec))*(1/pow((float)m_maxLight,.5));
+              m_colourF[x]+=((cobj->m_colour[3]*m_colourF[x]*diff)+(cobj->m_colour[4]*spec))*(1/pow((double)m_maxLight,.5));
 
               if (m_colourF[x]>1)
                 {
@@ -413,7 +413,7 @@ void rayd2::iLight(SlVector3 &ray,SlVector3 &from,float t,iobj* cobj)
     }
 
   /* //tempoary colour calc */
-  /* float a; */
+  /* double a; */
   /* if (i!=0) */
   /*   { */
   /*     for (int x=0;x<3;x++) */
@@ -450,8 +450,8 @@ void rayd2::objN(iobj* obj)
     {
       for (int x=0;x<3;x++)
         {
-          m_objN[1][x]=obj->m_data[x];
-          m_objN[2][x]=obj->m_data[x+3];
+          m_objN[1][x]=obj->m_data[x]-obj->m_data[x+3];              
+          m_objN[2][x]=obj->m_data[x]-obj->m_data[x+6];
         }
 
       m_objN[0]=cross(m_objN[1],m_objN[2]);

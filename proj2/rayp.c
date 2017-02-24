@@ -163,7 +163,7 @@ void rayp::argParse(string a)
     }
 }
 
-//tmode=type mode (0=float)
+//tmode=type mode (0=double)
 //mmode=mode mode, same usage as m_mode
 //msize=mode size, size of array to be filled
 void rayp::arrayParse(int mmode,string a)
@@ -196,7 +196,7 @@ int rayp::arrayParseFill(int mmode,string a)
     {
       if (m_mc==0)
         {
-          m_fill=new float[8];
+          m_fill=new double[8];
         }
 
       m_fill[m_mc]=atof(a.c_str());
@@ -292,7 +292,7 @@ void rayp::cparse(string &a)
 {
   if (m_mc==0)
     {
-      m_tc=new float[4];          
+      m_tc=new double[4];          
     }
       
   m_tc[m_mc]=atof(a.c_str());
@@ -316,7 +316,7 @@ void rayp::pparse(string &a,int dim)
   if (m_mc==0)
     {
       m_pc=atoi(a.c_str()); //store number as number of vertices
-      m_tpg=new float*[m_pc];
+      m_tpg=new double*[m_pc];
       m_pctr=0; //reset counters
       m_pctr2=0;
       m_mc++;
@@ -327,7 +327,7 @@ void rayp::pparse(string &a,int dim)
   //makes new point at 0
   if (m_pctr2==0)
     {
-      m_tpg[m_pctr]=new float[dim];
+      m_tpg[m_pctr]=new double[dim];
     }
 
   //setting x y or z
@@ -359,7 +359,7 @@ void rayp::pparse(string &a,int dim)
 /* //print triangle data */
 /* void rayp::printt() */
 /* { */
-/*   flink2<float**>* t=m_pdata; */
+/*   flink2<double**>* t=m_pdata; */
 /*   cout<<"triangles:"<<endl; */
 /*   while (1) */
 /*     { */
@@ -382,7 +382,7 @@ void rayp::pparse(string &a,int dim)
 void rayp::fanTriangle(int dim)
 {
   dim*=3;
-  m_tp=new float[dim];
+  m_tp=new double[dim];
 
   int y=0;
   int z=0;
@@ -431,7 +431,7 @@ void rayp::fanTriangle(int dim)
 
 int rayp::lparse(string &a)
 {
-  if (m_mc>=3 && checkFloat(a)==0)
+  if (m_mc>=3 && checkDouble(a)==0)
     {
       m_mode=0;
       m_mc=0;
@@ -441,7 +441,7 @@ int rayp::lparse(string &a)
   if (m_mc==0)
     {
       m_maxLight++;
-      float* newLightData=new float[6];
+      double* newLightData=new double[6];
       iobj* newLight=new iobj(4,newLightData,NULL,m_light);
       m_light=newLight;
     }
@@ -460,7 +460,7 @@ int rayp::lparse(string &a)
   return 0;
 }
 
-int rayp::checkFloat(string &a)
+int rayp::checkDouble(string &a)
 {
   int x=0;
   int foundpoint=0;

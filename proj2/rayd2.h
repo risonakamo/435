@@ -33,12 +33,12 @@ class rayd2
   void isect(); //intersect with stuff
   
  private:
-  float rSphere(SlVector3 &ray,SlVector3 &from,float* sOrigin); //intRsect sphere
+  double rSphere(SlVector3 &ray,SlVector3 &from,double* sOrigin); //intRsect sphere
 
-  float rTri(SlVector3 &ray,SlVector3 &from,float* p); //inteRsect Triangle
-  float rTri(SlVector3 &ray,SlVector3 &from,SlVector3* p);
+  double rTri(SlVector3 &ray,SlVector3 &from,double* p); //inteRsect Triangle
+  double rTri(SlVector3 &ray,SlVector3 &from,SlVector3* p);
 
-  void iLight(SlVector3 &ray,SlVector3 &from,float t,iobj* cobj);
+  void iLight(SlVector3 &ray,SlVector3 &from,double t,iobj* cobj);
   void objN(iobj* obj);
   
   /*--given values--*/
@@ -50,7 +50,7 @@ class rayd2
   int m_dim;
 
   unsigned char m_background[3];
-  float m_colourF[3];
+  double m_colourF[3];
   unsigned char m_colour[3]; //my windows computer -> G B R colour for some reason (correct in gl)
 
   /*--calculated values for mathyness--*/
@@ -58,8 +58,8 @@ class rayd2
   SlVector3 m_w;
   SlVector3 m_u;
   SlVector3 m_v;
-  float m_d;
-  float m_m;
+  double m_d;
+  double m_m;
 
   /*--data arrays--*/
   SlVector3* m_ppointsV; //pixel points vector
@@ -70,11 +70,11 @@ class rayd2
   iobj* m_adata; //alldata list
   
   /*--rsphere temps--*/
-  float m_sflots[5]; //sphere floats
+  double m_sflots[5]; //sphere doubles
   
   /*--rtri temps--*/
   SlVector3 m_rvecs[5]; //tRi vectors
-  float m_rflots[3]; //tRi floats
+  double m_rflots[3]; //tRi doubles
 
   /*--isect temps--*/
   SlVector3* m_iRay; 
