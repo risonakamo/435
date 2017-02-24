@@ -39,6 +39,7 @@ class rayd2
   float rTri(SlVector3 &ray,SlVector3 &from,SlVector3* p);
 
   void iLight(SlVector3 &ray,SlVector3 &from,float t,iobj* cobj);
+  void objN(iobj* obj);
   
   /*--given values--*/
   string m_ofile;
@@ -49,6 +50,7 @@ class rayd2
   int m_dim;
 
   unsigned char m_background[3];
+  float m_colourF[3];
   unsigned char m_colour[3]; //my windows computer -> G B R colour for some reason (correct in gl)
 
   /*--calculated values for mathyness--*/
@@ -63,10 +65,10 @@ class rayd2
   SlVector3* m_ppointsV; //pixel points vector
                          //size should be psize
 
-  iobj* m_light;
-  int m_maxLight;
-  iobj* m_adata;
-
+  iobj* m_light; //lights list
+  int m_maxLight; //max lights
+  iobj* m_adata; //alldata list
+  
   /*--rsphere temps--*/
   float m_sflots[5]; //sphere floats
   
@@ -75,12 +77,14 @@ class rayd2
   float m_rflots[3]; //tRi floats
 
   /*--isect temps--*/
-  SlVector3* m_iRay;
+  SlVector3* m_iRay; 
   SlVector3* m_iFrom;
 
   /*--ilight temps--*/
-  SlVector3 m_ipoint;
-  SlVector3 m_lray;
+  SlVector3 m_ipoint; //intersection point
+  SlVector3 m_lray; //light ray (ipoint to light sources)
+  SlVector3 m_haf; //light ray and ray half vector
+  SlVector3 m_objN[3]; //object normal [0], others are for function usage
 };
 
 #endif

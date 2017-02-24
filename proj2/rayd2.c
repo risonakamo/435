@@ -189,11 +189,24 @@ void rayd2::isect()
       //CHANGE THIS LATER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       if (found==1)
         {
-          m_colour[0]=cobj->m_colour[0]*255;
-          m_colour[1]=cobj->m_colour[1]*255;
-          m_colour[2]=cobj->m_colour[2]*255;
+          m_colourF[0]=cobj->m_colour[0]*.5;
+          m_colourF[1]=cobj->m_colour[1]*.5;
+          m_colourF[2]=cobj->m_colour[2]*.5;
+
+          /* m_colourF[0]=0; */
+          /* m_colourF[1]=0; */
+          /* m_colourF[2]=0; */
 
           iLight(iRay,m_from,t,cobj);
+          
+          m_colour[0]=(unsigned int)(m_colourF[0]*255);
+          m_colour[1]=(unsigned int)(m_colourF[1]*255);
+          m_colour[2]=(unsigned int)(m_colourF[2]*255);
+
+          /* for (int x=0;x<3;x++) */
+          /*   { */
+          /*     cout<<(int)m_colour[x]<<endl; */
+          /*   } */
           
           fwrite(m_colour,1,3,f);
         }
@@ -310,24 +323,39 @@ void rayd2::iLight(SlVector3 &ray,SlVector3 &from,float t,iobj* cobj)
   iobj* clight=m_light; //current light
   int i=0; //intersections
 
-  m_ipoint=from+(t*ray);
+  float diff; //diffuse
+  float spec; //specular
+  
 
+  m_ipoint=from+(t*ray);
+  objN(cobj);
+  m_ipoint+=m_objN[0]*.05;
+
+  //for eahc light
   while (1)
-    {           
+    {
       if (!clight)
         {
-          break;
+          return;
         }
 
+      i=0;      
       obj=m_adata;
 
+      //set lray to light point
       for (int x=0;x<3;x++)
         {
-          m_lray[x]=clight->m_data[x];          
+          m_lray[x]=clight->m_data[x];
         }
-
+      
+      //set lray to actual lray
       m_lray=m_lray-m_ipoint;
+      m_haf=m_lray-ray;
+      normalize(m_haf);
+      normalize(m_lray);
+      normalize(m_objN[0]);
 
+      //for each object until 1st intersection with anything
       while (1)
         {
           if (!obj)
@@ -335,48 +363,107 @@ void rayd2::iLight(SlVector3 &ray,SlVector3 &from,float t,iobj* cobj)
               break;
             }
 
-          if (obj!=cobj)
-            {
-              if (obj->m_type==1 && rSphere(m_lray,m_ipoint,obj->m_data)>=0.0)
-                {
-                  i++;
-                  break;
-                }
 
-              if (obj->m_type==2 && rTri(m_lray,m_ipoint,obj->m_data)>0.0)
-                {
-                  i++;
-                  break;
-                }
+          if (obj->m_type==1 && rSphere(m_lray,m_ipoint,obj->m_data)>=0.0)
+            {
+              i++;
+              break;
+            }
+
+          if (obj->m_type==2 && rTri(m_lray,m_ipoint,obj->m_data)>0.0)
+            {
+              i++;
+              break;
             }
       
           obj=obj->m_next;
         }
-          
+
+      //lighted object
+      if (i==0)
+        {
+          diff=max(0.0,dot(m_objN[0],m_lray));
+          spec=pow(max(0.0,dot(m_objN[0],m_haf)),cobj->m_colour[5]);
+
+          for (int x=0;x<3;x++)
+            {
+              m_colourF[x]+=((cobj->m_colour[3]*m_colourF[x]*diff)+(cobj->m_colour[4]*spec))*(1/pow((float)m_maxLight,.5));
+
+              if (m_colourF[x]>1)
+                {
+                  m_colourF[x]=1;
+                }
+
+              if (m_colourF[x]<0)
+                {
+                  m_colourF[x]=0;
+                }
+            }
+        }
+
+      /* else */
+      /*   { */
+      /*     for (int x=0;x<3;x++) */
+      /*       { */
+      /*         m_colourF[x]*=.5; */
+      /*       } */
+      /*   } */
+
       clight=clight->m_next;
     }
 
-  //tempoary colour calc
-  float a;
-  if (i!=0)
+  /* //tempoary colour calc */
+  /* float a; */
+  /* if (i!=0) */
+  /*   { */
+  /*     for (int x=0;x<3;x++) */
+  /*       { */
+  /*         a=m_colour[x]; */
+
+  /*         if (i==2) */
+  /*           { */
+  /*             a*=.25; */
+  /*           } */
+
+  /*         else */
+  /*           { */
+  /*             a*=.5; */
+  /*           } */
+          
+  /*         m_colour[x]=(int)a; */
+  /*       } */
+
+  /*     return; */
+  /*   } */
+}
+
+//calculate obj normal and put in m_objN
+void rayd2::objN(iobj* obj)
+{
+  if (!obj)
+    {
+      return;
+    }
+
+  //triangle
+  if (obj->m_type==2)
     {
       for (int x=0;x<3;x++)
         {
-          a=m_colour[x];
-
-          if (i==2)
-            {
-              a*=.25;
-            }
-
-          else
-            {
-              a*=.5;
-            }
-          
-          m_colour[x]=(int)a;
+          m_objN[1][x]=obj->m_data[x];
+          m_objN[2][x]=obj->m_data[x+3];
         }
 
+      m_objN[0]=cross(m_objN[1],m_objN[2]);
       return;
+    }
+
+  //sphere
+  if (obj->m_type==1)
+    {
+      for (int x=0;x<3;x++)
+        {
+          m_objN[0][x]=m_ipoint[x]-(obj->m_data[x]);
+        }
     }
 }

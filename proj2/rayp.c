@@ -11,7 +11,7 @@ using namespace std;
 
 rayp::rayp()
 :m_mode(0),m_mc(0),m_angle(0),m_hither(0),/*m_cdata(NULL),m_pdata(NULL),*/
-  m_ofile("output.ppm"),m_adata(NULL),m_fill(NULL),m_maxLight(0)
+  m_ofile("output.ppm"),m_adata(NULL),m_fill(NULL),m_maxLight(0),m_light(NULL)
 {
   int x;
 
