@@ -16,8 +16,6 @@
 #include "rayp.h"
 #include "iobj.h"
 
-#define AMBIENT .5
-
 using namespace std;
 
 class rayd2
