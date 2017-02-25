@@ -191,9 +191,9 @@ void rayd2::isect()
       //CHANGE THIS LATER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       if (cobj)
         {
-          m_colourF[0]=cobj->m_colour[0]*.5; //ambient value?
-          m_colourF[1]=cobj->m_colour[1]*.5;
-          m_colourF[2]=cobj->m_colour[2]*.5;
+          m_colourF[0]=cobj->m_colour[0]*AMBIENT; //ambient value?
+          m_colourF[1]=cobj->m_colour[1]*AMBIENT;
+          m_colourF[2]=cobj->m_colour[2]*AMBIENT;
 
           /* m_colourF[0]=0; */
           /* m_colourF[1]=0; */
@@ -385,7 +385,7 @@ void rayd2::iLight(SlVector3 &ray,SlVector3 &from,double t,iobj* cobj,int dep,do
           
           for (int x=0;x<3;x++)
             {
-              m_colourF[x]+=(((cobj->m_colour[3]*(cobj->m_colour[x]*.5)*diff)+(cobj->m_colour[4]*spec))*(1/pow((double)m_maxLight,.5)))*refSpec;
+              m_colourF[x]+=(((cobj->m_colour[3]*(cobj->m_colour[x]*AMBIENT)*diff)+(cobj->m_colour[4]*spec))*(1/pow(m_maxLight,.5)))*refSpec;
 
               if (m_colourF[x]>1)
                 {
@@ -410,7 +410,8 @@ void rayd2::iLight(SlVector3 &ray,SlVector3 &from,double t,iobj* cobj,int dep,do
       clight=clight->m_next;
     }
 
-  if (dep>=5)
+  //reflected enough dep or current object is not reflective
+  if (dep>=5 || cobj->m_colour[4]==0)
     {
       return;
     }
@@ -425,7 +426,7 @@ void rayd2::iLight(SlVector3 &ray,SlVector3 &from,double t,iobj* cobj,int dep,do
     {
       for (int x=0;x<3;x++)
         {
-          m_colourF[x]+=m_backgroundF[x]*refSpec*.25;
+          m_colourF[x]+=m_backgroundF[x]*refSpec;
 
           if (m_colourF[x]>1)
             {

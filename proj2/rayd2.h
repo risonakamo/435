@@ -16,6 +16,8 @@
 #include "rayp.h"
 #include "iobj.h"
 
+#define AMBIENT .5
+
 using namespace std;
 
 class rayd2
@@ -69,7 +71,7 @@ class rayd2
                          //size should be psize
 
   iobj* m_light; //lights list
-  int m_maxLight; //max lights
+  double m_maxLight; //max lights
   iobj* m_adata; //alldata list
   
   /*--rsphere temps--*/
