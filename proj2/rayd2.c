@@ -198,7 +198,7 @@ void rayd2::isect()
           /* m_colourF[1]=0; */
           /* m_colourF[2]=0; */
 
-          iLight(m_ppointsV[x],m_from,m_tValue,cobj);
+          iLight(m_ppointsV[x],m_from,m_tValue,cobj,0);
           
           m_colour[0]=(unsigned int)(m_colourF[0]*255);
           m_colour[1]=(unsigned int)(m_colourF[1]*255);
@@ -318,15 +318,11 @@ double rayd2::rTri(SlVector3 &ray,SlVector3 &from,SlVector3* p)
   /* return 0; */
 }
 
-void rayd2::iLight(SlVector3 &ray,SlVector3 &from,double t,iobj* cobj)
+void rayd2::iLight(SlVector3 &ray,SlVector3 &from,double t,iobj* cobj,int dep)
 {
   iobj* obj;
   iobj* clight=m_light; //current light
   int i=0; //intersections
-
-  double diff; //diffuse
-  double spec; //specular
-  
 
   m_ipoint=from+(t*ray);
   objN(cobj);
@@ -337,7 +333,7 @@ void rayd2::iLight(SlVector3 &ray,SlVector3 &from,double t,iobj* cobj)
     {
       if (!clight)
         {
-          return;
+          break;
         }
 
       i=0;      
@@ -383,12 +379,18 @@ void rayd2::iLight(SlVector3 &ray,SlVector3 &from,double t,iobj* cobj)
       //lighted object
       if (i==0)
         {
-          diff=max(0.0,dot(m_objN[0],m_lray));
-          spec=pow(max(0.0,dot(m_objN[0],m_haf)),cobj->m_colour[5]);
+          double diff=max(0.0,dot(m_objN[0],m_lray));
+          double spec=pow(max(0.0,dot(m_objN[0],m_haf)),cobj->m_colour[5]);
+          double refSpec=1;
 
+          if (dep>0)
+            {
+              refSpec=cobj->m_colour[4];
+            }
+          
           for (int x=0;x<3;x++)
             {
-              m_colourF[x]+=((cobj->m_colour[3]*m_colourF[x]*diff)+(cobj->m_colour[4]*spec))*(1/pow((double)m_maxLight,.5));
+              m_colourF[x]+=(((cobj->m_colour[3]*m_colourF[x]*diff)+(cobj->m_colour[4]*spec))*(1/pow((double)m_maxLight,.5)))*refSpec;
 
               if (m_colourF[x]>1)
                 {
@@ -413,6 +415,21 @@ void rayd2::iLight(SlVector3 &ray,SlVector3 &from,double t,iobj* cobj)
       clight=clight->m_next;
     }
 
+  if (dep>=1)
+    {
+      return;
+    }
+  
+  m_ref=ray-2*dot(ray,m_objN[0])*m_objN[0];
+  obj=sRay(m_ref,m_ipoint);
+
+  if (!obj)
+    {
+      return;      
+    }
+
+  iLight(m_ref,m_ipoint,m_tValue,obj,dep+1);
+  
   /* //tempoary colour calc */
   /* double a; */
   /* if (i!=0) */
@@ -469,7 +486,7 @@ void rayd2::objN(iobj* obj)
     }
 }
 
-//shoots ray from from point to all objects, returns t,
+//shoots ray from from point to all objects, returns t in m_tValue,
 //and closest object intersected
 iobj* rayd2::sRay(SlVector3 &ray,SlVector3 &from)
 {

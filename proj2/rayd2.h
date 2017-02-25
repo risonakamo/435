@@ -38,7 +38,7 @@ class rayd2
   double rTri(SlVector3 &ray,SlVector3 &from,double* p); //inteRsect Triangle
   double rTri(SlVector3 &ray,SlVector3 &from,SlVector3* p);
 
-  void iLight(SlVector3 &ray,SlVector3 &from,double t,iobj* cobj); //intersect Light
+  void iLight(SlVector3 &ray,SlVector3 &from,double t,iobj* cobj,int dep); //intersect Light
   void objN(iobj* obj); //object Normal
 
   iobj* sRay(SlVector3 &ray,SlVector3 &from);
@@ -86,10 +86,11 @@ class rayd2
   SlVector3 m_ipoint; //intersection point
   SlVector3 m_lray; //light ray (ipoint to light sources)
   SlVector3 m_haf; //light ray and ray half vector
+  SlVector3 m_ref;
   SlVector3 m_objN[3]; //object normal [0], others are for function usage
 
   /*--sray temps--*/
-  double m_tValue;
+  double m_tValue; //last intersection's best tvalue
 };
 
 #endif
