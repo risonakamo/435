@@ -127,69 +127,70 @@ void rayd2::isect()
   FILE* f=fopen(m_ofile.c_str(),"w");  
   fprintf(f,"P6 %d %d 255\n",m_dim,m_dim);
 
-  double i=-1; //i intersection value
-  double t=-1; //t value
-  int found=0; //found intersection
-  iobj* obj; //current obj
+  /* double i=-1; //i intersection value */
+  /* double t=-1; //t value */
+  /* int found=0; //found intersection */
+  /* iobj* obj; //current obj */
   iobj* cobj=NULL; //closest object
-
-  SlVector3 iRay;
   
   //for every ray in m_ppointsV
   for (int x=0;x<m_psize;x++)
     {
       //debug progress indicator
       printf("\r    \r%.2f%%",((double)x/(double)m_psize)*100);
+
+      cobj=NULL;
+      cobj=sRay(m_ppointsV[x],m_from);
       
-      obj=m_adata;
-      found=0;
-      while (1)
-        {
-          if (!obj)
-            {
-              break;
-            }
+      /* obj=m_adata; */
+      /* found=0; */
+      /* while (1) */
+      /*   { */
+      /*     if (!obj) */
+      /*       { */
+      /*         break; */
+      /*       } */
 
-          if (obj->m_type==1)
-            {              
-              i=rSphere(m_ppointsV[x],m_from,obj->m_data);
-            }
+      /*     if (obj->m_type==1) */
+      /*       {               */
+      /*         i=rSphere(m_ppointsV[x],m_from,obj->m_data); */
+      /*       } */
 
-          else if (obj->m_type==2)
-            {
-              i=rTri(m_ppointsV[x],m_from,obj->m_data);
-            }
+      /*     else if (obj->m_type==2) */
+      /*       { */
+      /*         i=rTri(m_ppointsV[x],m_from,obj->m_data); */
+      /*       } */
 
-          if ((obj->m_type==1 && i>=0.0) || (obj->m_type==2 && i>0.0))
-            {
-              if (found==0)
-                {
-                  found=1;
-                  t=i;
-                  cobj=obj;
-                  iRay=m_ppointsV[x];
-                }
+      /*     if ((obj->m_type==1 && i>=0.0) || (obj->m_type==2 && i>0.0)) */
+      /*       { */
+      /*         if (found==0) */
+      /*           { */
+      /*             found=1; */
+      /*             t=i; */
+      /*             cobj=obj; */
+      /*             iRay=m_ppointsV[x]; */
+      /*           } */
 
-              else
-                {
-                  t=min(t,i);
+      /*         else */
+      /*           { */
+      /*             t=min(t,i); */
 
-                  if (t==i)
-                    {
-                      cobj=obj;
-                      iRay=m_ppointsV[x];
-                    }
-                }
-            }         
+      /*             if (t==i) */
+      /*               { */
+      /*                 cobj=obj; */
+      /*                 iRay=m_ppointsV[x]; */
+      /*               } */
+      /*           } */
+      /*       }          */
           
-          obj=obj->m_next;         
-        }
+      /*     obj=obj->m_next;          */
+      /*   } */
 
       //found intersection, writing colour
       //CHANGE THIS LATER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      if (found==1)
+      if (cobj)
         {
-          m_colourF[0]=cobj->m_colour[0]*.5;
+          m_colourF[0]=cobj->m_colour[0]*.5; //ambient value?
           m_colourF[1]=cobj->m_colour[1]*.5;
           m_colourF[2]=cobj->m_colour[2]*.5;
 
@@ -197,7 +198,7 @@ void rayd2::isect()
           /* m_colourF[1]=0; */
           /* m_colourF[2]=0; */
 
-          iLight(iRay,m_from,t,cobj);
+          iLight(m_ppointsV[x],m_from,m_tValue,cobj);
           
           m_colour[0]=(unsigned int)(m_colourF[0]*255);
           m_colour[1]=(unsigned int)(m_colourF[1]*255);
@@ -465,5 +466,56 @@ void rayd2::objN(iobj* obj)
         {
           m_objN[0][x]=m_ipoint[x]-(obj->m_data[x]);
         }
+    }
+}
+
+//shoots ray from from point to all objects, returns t,
+//and closest object intersected
+iobj* rayd2::sRay(SlVector3 &ray,SlVector3 &from)
+{
+  iobj* obj=m_adata;
+  double i=-1; //current i intersection value
+  m_tValue=-1; //t value (best i value)
+  int found=0; //found intersection
+  iobj* cobj=NULL; //closest object
+  
+  while (1)
+    {
+      if (!obj)
+        {
+          return cobj;
+        }
+
+      if (obj->m_type==1)
+        {              
+          i=rSphere(ray,from,obj->m_data);
+        }
+
+      else if (obj->m_type==2)
+        {
+          i=rTri(ray,from,obj->m_data);
+        }
+
+      if ((obj->m_type==1 && i>=0.0) || (obj->m_type==2 && i>0.0))
+        {
+          if (found==0)
+            {
+              found=1;
+              m_tValue=i;
+              cobj=obj;
+            }
+
+          else
+            {
+              m_tValue=min(m_tValue,i);
+
+              if (m_tValue==i)
+                {
+                  cobj=obj;
+                }
+            }
+        }         
+          
+      obj=obj->m_next;         
     }
 }
