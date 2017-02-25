@@ -38,7 +38,7 @@ class rayd2
   double rTri(SlVector3 &ray,SlVector3 &from,double* p); //inteRsect Triangle
   double rTri(SlVector3 &ray,SlVector3 &from,SlVector3* p);
 
-  void iLight(SlVector3 &ray,SlVector3 &from,double t,iobj* cobj,int dep); //intersect Light
+  void iLight(SlVector3 &ray,SlVector3 &from,double t,iobj* cobj,int dep,double refSpec); //intersect Light
   void objN(iobj* obj); //object Normal
 
   iobj* sRay(SlVector3 &ray,SlVector3 &from);
