@@ -28,6 +28,7 @@ rayd2::rayd2(rayp* raypars)
       m_at[x]=raypars->m_at[x];
       m_up[x]=raypars->m_up[x];
       m_background[x]=raypars->m_background[x]*255;
+      m_backgroundF[x]=raypars->m_background[x];
     }
 }
 
@@ -413,16 +414,33 @@ void rayd2::iLight(SlVector3 &ray,SlVector3 &from,double t,iobj* cobj,int dep,do
     {
       return;
     }
-  
+
+  refSpec=refSpec*cobj->m_colour[4]; /*ks of this object times that
+                                       of the previous reflected ones*/
   m_ref=ray-2*dot(ray,m_objN[0])*m_objN[0]; //reflection ray
   obj=sRay(m_ref,m_ipoint); //intersected object with ref ray
 
+  //hit nothing
   if (!obj)
     {
-      return;      
+      for (int x=0;x<3;x++)
+        {
+          m_colourF[x]+=m_backgroundF[x]*refSpec*.25;
+
+          if (m_colourF[x]>1)
+            {
+              m_colourF[x]=1;
+            }
+
+          if (m_colourF[x]<0)
+            {
+              m_colourF[x]=0;
+            }
+        }
+      
+      return;
     }
 
-  refSpec=refSpec*cobj->m_colour[4];
   /* m_colourF[0]+=obj->m_colour[0]*.5*refSpec; */
   /* m_colourF[1]+=obj->m_colour[1]*.5*refSpec; */
   /* m_colourF[2]+=obj->m_colour[2]*.5*refSpec; */
