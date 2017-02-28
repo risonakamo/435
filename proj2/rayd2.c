@@ -191,7 +191,7 @@ void rayd2::isect()
       //CHANGE THIS LATER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       if (cobj)
         {
-          m_colourF[0]=0; //ambient value?
+          m_colourF[0]=0;
           m_colourF[1]=0;
           m_colourF[2]=0;
 
@@ -201,9 +201,9 @@ void rayd2::isect()
 
           iLight(m_ppointsV[x],m_from,m_tValue,cobj,0,1);
           
-          m_colour[0]=(unsigned int)(m_colourF[0]*255);
-          m_colour[1]=(unsigned int)(m_colourF[1]*255);
-          m_colour[2]=(unsigned int)(m_colourF[2]*255);
+          m_colour[0]=(unsigned char)(m_colourF[0]*255);
+          m_colour[1]=(unsigned char)(m_colourF[1]*255);
+          m_colour[2]=(unsigned char)(m_colourF[2]*255);
 
           /* for (int x=0;x<3;x++) */
           /*   { */
@@ -385,7 +385,8 @@ void rayd2::iLight(SlVector3 &ray,SlVector3 &from,double t,iobj* cobj,int dep,do
           
           for (int x=0;x<3;x++)
             {
-              m_colourF[x]+=(((cobj->m_colour[3]*cobj->m_colour[x]*diff)+(cobj->m_colour[4]*spec))*(1/pow(m_maxLight,.5)))*refSpec;
+              //diffuse+spec light intensity formula thing
+              m_colourF[x]+=(((cobj->m_colour[3]*cobj->m_colour[x]*diff)+(cobj->m_colour[4]*spec))*(((1/pow(m_maxLight,.5))*clight->m_data[x+3])))*refSpec;
 
               if (m_colourF[x]>1)
                 {
@@ -411,7 +412,7 @@ void rayd2::iLight(SlVector3 &ray,SlVector3 &from,double t,iobj* cobj,int dep,do
     }
 
   //reflected enough dep or current object is not reflective
-  if (dep>=5 || cobj->m_colour[4]==0)
+  if (dep>5 || cobj->m_colour[4]==0)
     {
       return;
     }

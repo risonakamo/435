@@ -442,6 +442,13 @@ int rayp::lparse(string &a)
     {
       m_maxLight++;
       double* newLightData=new double[6];
+
+      //defaulting colour to white (1,1,1)
+      for (int x=0;x<3;x++)
+        {
+          newLightData[x+3]=1;
+        }
+      
       iobj* newLight=new iobj(4,newLightData,NULL,m_light);
       m_light=newLight;
     }
