@@ -327,7 +327,7 @@ void rayd2::iLight(SlVector3 &ray,SlVector3 &from,double t,iobj* cobj,int dep,do
 
   m_ipoint=from+(t*ray);
   objN(cobj);
-  m_ipoint+=m_objN[0]*.001;
+  m_ipoint+=m_objN[0]*.00001;
 
   //for eahc light
   while (1)
