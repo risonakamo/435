@@ -1,6 +1,6 @@
 /*rayd2.h - ray data v2
   khang ngo 
-  cmsc 435 proj 1
+  cmsc 435 proj 2
   handles the calulating part after recieving data
   from rayp object*/
 
@@ -52,7 +52,7 @@ class rayd2
   int m_dim;
 
   unsigned char m_background[3];
-  double m_backgroundF[3];
+  double m_backgroundF[3]; //double version for accurate calculation
   unsigned char m_colour[3]; //my windows computer -> G B R colour for some reason (correct in gl)
   double m_colourF[3];
 
@@ -80,7 +80,7 @@ class rayd2
   double m_rflots[3]; //tRi doubles
 
   /*--isect temps--*/
-  SlVector3* m_iRay; 
+  SlVector3* m_iRay; //vector object form of original data, which were doubles
   SlVector3* m_iFrom;
 
   /*--ilight temps--*/

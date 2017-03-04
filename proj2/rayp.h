@@ -1,6 +1,6 @@
 /*rayp.h - ray parser
   khang ngo
-  cmsc 435 proj 1
+  cmsc 435 proj 2
   includes rayp object and flink2.  rayp object handles
   nff file parsing to be passed onto the rayd which does
   the math work*/
@@ -28,9 +28,7 @@ class rayp
   void argParse(string a); //parse an arg
 
   void printd(); //print relevant data stored
-  void printad();
-  /* void printc(); //print circles */
-  /* void printt(); //print triangles */
+  void printad(); //print all data debug only
 
   /*--public vars--*/
   //various math-related data terms
@@ -47,12 +45,10 @@ class rayp
   string m_ofile;
 
   /*--data stuff--*/
-  /* flink2<double*>* m_cdata; //circle data */
-  /* flink2<double**>* m_pdata; //polygon data */
-
-  iobj* m_adata;
-  iobj* m_light;
-  int m_maxLight;
+  iobj* m_adata; /*any data, uses new iobj, holds float array able to represent
+                   both spheres and polygons, dont have to be seperate*/
+  iobj* m_light; //light objs have to be seperate though
+  int m_maxLight; //number of lights
   
  private:
   /*--private functions--*/
@@ -60,11 +56,11 @@ class rayp
   int arrayParseFill(int mmode,string a); //helper
   void cparse(string &a); //parse spheres
   void pparse(string &a,int dims); //parse polygons
-  int lparse(string &a);
+  int lparse(string &a); //parse lights
 
-  void fanTriangle(int dim);
+  void fanTriangle(int dim); //split polygon to triangles
 
-  int checkDouble(string &a);
+  int checkDouble(string &a); //check if input was double
   
   /*--mode:--
     0=no mode

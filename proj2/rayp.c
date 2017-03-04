@@ -1,6 +1,6 @@
 /*rayp.c - ray parser
   khang ngo
-  cmsc 435 proj 1
+  cmsc 435 proj 2
   includes rayp object and flink2.  rayp object handles
   nff file parsing to be passed onto the rayd which does
   the math work*/
@@ -310,6 +310,7 @@ void rayp::cparse(string &a)
 }
 
 //parse polygons
+//takes in dim for number of 'dimensions' in a point (xyz's)
 void rayp::pparse(string &a,int dim)
 {
   //right after seeing a p command
@@ -356,31 +357,11 @@ void rayp::pparse(string &a,int dim)
     }
 }
 
-/* //print triangle data */
-/* void rayp::printt() */
-/* { */
-/*   flink2<double**>* t=m_pdata; */
-/*   cout<<"triangles:"<<endl; */
-/*   while (1) */
-/*     { */
-/*       if (!t) */
-/*         { */
-/*           return; */
-/*         } */
-
-/*       for (int x=0;x<3;x++) */
-/*         {           */
-/*           printf("%f %f %f\n",t->m_data[x][0],t->m_data[x][1],t->m_data[x][2]);           */
-/*         } */
-
-/*       cout<<endl; */
-
-/*       t=t->m_next; */
-/*     } */
-/* } */
-
+//split the m_tpg into a 3 point triangle that is
+//also a 1d array
 void rayp::fanTriangle(int dim)
 {
+  //3 points for dim numbers each
   dim*=3;
   m_tp=new double[dim];
 
@@ -410,34 +391,26 @@ void rayp::fanTriangle(int dim)
           z=0;
           y++;
         }
-    }
-  
-  /* m_tp[0]=m_tpg[0][0]; */
-  /* m_tp[1]=m_tpg[0][1]; */
-  /* m_tp[2]=m_tpg[0][2]; */
-  
-  /* m_tp[3]=m_tpg[m_pctr-2][0]; */
-  /* m_tp[4]=m_tpg[m_pctr-2][1]; */
-  /* m_tp[5]=m_tpg[m_pctr-2][2]; */
-  
-  /* m_tp[6]=m_tpg[m_pctr-1][0]; */
-  /* m_tp[7]=m_tpg[m_pctr-1][1]; */
-  /* m_tp[8]=m_tpg[m_pctr-1][2];  */
+    } 
   
   //adding to linked list of triangles
   iobj* t=new iobj(2,m_tp,m_fill,m_adata);
   m_adata=t;
 }
 
+//parse a light
 int rayp::lparse(string &a)
 {
+  //lights can have 3 to 6 numbers, has to check if current value a is
+  //a number or not.  if not ends lparse
   if (m_mc>=3 && checkDouble(a)==0)
     {
       m_mode=0;
       m_mc=0;
       return 1;
     }      
-  
+
+  //mode entry
   if (m_mc==0)
     {
       m_maxLight++;
@@ -457,6 +430,7 @@ int rayp::lparse(string &a)
 
   m_mc++;
 
+  //light max 6 values
   if (m_mc>=6)
     {
       m_mode=0;
@@ -467,6 +441,7 @@ int rayp::lparse(string &a)
   return 0;
 }
 
+//check a is double
 int rayp::checkDouble(string &a)
 {
   int x=0;

@@ -1,6 +1,6 @@
 /*rat.c - RAy Tracer
   khang ngo
-  cmsc 435 proj 1
+  cmsc 435 proj 2
   driver program
   uses rayp and rayd to raytrace input file
   needs to be provided input file and ouput name*/

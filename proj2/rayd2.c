@@ -1,6 +1,6 @@
 /*rayd2.c - ray data v2
   khang ngo 
-  cmsc 435 proj 1
+  cmsc 435 proj 2
   handles the calulating part after recieving data
   from rayp object*/
 
@@ -128,10 +128,6 @@ void rayd2::isect()
   FILE* f=fopen(m_ofile.c_str(),"w");  
   fprintf(f,"P6 %d %d 255\n",m_dim,m_dim);
 
-  /* double i=-1; //i intersection value */
-  /* double t=-1; //t value */
-  /* int found=0; //found intersection */
-  /* iobj* obj; //current obj */
   iobj* cobj=NULL; //closest object
   
   //for every ray in m_ppointsV
@@ -141,74 +137,23 @@ void rayd2::isect()
       printf("\r    \r%.2f%%",((double)x/(double)m_psize)*100);
 
       cobj=NULL;
+      //doing intersection, sets cobj to closest object intersected
+      //if any and m_tvalue to t
       cobj=sRay(m_ppointsV[x],m_from);
       
-      /* obj=m_adata; */
-      /* found=0; */
-      /* while (1) */
-      /*   { */
-      /*     if (!obj) */
-      /*       { */
-      /*         break; */
-      /*       } */
-
-      /*     if (obj->m_type==1) */
-      /*       {               */
-      /*         i=rSphere(m_ppointsV[x],m_from,obj->m_data); */
-      /*       } */
-
-      /*     else if (obj->m_type==2) */
-      /*       { */
-      /*         i=rTri(m_ppointsV[x],m_from,obj->m_data); */
-      /*       } */
-
-      /*     if ((obj->m_type==1 && i>=0.0) || (obj->m_type==2 && i>0.0)) */
-      /*       { */
-      /*         if (found==0) */
-      /*           { */
-      /*             found=1; */
-      /*             t=i; */
-      /*             cobj=obj; */
-      /*             iRay=m_ppointsV[x]; */
-      /*           } */
-
-      /*         else */
-      /*           { */
-      /*             t=min(t,i); */
-
-      /*             if (t==i) */
-      /*               { */
-      /*                 cobj=obj; */
-      /*                 iRay=m_ppointsV[x]; */
-      /*               } */
-      /*           } */
-      /*       }          */
-          
-      /*     obj=obj->m_next;          */
-      /*   } */
-
       //found intersection, writing colour
-      //CHANGE THIS LATER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       if (cobj)
         {
           m_colourF[0]=0;
           m_colourF[1]=0;
           m_colourF[2]=0;
 
-          /* m_colourF[0]=0; */
-          /* m_colourF[1]=0; */
-          /* m_colourF[2]=0; */
-
+          //doing lighting
           iLight(m_ppointsV[x],m_from,m_tValue,cobj,0,1);
           
           m_colour[0]=(unsigned char)(m_colourF[0]*255);
           m_colour[1]=(unsigned char)(m_colourF[1]*255);
           m_colour[2]=(unsigned char)(m_colourF[2]*255);
-
-          /* for (int x=0;x<3;x++) */
-          /*   { */
-          /*     cout<<(int)m_colour[x]<<endl; */
-          /*   } */
           
           fwrite(m_colour,1,3,f);
         }
@@ -319,6 +264,9 @@ double rayd2::rTri(SlVector3 &ray,SlVector3 &from,SlVector3* p)
   /* return 0; */
 }
 
+//intersect light
+//takes incoming ray, from point of ray, t value, obj being intersected, depth,
+//and reflection speccular (Ks) of previous reccurances
 void rayd2::iLight(SlVector3 &ray,SlVector3 &from,double t,iobj* cobj,int dep,double refSpec)
 {
   iobj* obj;
@@ -400,14 +348,6 @@ void rayd2::iLight(SlVector3 &ray,SlVector3 &from,double t,iobj* cobj,int dep,do
             }
         }
 
-      /* else */
-      /*   { */
-      /*     for (int x=0;x<3;x++) */
-      /*       { */
-      /*         m_colourF[x]*=.5; */
-      /*       } */
-      /*   } */
-
       clight=clight->m_next;
     }
 
@@ -443,35 +383,8 @@ void rayd2::iLight(SlVector3 &ray,SlVector3 &from,double t,iobj* cobj,int dep,do
       return;
     }
 
-  /* m_colourF[0]+=obj->m_colour[0]*.5*refSpec; */
-  /* m_colourF[1]+=obj->m_colour[1]*.5*refSpec; */
-  /* m_colourF[2]+=obj->m_colour[2]*.5*refSpec; */
-  
+  //recursing with increased depth and compounded Ks
   iLight(m_ref,m_ipoint,m_tValue,obj,dep+1,refSpec);
-  
-  /* //tempoary colour calc */
-  /* double a; */
-  /* if (i!=0) */
-  /*   { */
-  /*     for (int x=0;x<3;x++) */
-  /*       { */
-  /*         a=m_colour[x]; */
-
-  /*         if (i==2) */
-  /*           { */
-  /*             a*=.25; */
-  /*           } */
-
-  /*         else */
-  /*           { */
-  /*             a*=.5; */
-  /*           } */
-          
-  /*         m_colour[x]=(int)a; */
-  /*       } */
-
-  /*     return; */
-  /*   } */
 }
 
 //calculate obj normal and put in m_objN
@@ -485,6 +398,7 @@ void rayd2::objN(iobj* obj)
   //triangle
   if (obj->m_type==2)
     {
+      //triangles are stored in size 9 array
       for (int x=0;x<3;x++)
         {
           m_objN[1][x]=obj->m_data[x]-obj->m_data[x+3];              
@@ -514,7 +428,8 @@ iobj* rayd2::sRay(SlVector3 &ray,SlVector3 &from)
   m_tValue=-1; //t value (best i value)
   int found=0; //found intersection
   iobj* cobj=NULL; //closest object
-  
+
+  //for all objs
   while (1)
     {
       if (!obj)
@@ -522,6 +437,7 @@ iobj* rayd2::sRay(SlVector3 &ray,SlVector3 &from)
           return cobj;
         }
 
+      //different intersect method for certain types
       if (obj->m_type==1)
         {              
           i=rSphere(ray,from,obj->m_data);
@@ -532,8 +448,10 @@ iobj* rayd2::sRay(SlVector3 &ray,SlVector3 &from)
           i=rTri(ray,from,obj->m_data);
         }
 
+      //if actually intersected
       if ((obj->m_type==1 && i>=0.0) || (obj->m_type==2 && i>0.0))
         {
+          //if havent found one before
           if (found==0)
             {
               found=1;
@@ -541,6 +459,7 @@ iobj* rayd2::sRay(SlVector3 &ray,SlVector3 &from)
               cobj=obj;
             }
 
+          //otherwise compare t values,take smaller
           else
             {
               m_tValue=min(m_tValue,i);
