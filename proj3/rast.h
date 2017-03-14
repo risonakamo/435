@@ -20,7 +20,11 @@ class rast
 
   void calcVec();
 
+  void Mcam_old(iobj* tri);
   void Mcam(iobj* tri);
+  void MP(iobj* tri);
+  void Morth(iobj* tri);
+  void Mvp(iobj* tri);
   
  private:
   /*--given values--*/
@@ -51,6 +55,9 @@ class rast
   iobj* m_light; //lights list
   float m_maxLight; //max lights
   iobj* m_adata; //alldata list
+
+  /*--M matrix temps--*/
+  float m_Mtemp[4];
   
 };
 

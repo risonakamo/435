@@ -42,17 +42,23 @@ void rast::calcVec()
   m_v=cross(m_w,m_u);
 
   //fov and pixel grid distance from camera
-  m_d=m_hither;
-  /* m_m=tan(m_angle*(M_PI/180)*.5)*m_d; */
+  m_m=tan(m_angle*(M_PI/180)*.5)*m_hither;
+  m_d=(2*m_m)/m_dim;
 
   normalize(m_w);
   normalize(m_u);
   normalize(m_v);
 
   Mcam(m_adata);
+  /* Mcam_old(m_adata); */
+  MP(m_adata);
+  Morth(m_adata);
+  Mvp(m_adata);
+
+  m_adata->printTdata();
 }
 
-void rast::Mcam(iobj* tri)
+void rast::Mcam_old(iobj* tri)
 {
   if (tri->m_type!=2 && tri->m_type!=3)
     {
@@ -82,7 +88,73 @@ void rast::Mcam(iobj* tri)
   tri->m_tdata[8]=(m_u[0]*fromSub[8])+(m_u[1]*fromSub[9])+(m_u[2]*fromSub[10]);
   tri->m_tdata[9]=(m_v[0]*fromSub[8])+(m_v[1]*fromSub[9])+(m_v[2]*fromSub[10]);
   tri->m_tdata[10]=(m_w[0]*fromSub[8])+(m_w[1]*fromSub[9])+(m_w[2]*fromSub[10]);
+}
 
-  tri->print();
-  tri->printTdata();
+void rast::Mcam(iobj* tri)
+{
+  int z=0;
+  for (int x=0;x<12;x+=4)
+    {      
+      for (int y=0;y<3;y++)
+        {
+          m_Mtemp[y]=tri->m_data[z*3+y]-m_from[y];
+          tri->m_tdata[x+y]=0;
+        }
+
+      z++;
+      
+      for (int y=0;y<3;y++)
+        {
+          tri->m_tdata[x]+=m_u[y]*m_Mtemp[y];
+          tri->m_tdata[x+1]+=m_v[y]*m_Mtemp[y];
+          tri->m_tdata[x+2]+=m_w[y]*m_Mtemp[y];
+        }
+
+      tri->m_tdata[x+3]=1;
+    }
+}
+
+void rast::MP(iobj* tri)
+{
+  for (int x=0;x<12;x+=4)
+    {
+      for (int y=0;y<4;y++)
+        {
+          m_Mtemp[y]=tri->m_tdata[x+y];
+        }
+
+      tri->m_tdata[x]=m_hither*m_Mtemp[0];
+      tri->m_tdata[x+1]=m_hither*m_Mtemp[1];
+      tri->m_tdata[x+2]=(101*m_hither*m_Mtemp[2])+(((-100*m_hither)*m_hither)*m_Mtemp[3]);
+      tri->m_tdata[x+3]=m_Mtemp[2];
+    }
+}
+
+void rast::Morth(iobj* tri)
+{
+  for (int x=0;x<12;x+=4)
+    {
+      for (int y=0;y<3;y++)
+        {
+          m_Mtemp[y]=tri->m_tdata[x+y];
+        }
+
+      tri->m_tdata[x]=(1/m_m)*m_Mtemp[0];
+      tri->m_tdata[x+1]=(1/m_m)*m_Mtemp[1];
+      tri->m_tdata[x+2]=(((2/99*m_hither))*m_Mtemp[2])+((-101/99)*m_Mtemp[3]);
+    }
+}
+
+void rast::Mvp(iobj* tri)
+{   
+  for (int x=0;x<12;x+=4)
+    {
+      for (int y=0;y<2;y++)
+        {
+          m_Mtemp[y]=tri->m_tdata[x+y];
+        }
+
+      tri->m_tdata[x]=((m_dim/2)*m_Mtemp[0])+(((m_dim-1)/2)*m_Mtemp[3]);
+      tri->m_tdata[x+1]=((m_dim/2)*m_Mtemp[1])+(((m_dim-1)/2)*m_Mtemp[3]);
+    }
 }
