@@ -73,7 +73,7 @@ void rayp::argParse(string a)
 
   if (m_mode==6)
     {
-      m_hither=atoi(a.c_str());
+      m_hither=atof(a.c_str());
       m_mode=0;
       return;
     }
@@ -242,7 +242,7 @@ void rayp::printd()
   printf("at %f %f %f\n",m_at[0],m_at[1],m_at[2]);
   printf("up %f %f %f\n",m_up[0],m_up[1],m_up[2]);
   printf("angle %i\n",m_angle);
-  printf("hither %i\n",m_hither);
+  printf("hither %f\n",m_hither);
   printf("lights %i\n",m_maxLight);
   printf("res %i %i\n",m_res[0],m_res[1]);
 }

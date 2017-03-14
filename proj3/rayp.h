@@ -39,7 +39,7 @@ class rayp
   int m_res[2];
   
   double m_background[3]; 
-  int m_hither;
+  float m_hither;
   double* m_fill;
 
   string m_ofile; //name of output file
