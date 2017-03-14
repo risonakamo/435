@@ -19,6 +19,8 @@ class rast
   rast(rayp* raypars);
 
   void calcVec();
+
+  void Mcam(iobj* tri);
   
  private:
   /*--given values--*/

@@ -163,7 +163,7 @@ void rayp::argParse(string a)
     }
 }
 
-//tmode=type mode (0=double)
+//tmode=type mode (0=float)
 //mmode=mode mode, same usage as m_mode
 //msize=mode size, size of array to be filled
 void rayp::arrayParse(int mmode,string a)
@@ -196,7 +196,7 @@ int rayp::arrayParseFill(int mmode,string a)
     {
       if (m_mc==0)
         {
-          m_fill=new double[8];
+          m_fill=new float[8];
         }
 
       m_fill[m_mc]=atof(a.c_str());
@@ -292,7 +292,7 @@ void rayp::cparse(string &a)
 {
   if (m_mc==0)
     {
-      m_tc=new double[4];          
+      m_tc=new float[4];          
     }
       
   m_tc[m_mc]=atof(a.c_str());
@@ -304,7 +304,7 @@ void rayp::cparse(string &a)
       m_mc=0;
       m_mode=0;
       
-      iobj* t=new iobj(1,m_tc,m_fill,m_adata);
+      iobj* t=new iobj(1,m_tc,NULL,m_fill,m_adata);
       m_adata=t;
     }
 }
@@ -317,7 +317,7 @@ void rayp::pparse(string &a,int dim)
   if (m_mc==0)
     {
       m_pc=atoi(a.c_str()); //store number as number of vertices
-      m_tpg=new double*[m_pc];
+      m_tpg=new float*[m_pc];
       m_pctr=0; //reset counters
       m_pctr2=0;
       m_mc++;
@@ -328,7 +328,7 @@ void rayp::pparse(string &a,int dim)
   //makes new point at 0
   if (m_pctr2==0)
     {
-      m_tpg[m_pctr]=new double[dim];
+      m_tpg[m_pctr]=new float[dim];
     }
 
   //setting x y or z
@@ -363,8 +363,9 @@ void rayp::fanTriangle(int dim)
 {
   //3 points for dim numbers each
   dim*=3;
-  m_tp=new double[dim];
-
+  m_tp=new float[dim];
+  m_tp2=new float[12];
+  
   int y=0;
   int z=0;
   for (int x=0;x<dim;x++)
@@ -392,9 +393,20 @@ void rayp::fanTriangle(int dim)
           y++;
         }
     } 
+
+  iobj* t;
   
   //adding to linked list of triangles
-  iobj* t=new iobj(2,m_tp,m_fill,m_adata);
+  if (dim==9)
+    {
+      t=new iobj(2,m_tp,m_tp2,m_fill,m_adata);
+    }
+
+  if (dim==18)
+    {
+      t=new iobj(3,m_tp,m_tp2,m_fill,m_adata);
+    }
+  
   m_adata=t;
 }
 
@@ -403,7 +415,7 @@ int rayp::lparse(string &a)
 {
   //lights can have 3 to 6 numbers, has to check if current value a is
   //a number or not.  if not ends lparse
-  if (m_mc>=3 && checkDouble(a)==0)
+  if (m_mc>=3 && checkFloat(a)==0)
     {
       m_mode=0;
       m_mc=0;
@@ -414,7 +426,7 @@ int rayp::lparse(string &a)
   if (m_mc==0)
     {
       m_maxLight++;
-      double* newLightData=new double[6];
+      float* newLightData=new float[6];
 
       //defaulting colour to white (1,1,1)
       for (int x=0;x<3;x++)
@@ -422,7 +434,7 @@ int rayp::lparse(string &a)
           newLightData[x+3]=1;
         }
       
-      iobj* newLight=new iobj(4,newLightData,NULL,m_light);
+      iobj* newLight=new iobj(4,newLightData,NULL,NULL,m_light);
       m_light=newLight;
     }
   
@@ -441,8 +453,8 @@ int rayp::lparse(string &a)
   return 0;
 }
 
-//check a is double
-int rayp::checkDouble(string &a)
+//check a is float
+int rayp::checkFloat(string &a)
 {
   int x=0;
   int foundpoint=0;

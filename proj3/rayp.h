@@ -32,15 +32,15 @@ class rayp
 
   /*--public vars--*/
   //various math-related data terms
-  double m_from[3];
-  double m_at[3];
-  double m_up[3];
+  float m_from[3];
+  float m_at[3];
+  float m_up[3];
   int m_angle;
   int m_res[2];
   
-  double m_background[3]; 
+  float m_background[3]; 
   float m_hither;
-  double* m_fill;
+  float* m_fill;
 
   string m_ofile; //name of output file
 
@@ -60,7 +60,7 @@ class rayp
 
   void fanTriangle(int dim); //split polygon to triangles
 
-  int checkDouble(string &a); //check if input was double
+  int checkFloat(string &a); //check if input was float
   
   /*--mode:--
     0=no mode
@@ -81,13 +81,14 @@ class rayp
   int m_mc; //mode count
   
   /*--circle temps--*/
-  double* m_tc; //tc temp circle
+  float* m_tc; //tc temp circle
 
   /*--polygon temps--*/
   int m_pc; //max point count of current polygon
-  double** m_tpg; //temp polygon
-  double** m_tpg2; //temp polygon 2
-  double* m_tp; //tp temp point
+  float** m_tpg; //temp polygon
+  float** m_tpg2; //temp polygon 2
+  float* m_tp; //tp temp point
+  float* m_tp2;
   int m_pctr; //point counter
   int m_pctr2; //point counter2
 };
