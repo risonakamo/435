@@ -20,11 +20,12 @@ class rast
 
   void calcVec();
 
-  void Mcam_old(iobj* tri);
+  /* void Mcam_old(iobj* tri); */
   void Mcam(iobj* tri);
   void MP(iobj* tri);
   void Morth(iobj* tri);
   void Mvp(iobj* tri);
+  void MZdiv(iobj* tri);
   
  private:
   /*--given values--*/

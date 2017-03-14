@@ -50,45 +50,45 @@ void rast::calcVec()
   normalize(m_v);
 
   Mcam(m_adata);
-  /* Mcam_old(m_adata); */
   MP(m_adata);
+  MZdiv(m_adata);
   Morth(m_adata);
   Mvp(m_adata);
 
   m_adata->printTdata();
 }
 
-void rast::Mcam_old(iobj* tri)
-{
-  if (tri->m_type!=2 && tri->m_type!=3)
-    {
-      return;
-    }
+/* void rast::Mcam_old(iobj* tri) */
+/* { */
+/*   if (tri->m_type!=2 && tri->m_type!=3) */
+/*     { */
+/*       return; */
+/*     } */
 
-  float fromSub[12];
-  tri->m_tdata[3]=1;
-  tri->m_tdata[7]=1;
-  tri->m_tdata[11]=1;  
+/*   float fromSub[12]; */
+/*   tri->m_tdata[3]=1; */
+/*   tri->m_tdata[7]=1; */
+/*   tri->m_tdata[11]=1;   */
   
-  for (int x=0;x<3;x++)
-    {
-      fromSub[x]=tri->m_data[x]-m_from[x];
-      fromSub[x+3]=tri->m_data[x+3]-m_from[x];
-      fromSub[x+6]=tri->m_data[x+6]-m_from[x];
-    }
+/*   for (int x=0;x<3;x++) */
+/*     { */
+/*       fromSub[x]=tri->m_data[x]-m_from[x]; */
+/*       fromSub[x+3]=tri->m_data[x+3]-m_from[x]; */
+/*       fromSub[x+6]=tri->m_data[x+6]-m_from[x]; */
+/*     } */
 
-  tri->m_tdata[0]=(m_u[0]*fromSub[0])+(m_u[1]*fromSub[1])+(m_u[2]*fromSub[2]);
-  tri->m_tdata[1]=(m_v[0]*fromSub[0])+(m_v[1]*fromSub[1])+(m_v[2]*fromSub[2]);
-  tri->m_tdata[2]=(m_w[0]*fromSub[0])+(m_w[1]*fromSub[1])+(m_w[2]*fromSub[2]);
+/*   tri->m_tdata[0]=(m_u[0]*fromSub[0])+(m_u[1]*fromSub[1])+(m_u[2]*fromSub[2]); */
+/*   tri->m_tdata[1]=(m_v[0]*fromSub[0])+(m_v[1]*fromSub[1])+(m_v[2]*fromSub[2]); */
+/*   tri->m_tdata[2]=(m_w[0]*fromSub[0])+(m_w[1]*fromSub[1])+(m_w[2]*fromSub[2]); */
 
-  tri->m_tdata[4]=(m_u[0]*fromSub[4])+(m_u[1]*fromSub[5])+(m_u[2]*fromSub[6]);
-  tri->m_tdata[5]=(m_v[0]*fromSub[4])+(m_v[1]*fromSub[5])+(m_v[2]*fromSub[6]);
-  tri->m_tdata[6]=(m_w[0]*fromSub[4])+(m_w[1]*fromSub[6])+(m_w[2]*fromSub[6]);
+/*   tri->m_tdata[4]=(m_u[0]*fromSub[4])+(m_u[1]*fromSub[5])+(m_u[2]*fromSub[6]); */
+/*   tri->m_tdata[5]=(m_v[0]*fromSub[4])+(m_v[1]*fromSub[5])+(m_v[2]*fromSub[6]); */
+/*   tri->m_tdata[6]=(m_w[0]*fromSub[4])+(m_w[1]*fromSub[6])+(m_w[2]*fromSub[6]); */
 
-  tri->m_tdata[8]=(m_u[0]*fromSub[8])+(m_u[1]*fromSub[9])+(m_u[2]*fromSub[10]);
-  tri->m_tdata[9]=(m_v[0]*fromSub[8])+(m_v[1]*fromSub[9])+(m_v[2]*fromSub[10]);
-  tri->m_tdata[10]=(m_w[0]*fromSub[8])+(m_w[1]*fromSub[9])+(m_w[2]*fromSub[10]);
-}
+/*   tri->m_tdata[8]=(m_u[0]*fromSub[8])+(m_u[1]*fromSub[9])+(m_u[2]*fromSub[10]); */
+/*   tri->m_tdata[9]=(m_v[0]*fromSub[8])+(m_v[1]*fromSub[9])+(m_v[2]*fromSub[10]); */
+/*   tri->m_tdata[10]=(m_w[0]*fromSub[8])+(m_w[1]*fromSub[9])+(m_w[2]*fromSub[10]); */
+/* } */
 
 void rast::Mcam(iobj* tri)
 {
@@ -156,5 +156,16 @@ void rast::Mvp(iobj* tri)
 
       tri->m_tdata[x]=((m_dim/2)*m_Mtemp[0])+(((m_dim-1)/2)*m_Mtemp[3]);
       tri->m_tdata[x+1]=((m_dim/2)*m_Mtemp[1])+(((m_dim-1)/2)*m_Mtemp[3]);
+    }
+}
+
+void rast::MZdiv(iobj* tri)
+{
+  for (int x=0;x<12;x+=4)
+    {
+      for (int y=0;y<2;y++)
+        {
+          tri->m_tdata[x+y]/=-tri->m_tdata[x+3];
+        }
     }
 }
