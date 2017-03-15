@@ -28,7 +28,10 @@ class rast
   void MZdiv(iobj* tri);
 
   void boundFill(iobj* tri);
+  void calcBoundBox(iobj* tri); //calc bound box and put in m_boundBox
   void fillP(int x,int y,iobj* tri);
+
+  void writeImg();
   
  private:
   /*--given values--*/
@@ -64,8 +67,12 @@ class rast
   /*--M matrix temps--*/
   float m_Mtemp[4];
 
-  /*--boundFill temps--*/
+  /*--calcboundbox stuff--*/
   float m_boundBox[4]; //bounding box [min x,min y,max x,max y]
+
+  /*--fillP temps--*/
+  SlVector3 m_baryT[3];
+  float m_baryTF[5];
 };
 
 #endif

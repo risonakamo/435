@@ -58,6 +58,7 @@ void rast::calcVec()
 
   m_adata->printTdata();
   boundFill(m_adata);
+  writeImg();
 }
 
 /* void rast::Mcam_old(iobj* tri) */
@@ -172,7 +173,7 @@ void rast::MZdiv(iobj* tri)
     }
 }
 
-void rast::boundFill(iobj* tri)
+void rast::calcBoundBox(iobj* tri)
 {
   m_boundBox[0]=tri->m_tdata[0];
   m_boundBox[1]=tri->m_tdata[1];
@@ -191,6 +192,11 @@ void rast::boundFill(iobj* tri)
     {
       printf("%f ",m_boundBox[x]);
     }
+}
+
+void rast::boundFill(iobj* tri)
+{
+  calcBoundBox(tri);
 
   int boxSize=(m_boundBox[3]-m_boundBox[1])*(m_boundBox[2]-m_boundBox[0]);
 
@@ -213,10 +219,11 @@ void rast::boundFill(iobj* tri)
           break;
         }
     }
-  
+
+   
   /* for (int z=0;z<boxSize;z++) */
   /*   { */
-  /*     printf("%f, %f\n",x,y); */
+  /*     fillP(x,y,tri); */
   /*     x++; */
 
   /*     if (x>m_boundBox[2]) */
@@ -227,7 +234,64 @@ void rast::boundFill(iobj* tri)
   /*   } */
 }
 
+//check if point x y is in tri
+//looks at tri's tdata
 void rast::fillP(int x,int y,iobj* tri)
 {
+  //setting vectors
+  for (int z=0;z<2;z++)
+    {
+      m_baryT[0][z]=tri->m_tdata[8+z]-tri->m_tdata[z];
+      m_baryT[1][z]=tri->m_tdata[4+z]-tri->m_tdata[z];
+    }
   
+  m_baryT[2][0]=x-tri->m_tdata[0];
+  m_baryT[2][1]=y-tri->m_tdata[1];
+  
+  for (int z=0;z<3;z++)
+    {
+      m_baryT[z][2]=0;
+    }
+
+  m_baryTF[0]=dot(m_baryT[0],m_baryT[0]);
+  m_baryTF[1]=dot(m_baryT[0],m_baryT[1]);
+  m_baryTF[2]=dot(m_baryT[0],m_baryT[2]);
+  m_baryTF[3]=dot(m_baryT[1],m_baryT[1]);
+  m_baryTF[4]=dot(m_baryT[1],m_baryT[2]);
+
+  float id=1/(m_baryTF[0]*m_baryTF[3]-m_baryTF[1]*m_baryTF[1]);
+  float u=(m_baryTF[3]*m_baryTF[2]-m_baryTF[1]*m_baryTF[4])*id;
+  float v=(m_baryTF[0]*m_baryTF[4]-m_baryTF[1]*m_baryTF[2])*id;
+
+  //if in triangle
+  if (u>=0 && v>=0 && u+v<1)
+    {
+      int pos=x+((m_dim-y-1)*m_dim);
+      /* printf("%i\n",pos); */
+      m_img[pos]=1;
+    }
+}
+
+void rast::writeImg()
+{
+  FILE* f=fopen(m_ofile.c_str(),"w");  
+  fprintf(f,"P6 %d %d 255\n",m_dim,m_dim);
+
+  for (int x=0;x<3;x++)
+    {
+      m_colour[x]=255;
+    }
+  
+  for (int x=0;x<m_psize;x++)
+    {
+      if (m_img[x]==1)
+        {
+          fwrite(m_colour,1,3,f);
+        }
+
+      else
+        {
+          fwrite(m_background,1,3,f);
+        }
+    }
 }
