@@ -35,6 +35,7 @@ void rast::calcVec()
 
   //pixel grid size, supports only squares right now
   m_psize=pow(m_dim,2);
+  m_img=new int[m_psize];
 
   //camera point u v w thing
   m_w=m_from-m_at;
@@ -56,6 +57,7 @@ void rast::calcVec()
   Mvp(m_adata);
 
   m_adata->printTdata();
+  boundFill(m_adata);
 }
 
 /* void rast::Mcam_old(iobj* tri) */
@@ -168,4 +170,64 @@ void rast::MZdiv(iobj* tri)
           tri->m_tdata[x+y]/=-tri->m_tdata[x+3];
         }
     }
+}
+
+void rast::boundFill(iobj* tri)
+{
+  m_boundBox[0]=tri->m_tdata[0];
+  m_boundBox[1]=tri->m_tdata[1];
+  m_boundBox[2]=tri->m_tdata[0];
+  m_boundBox[3]=tri->m_tdata[1];
+
+  for (int x=4;x<12;x+=4)
+    {
+      m_boundBox[0]=min(tri->m_tdata[x],m_boundBox[0]);
+      m_boundBox[1]=min(tri->m_tdata[x+1],m_boundBox[1]);
+      m_boundBox[2]=max(tri->m_tdata[x],m_boundBox[2]);
+      m_boundBox[3]=max(tri->m_tdata[x+1],m_boundBox[2]);
+    }
+
+  for (int x=0;x<4;x++)
+    {
+      printf("%f ",m_boundBox[x]);
+    }
+
+  int boxSize=(m_boundBox[3]-m_boundBox[1])*(m_boundBox[2]-m_boundBox[0]);
+
+  float x=m_boundBox[0];
+  float y=m_boundBox[1];
+
+  while (1)
+    {
+      fillP(x,y,tri);
+      x++;
+
+      if (x>m_boundBox[2])
+        {
+          x=m_boundBox[0];
+          y++;
+        }
+
+      if (y>m_boundBox[3])
+        {
+          break;
+        }
+    }
+  
+  /* for (int z=0;z<boxSize;z++) */
+  /*   { */
+  /*     printf("%f, %f\n",x,y); */
+  /*     x++; */
+
+  /*     if (x>m_boundBox[2]) */
+  /*       { */
+  /*         x=m_boundBox[0]; */
+  /*         y++; */
+  /*       } */
+  /*   } */
+}
+
+void rast::fillP(int x,int y,iobj* tri)
+{
+  
 }

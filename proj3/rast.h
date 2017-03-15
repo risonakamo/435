@@ -26,6 +26,9 @@ class rast
   void Morth(iobj* tri);
   void Mvp(iobj* tri);
   void MZdiv(iobj* tri);
+
+  void boundFill(iobj* tri);
+  void fillP(int x,int y,iobj* tri);
   
  private:
   /*--given values--*/
@@ -56,10 +59,13 @@ class rast
   iobj* m_light; //lights list
   float m_maxLight; //max lights
   iobj* m_adata; //alldata list
+  int* m_img;
 
   /*--M matrix temps--*/
   float m_Mtemp[4];
-  
+
+  /*--boundFill temps--*/
+  float m_boundBox[4]; //bounding box [min x,min y,max x,max y]
 };
 
 #endif
