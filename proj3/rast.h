@@ -61,9 +61,9 @@ class rast
                          //size should be psize
 
   iobj* m_light; //lights list
-  float m_maxLight; //max lights
+  float m_maxLight; //max lights (not really data but goes with m lights)
   iobj* m_adata; //alldata list
-  int* m_img;
+  int* m_img; //image data
 
   /*--M matrix temps--*/
   float m_Mtemp[4];
@@ -72,8 +72,8 @@ class rast
   float m_boundBox[4]; //bounding box [min x,min y,max x,max y]
 
   /*--fillP temps--*/
-  SlVector3 m_baryT[3];
-  float m_baryTF[5];
+  SlVector3 m_baryT[3]; //temp bary vectors
+  float m_baryTF[5]; //temp dot products
 };
 
 #endif
