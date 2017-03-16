@@ -35,7 +35,7 @@ void rast::calcVec()
 
   //pixel grid size, supports only squares right now
   m_psize=pow(m_dim,2);
-  m_img=new int[m_psize];
+  m_img=new iobj*[m_psize]; //hopefully this inits to null...
 
   //camera point u v w thing
   m_w=m_from-m_at;
@@ -63,14 +63,18 @@ void rast::rasterise()
         }
       
       Mcam(cobj);
-      MP(cobj);
+      /*--tdataprinter--*/
+      /* cobj->print(); */
+      cobj->printTdata();
+      printf("\n");
+      /*----------------*/           
+      MP(cobj);      
       MZdiv(cobj);
       Morth(cobj);
       Mvp(cobj);
 
-      /* cobj->printTdata(); */
       boundFill(cobj);
-
+      
       cobj=cobj->m_next;
     }
 
@@ -130,6 +134,17 @@ void rast::Mcam(iobj* tri)
         }
 
       tri->m_tdata[x+3]=1;
+
+      if (x==0)
+        {
+          tri->m_zDep=tri->m_tdata[2];
+          printf("z=%f\n",tri->m_zDep);
+        }
+
+      else
+        {
+          tri->m_zDep=max(tri->m_zDep,tri->m_tdata[x+2]);
+        }
     }
 }
 
@@ -289,7 +304,14 @@ void rast::fillP(int x,int y,iobj* tri)
     {
       int pos=x+((m_dim-y-1)*m_dim);
       /* printf("%i\n",pos); */
-      m_img[pos]=1;
+
+      if (m_img[pos] && m_img[pos]->m_zDep>=tri->m_zDep)
+        {
+          /* printf("%f %f\n",m_img[pos]->m_zDep,tri->m_zDep); */
+          return;
+        }
+
+      m_img[pos]=tri;
     }
 }
 
@@ -297,16 +319,16 @@ void rast::writeImg()
 {
   FILE* f=fopen(m_ofile.c_str(),"w");  
   fprintf(f,"P6 %d %d 255\n",m_dim,m_dim);
-
-  for (int x=0;x<3;x++)
-    {
-      m_colour[x]=255;
-    }
   
   for (int x=0;x<m_psize;x++)
     {
-      if (m_img[x]==1)
+      if (m_img[x])
         {
+          for (int y=0;y<3;y++)
+            {
+              m_colour[y]=(unsigned char)(m_img[x]->m_colour[y]*255);
+            }
+          
           fwrite(m_colour,1,3,f);
         }
 

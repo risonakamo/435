@@ -25,6 +25,7 @@ class iobj
   //debug print
   void print();
 
+  //print 4d transformed points x3 (NOT A MATRIX!!!)
   void printTdata();
   
   /*type of shape thing:
@@ -36,6 +37,7 @@ class iobj
   int m_type;
   float* m_data; //float array of data
   float* m_tdata; //transform data
+  float m_zDep;
   float* m_colour; /*colour array, potentially a shared pointer
                       with other objs with same coloured*/
   iobj* m_next; //link to next object

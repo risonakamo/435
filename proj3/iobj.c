@@ -16,7 +16,8 @@ iobj::iobj()
 
 //set stuff constructor
 iobj::iobj(int type,float* data,float* tdata,float* colour,iobj* next)
-:m_type(type),m_data(data),m_tdata(tdata),m_colour(colour),m_next(next)
+:m_type(type),m_data(data),m_tdata(tdata),m_colour(colour),m_next(next),
+  m_zDep(1)
 {
 
 }
