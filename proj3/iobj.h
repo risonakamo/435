@@ -37,9 +37,10 @@ class iobj
   int m_type;
   float* m_data; //float array of data
   float* m_tdata; //transform data
-  float m_zDep;
+  float m_zDep; //closest zdepth of triangle
   float* m_colour; /*colour array, potentially a shared pointer
                       with other objs with same coloured*/
+  float m_vcolour[9];
   iobj* m_next; //link to next object
 
  private:

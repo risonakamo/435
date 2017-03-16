@@ -63,15 +63,16 @@ void rast::rasterise()
         }
       
       Mcam(cobj);
-      /*--tdataprinter--*/
-      /* cobj->print(); */
-      cobj->printTdata();
-      printf("\n");
-      /*----------------*/           
+      /* /\*--tdataprinter--*\/ */
+      /* /\* cobj->print(); *\/ */
+      /* cobj->printTdata(); */
+      /* printf("\n"); */
+      /* /\*----------------*\/            */
       MP(cobj);      
       MZdiv(cobj);
       Morth(cobj);
       Mvp(cobj);
+      iLight(cobj);
 
       boundFill(cobj);
       
@@ -138,7 +139,7 @@ void rast::Mcam(iobj* tri)
       if (x==0)
         {
           tri->m_zDep=tri->m_tdata[2];
-          printf("z=%f\n",tri->m_zDep);
+          /* printf("z=%f\n",tri->m_zDep); */
         }
 
       else
@@ -304,7 +305,7 @@ void rast::fillP(int x,int y,iobj* tri)
     {
       int pos=x+((m_dim-y-1)*m_dim);
       /* printf("%i\n",pos); */
-
+            
       if (m_img[pos] && m_img[pos]->m_zDep>=tri->m_zDep)
         {
           /* printf("%f %f\n",m_img[pos]->m_zDep,tri->m_zDep); */
@@ -336,5 +337,102 @@ void rast::writeImg()
         {
           fwrite(m_background,1,3,f);
         }
+    }
+}
+
+void rast::iLight(iobj* tri)
+{
+  iobj* clight=m_light; //current light
+
+  objN(tri);
+  
+  //for 3 vertices in tri
+  for (int v=0;v<9;v+=3)
+    {
+      for (int x=0;x<3;x++)
+        {
+          tri->m_vcolour[v+x]=0;
+        }
+      
+      //for eahc light
+      while (1)
+        {
+          if (!clight)
+            {
+              break;
+            }
+
+          //set lray to light point
+          for (int x=0;x<3;x++)
+            {
+              m_lray[x]=clight->m_data[x]-tri->m_data[x+v];
+              m_haf[x]=m_lray[x]-(tri->m_data[x+v]-m_from[x]);
+            }
+            
+          normalize(m_haf);
+          normalize(m_lray);
+          normalize(m_objN[0]);
+
+          double diff=max(0.0,dot(m_objN[0],m_lray));
+          double spec=pow(max(0.0,dot(m_objN[0],m_haf)),tri->m_colour[5]);
+          
+          for (int x=0;x<3;x++)
+            {
+              //diffuse+spec light intensity formula thing
+              tri->m_vcolour[v+x]+=(((tri->m_colour[3]*tri->m_colour[x]*diff)+(tri->m_colour[4]*spec))*(((1/pow(m_maxLight,.5)))));
+
+              if (tri->m_vcolour[v+x]>1)
+                {
+                  tri->m_vcolour[v+x]=1;
+                }
+
+              if (tri->m_vcolour[v+x]<0)
+                {
+                  tri->m_vcolour[v+x]=0;
+                }
+            }
+
+          clight=clight->m_next;
+        }      
+    }   
+}
+
+void rast::objN(iobj* tri)
+{
+  if (!tri)
+    {
+      return;
+    }
+
+  //triangle
+  if (tri->m_type==2)
+    {
+      //triangles are stored in size 9 array
+      for (int x=0;x<3;x++)
+        {
+          m_objN[1][x]=tri->m_data[x]-tri->m_data[x+3];              
+          m_objN[2][x]=tri->m_data[x]-tri->m_data[x+6];
+        }
+
+      m_objN[0]=cross(m_objN[1],m_objN[2]);
+      return;
+    }
+}
+
+void rast::intColour(float& triU,float& triV,iobj* tri)
+{
+  for (int x=0;x<3;x++)
+    {
+      m_colourF[x]=tri->m_vcolour[x]*(1-triU-triV);
+    }
+
+  for (int x=0;x<3;x++)
+    {
+      m_colourF[x]+=tri->m_vcolour[x+3]*triU;
+    }
+
+  for (int x=0;x<3;x++)
+    {
+      m_colourF[x]+=tri->m_vcolour[x+6]*triV;
     }
 }

@@ -18,9 +18,11 @@ class rast
   rast();
   rast(rayp* raypars);
 
-  void calcVec();
-  void rasterise();
-
+  void calcVec(); //do math setup
+  void rasterise(); //do rasterising pipeline thing stuff
+  
+ private:
+  /*--M functions--*/
   /* void Mcam_old(iobj* tri); */
   void Mcam(iobj* tri);
   void MP(iobj* tri);
@@ -28,13 +30,20 @@ class rast
   void Mvp(iobj* tri);
   void MZdiv(iobj* tri);
 
-  void boundFill(iobj* tri);
-  void calcBoundBox(iobj* tri); //*helper* calc bound box and put in m_boundBox
-  void fillP(int x,int y,iobj* tri); //*helper*
+  /*--boundfill--*/
+  void boundFill(iobj* tri); //make bound box, go over pixels, fill in img array
 
-  void writeImg();
+  /*--boundfill helpers--*/
+  void calcBoundBox(iobj* tri); //calc bound box and put in m_boundBox
+  void fillP(int x,int y,iobj* tri); /*checks if a 2d point is inside a triangle's
+                                      transformed 2d form, fills in img array*/
+
+  void iLight(iobj* tri);
+  void objN(iobj* tri);
+  void intColour(float& triU,float& triV,iobj* tri);
   
- private:
+  void writeImg(); //write colours from img array
+    
   /*--given values--*/
   string m_ofile;
   SlVector3 m_from;
@@ -74,6 +83,13 @@ class rast
   /*--fillP temps--*/
   SlVector3 m_baryT[3]; //temp bary vectors
   float m_baryTF[5]; //temp dot products
+
+  /*--ilight temps--*/
+  SlVector3 m_lray;
+  SlVector3 m_haf;
+
+  /*--objN--*/
+  SlVector3 m_objN[3]; //[0]=obj normal, [1,2]=temps
 };
 
 #endif
