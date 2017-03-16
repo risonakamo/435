@@ -35,6 +35,7 @@ int main(int argc,char* argv[])
   rast rasteriser(data); 
 
   rasteriser.calcVec();
+  rasteriser.rasterise();
   
   return 0;
 }

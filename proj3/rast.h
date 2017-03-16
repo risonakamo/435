@@ -19,6 +19,7 @@ class rast
   rast(rayp* raypars);
 
   void calcVec();
+  void rasterise();
 
   /* void Mcam_old(iobj* tri); */
   void Mcam(iobj* tri);
@@ -28,8 +29,8 @@ class rast
   void MZdiv(iobj* tri);
 
   void boundFill(iobj* tri);
-  void calcBoundBox(iobj* tri); //calc bound box and put in m_boundBox
-  void fillP(int x,int y,iobj* tri);
+  void calcBoundBox(iobj* tri); //*helper* calc bound box and put in m_boundBox
+  void fillP(int x,int y,iobj* tri); //*helper*
 
   void writeImg();
   

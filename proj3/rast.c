@@ -49,16 +49,32 @@ void rast::calcVec()
   normalize(m_w);
   normalize(m_u);
   normalize(m_v);
+}
 
-  Mcam(m_adata);
-  MP(m_adata);
-  MZdiv(m_adata);
-  Morth(m_adata);
-  Mvp(m_adata);
+void rast::rasterise()
+{
+  iobj* cobj=m_adata;
+  
+  while (1)
+    {
+      if (!cobj)
+        {
+          break;
+        }
+      
+      Mcam(cobj);
+      MP(cobj);
+      MZdiv(cobj);
+      Morth(cobj);
+      Mvp(cobj);
 
-  m_adata->printTdata();
-  boundFill(m_adata);
-  writeImg();
+      /* cobj->printTdata(); */
+      boundFill(cobj);
+
+      cobj=cobj->m_next;
+    }
+
+  writeImg();  
 }
 
 /* void rast::Mcam_old(iobj* tri) */
@@ -128,7 +144,7 @@ void rast::MP(iobj* tri)
 
       tri->m_tdata[x]=m_hither*m_Mtemp[0];
       tri->m_tdata[x+1]=m_hither*m_Mtemp[1];
-      tri->m_tdata[x+2]=(101*m_hither*m_Mtemp[2])+(((-100*m_hither)*m_hither)*m_Mtemp[3]);
+      tri->m_tdata[x+2]=(1001*m_hither*m_Mtemp[2])+(((-1000*m_hither)*m_hither)*m_Mtemp[3]);
       tri->m_tdata[x+3]=m_Mtemp[2];
     }
 }
@@ -144,7 +160,7 @@ void rast::Morth(iobj* tri)
 
       tri->m_tdata[x]=(1/m_m)*m_Mtemp[0];
       tri->m_tdata[x+1]=(1/m_m)*m_Mtemp[1];
-      tri->m_tdata[x+2]=(((2/99*m_hither))*m_Mtemp[2])+((-101/99)*m_Mtemp[3]);
+      tri->m_tdata[x+2]=(((2/999*m_hither))*m_Mtemp[2])+((-1001/999)*m_Mtemp[3]);
     }
 }
 
@@ -185,13 +201,13 @@ void rast::calcBoundBox(iobj* tri)
       m_boundBox[0]=min(tri->m_tdata[x],m_boundBox[0]);
       m_boundBox[1]=min(tri->m_tdata[x+1],m_boundBox[1]);
       m_boundBox[2]=max(tri->m_tdata[x],m_boundBox[2]);
-      m_boundBox[3]=max(tri->m_tdata[x+1],m_boundBox[2]);
+      m_boundBox[3]=max(tri->m_tdata[x+1],m_boundBox[3]);
     }
 
-  for (int x=0;x<4;x++)
-    {
-      printf("%f ",m_boundBox[x]);
-    }
+  /* for (int x=0;x<4;x++) */
+  /*   { */
+  /*     printf("%f ",m_boundBox[x]); */
+  /*   } */
 }
 
 void rast::boundFill(iobj* tri)
@@ -238,6 +254,11 @@ void rast::boundFill(iobj* tri)
 //looks at tri's tdata
 void rast::fillP(int x,int y,iobj* tri)
 {
+  if (x>m_dim || x<0 || y>m_dim || y<0)
+    {
+      return;
+    }
+  
   //setting vectors
   for (int z=0;z<2;z++)
     {
