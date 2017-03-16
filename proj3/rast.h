@@ -72,7 +72,7 @@ class rast
   iobj* m_light; //lights list
   float m_maxLight; //max lights (not really data but goes with m lights)
   iobj* m_adata; //alldata list
-  iobj** m_img; //image data
+  float** m_img; //image data
 
   /*--M matrix temps--*/
   float m_Mtemp[4];

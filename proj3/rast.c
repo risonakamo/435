@@ -35,7 +35,7 @@ void rast::calcVec()
 
   //pixel grid size, supports only squares right now
   m_psize=pow(m_dim,2);
-  m_img=new iobj*[m_psize]; //hopefully this inits to null...
+  m_img=new float*[m_psize]; //hopefully this inits to null...
 
   //camera point u v w thing
   m_w=m_from-m_at;
@@ -305,14 +305,34 @@ void rast::fillP(int x,int y,iobj* tri)
     {
       int pos=x+((m_dim-y-1)*m_dim);
       /* printf("%i\n",pos); */
-            
-      if (m_img[pos] && m_img[pos]->m_zDep>=tri->m_zDep)
+
+      //if fragment exists and z is closer than current obj
+      if (m_img[pos] && m_img[pos][3]>tri->m_zDep)
         {
           /* printf("%f %f\n",m_img[pos]->m_zDep,tri->m_zDep); */
           return;
         }
 
-      m_img[pos]=tri;
+      //if no img
+      if (!m_img[pos])
+        {
+          m_img[pos]=new float[4];
+        }
+
+      //tempory solid colour
+      for (int z=0;z<3;z++)
+        {
+          m_img[pos][z]=tri->m_colour[z];
+        }
+      
+      /* intColour(u,v,tri); */
+          
+      /* for (int z=0;z<3;z++) */
+      /*   { */
+      /*     m_img[pos][z]=m_colourF[z]; */
+      /*   } */
+
+      m_img[pos][3]=tri->m_zDep;
     }
 }
 
@@ -327,7 +347,7 @@ void rast::writeImg()
         {
           for (int y=0;y<3;y++)
             {
-              m_colour[y]=(unsigned char)(m_img[x]->m_colour[y]*255);
+              m_colour[y]=(unsigned char)(m_img[x][y]*255);
             }
           
           fwrite(m_colour,1,3,f);
@@ -366,7 +386,7 @@ void rast::iLight(iobj* tri)
           for (int x=0;x<3;x++)
             {
               m_lray[x]=clight->m_data[x]-tri->m_data[x+v];
-              m_haf[x]=m_lray[x]-(tri->m_data[x+v]-m_from[x]);
+              m_haf[x]=m_lray[x]-(m_from[x]-tri->m_data[x+v]);
             }
             
           normalize(m_haf);
@@ -434,5 +454,18 @@ void rast::intColour(float& triU,float& triV,iobj* tri)
   for (int x=0;x<3;x++)
     {
       m_colourF[x]+=tri->m_vcolour[x+6]*triV;
+    }
+
+  for (int x=0;x<3;x++)
+    {
+      if (m_colourF[x]>1)
+        {
+          m_colourF[x]=1;
+        }
+
+      if (m_colourF[x]<0);
+      {
+        m_colourF[x]=0;
+      }
     }
 }

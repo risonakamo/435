@@ -19,7 +19,10 @@ iobj::iobj(int type,float* data,float* tdata,float* colour,iobj* next)
 :m_type(type),m_data(data),m_tdata(tdata),m_colour(colour),m_next(next),
   m_zDep(1)
 {
-
+  for (int x=0;x<9;x++)
+    {
+      m_vcolour[x]=0;
+    }
 }
 
 //debug to read data for some types
