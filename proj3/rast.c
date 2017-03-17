@@ -219,17 +219,17 @@ void rast::calcBoundBox(iobj* tri)
 
   for (int x=4;x<12;x+=4)
     {
-      m_boundBox[0]=floor(min(tri->m_tdata[x],m_boundBox[0]));
-      m_boundBox[1]=floor(min(tri->m_tdata[x+1],m_boundBox[1]));
-      m_boundBox[2]=floor(max(tri->m_tdata[x],m_boundBox[2]));
-      m_boundBox[3]=floor(max(tri->m_tdata[x+1],m_boundBox[3]));
+      m_boundBox[0]=ceil(min(tri->m_tdata[x],m_boundBox[0]));
+      m_boundBox[1]=ceil(min(tri->m_tdata[x+1],m_boundBox[1]));
+      m_boundBox[2]=ceil(max(tri->m_tdata[x],m_boundBox[2]));
+      m_boundBox[3]=ceil(max(tri->m_tdata[x+1],m_boundBox[3]));
     }
 
-  for (int x=0;x<4;x++)
-    {
-      printf("%f ",m_boundBox[x]);
-    }
-  printf("\n");
+  /* for (int x=0;x<4;x++) */
+  /*   { */
+  /*     printf("%f ",m_boundBox[x]); */
+  /*   } */
+  /* printf("\n"); */
 }
 
 void rast::boundFill(iobj* tri)
@@ -276,7 +276,7 @@ void rast::boundFill(iobj* tri)
 //looks at tri's tdata
 void rast::fillP(int x,int y,iobj* tri)
 {
-  if (x>m_dim || x<0 || y>m_dim || y<0)
+  if (x>=m_dim || x<0 || y>m_dim || y<0)
     {
       return;
     }
@@ -330,6 +330,11 @@ void rast::fillP(int x,int y,iobj* tri)
       //tempory solid colour
       for (int z=0;z<3;z++)
         {
+          if (pos%m_dim==0)
+            {
+              printf("%i %i\n",x,y);
+            }
+          
           m_img[pos][z]=tri->m_vcolour[z];
         }
       
