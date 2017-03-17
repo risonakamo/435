@@ -35,12 +35,12 @@ class rast
 
   /*--boundfill helpers--*/
   void calcBoundBox(iobj* tri); //calc bound box and put in m_boundBox
-  void fillP(int x,int y,iobj* tri); /*checks if a 2d point is inside a triangle's
+  void fillP(int xpos,int ypos,iobj* tri); /*checks if a 2d point is inside a triangle's
                                       transformed 2d form, fills in img array*/
 
   void iLight(iobj* tri);
   void objN(iobj* tri);
-  void intColour(double& triU,double& triV,iobj* tri);
+  void intColour(double triU,double triV,iobj* tri);
   
   void writeImg(); //write colours from img array
     

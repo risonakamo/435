@@ -78,7 +78,7 @@ void rast::rasterise()
       Morth(cobj);
       Mvp(cobj);
       iLight(cobj);
-
+      
       boundFill(cobj);
       
       cobj=cobj->m_next;
@@ -234,13 +234,12 @@ void rast::calcBoundBox(iobj* tri)
 
 void rast::boundFill(iobj* tri)
 {
-  calcBoundBox(tri);
-
+  calcBoundBox(tri);  
   int boxSize=(m_boundBox[3]-m_boundBox[1])*(m_boundBox[2]-m_boundBox[0]);
 
   int x=m_boundBox[0];
   int y=m_boundBox[1];
-
+  
   while (1)
     {
       fillP(x,y,tri);
@@ -274,9 +273,9 @@ void rast::boundFill(iobj* tri)
 
 //check if point x y is in tri
 //looks at tri's tdata
-void rast::fillP(int x,int y,iobj* tri)
+void rast::fillP(int xpos,int ypos,iobj* tri)
 {
-  if (x>=m_dim || x<0 || y>m_dim || y<0)
+  if (xpos>=m_dim || xpos<0 || ypos>=m_dim || ypos<0)
     {
       return;
     }
@@ -288,8 +287,8 @@ void rast::fillP(int x,int y,iobj* tri)
       m_baryT[1][z]=tri->m_tdata[4+z]-tri->m_tdata[z];
     }
   
-  m_baryT[2][0]=x-tri->m_tdata[0];
-  m_baryT[2][1]=y-tri->m_tdata[1];
+  m_baryT[2][0]=xpos-tri->m_tdata[0];
+  m_baryT[2][1]=ypos-tri->m_tdata[1];
   
   for (int z=0;z<3;z++)
     {
@@ -309,7 +308,7 @@ void rast::fillP(int x,int y,iobj* tri)
   //if in triangle
   if (u>=0 && v>=0 && u+v<1)
     {
-      int pos=x+((m_dim-y-1)*m_dim);
+      int pos=xpos+((m_dim-ypos-1)*m_dim);
       /* printf("%i\n",pos); */
 
       double zDep=((1-u-v)*tri->m_data[2])+(u*tri->m_data[5])+(v*tri->m_data[8]);
@@ -326,25 +325,23 @@ void rast::fillP(int x,int y,iobj* tri)
         {
           m_img[pos]=new double[4];
         }
+            
+      /* tri->printVcolour(); */
+      /* printf("\n"); */
 
-      //tempory solid colour
+      intColour(u,v,tri);
+      
       for (int z=0;z<3;z++)
         {
-          if (pos%m_dim==0)
-            {
-              printf("%i %i\n",x,y);
-            }
-          
-          m_img[pos][z]=tri->m_vcolour[z];
+          m_img[pos][z]=m_colourF[z];
         }
-      
-      /* intColour(u,v,tri); */
-          
+
+      /* //tempory solid colour */
       /* for (int z=0;z<3;z++) */
       /*   { */
-      /*     m_img[pos][z]=m_colourF[z]; */
+      /*     m_img[pos][z]=tri->m_vcolour[z]; */
       /*   } */
-
+      
       m_img[pos][3]=zDep;
     }
 }
@@ -432,7 +429,10 @@ void rast::iLight(iobj* tri)
 
 
       /* printf("%f %f %f\n",tri->m_vcolour[v],tri->m_vcolour[v+1],tri->m_vcolour[v+2]); */
-    }   
+    }
+
+  /* tri->printVcolour(); */
+  /* printf("\n"); */
 }
 
 void rast::objN(iobj* tri)
@@ -457,10 +457,10 @@ void rast::objN(iobj* tri)
     }
 }
 
-void rast::intColour(double& triU,double& triV,iobj* tri)
+void rast::intColour(double triU,double triV,iobj* tri)
 {
   /* tri->printVcolour(); */
-  
+
   for (int x=0;x<3;x++)
     {
       m_colourF[x]=tri->m_vcolour[x]*(1-triU-triV);
@@ -478,16 +478,17 @@ void rast::intColour(double& triU,double& triV,iobj* tri)
       m_colourF[x]+=tri->m_vcolour[x+6]*triV;
     }
   
-  for (int x=0;x<3;x++)
-    {
-      if (m_colourF[x]>1)
-        {
-          m_colourF[x]=1;
-        }
+  /* for (int x=0;x<3;x++) */
+  /*   { */
+  /*     if (m_colourF[x]>1.0) */
+  /*       { */
+  /*         m_colourF[x]=1; */
+  /*       } */
 
-      if (m_colourF[x]<0);
-      {
-        m_colourF[x]=0;
-      }
-    }
+  /*     if (m_colourF[x]<0.0); */
+  /*     { */
+  /*       printf("%f\n",m_colourF[x]); */
+  /*       m_colourF[x]=0; */
+  /*     } */
+  /*   } */
 }
