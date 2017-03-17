@@ -74,3 +74,19 @@ void iobj::printTdata()
         }
     }
 }
+
+void iobj::printVcolour()
+{
+  int y=0;
+  for (int x=0;x<9;x++)
+    {
+      printf("%f ",m_vcolour[x]);
+
+      y++;
+      if (y>2)
+        {
+          y=0;
+          printf("\n");
+        }
+    }
+}

@@ -27,6 +27,8 @@ class iobj
 
   //print 4d transformed points x3 (NOT A MATRIX!!!)
   void printTdata();
+
+  void printVcolour();
   
   /*type of shape thing:
    0=undefined

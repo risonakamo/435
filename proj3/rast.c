@@ -37,6 +37,11 @@ void rast::calcVec()
   m_psize=pow(m_dim,2);
   m_img=new float*[m_psize]; //hopefully this inits to null...
 
+  for (int x=0;x<m_psize;x++)
+    {
+      m_img[x]=NULL;
+    }
+
   //camera point u v w thing
   m_w=m_from-m_at;
   m_u=cross(m_up,m_w);
@@ -321,18 +326,18 @@ void rast::fillP(int x,int y,iobj* tri)
           m_img[pos]=new float[4];
         }
 
-      /* //tempory solid colour */
-      /* for (int z=0;z<3;z++) */
-      /*   { */
-      /*     m_img[pos][z]=tri->m_colour[z]; */
-      /*   } */
-      
-      intColour(u,v,tri);
-          
+      //tempory solid colour
       for (int z=0;z<3;z++)
         {
-          m_img[pos][z]=m_colourF[z];
+          m_img[pos][z]=tri->m_vcolour[z];
         }
+      
+      /* intColour(u,v,tri); */
+          
+      /* for (int z=0;z<3;z++) */
+      /*   { */
+      /*     m_img[pos][z]=m_colourF[z]; */
+      /*   } */
 
       m_img[pos][3]=zDep;
     }
@@ -364,13 +369,16 @@ void rast::writeImg()
 
 void rast::iLight(iobj* tri)
 {
-  iobj* clight=m_light; //current light
+  iobj* clight; //current light
 
   objN(tri);
+  normalize(m_objN[0]);
   
   //for 3 vertices in tri
   for (int v=0;v<9;v+=3)
     {
+      clight=m_light; //current light
+      
       for (int x=0;x<3;x++)
         {
           tri->m_vcolour[v+x]=0;
@@ -388,34 +396,36 @@ void rast::iLight(iobj* tri)
           for (int x=0;x<3;x++)
             {
               m_lray[x]=clight->m_data[x]-tri->m_data[x+v];
-              m_haf[x]=m_lray[x]-(m_from[x]-tri->m_data[x+v]);
+              m_haf[x]=m_lray[x]-(tri->m_data[x+v]-m_from[x]);
             }
             
           normalize(m_haf);
           normalize(m_lray);
-          normalize(m_objN[0]);
 
-          double diff=max(0.0,dot(m_objN[0],m_lray));
-          double spec=pow(max(0.0,dot(m_objN[0],m_haf)),tri->m_colour[5]);
+          float diff=max(0.0,dot(m_objN[0],m_lray));
+          float spec=pow(max(0.0,dot(m_objN[0],m_haf)),tri->m_colour[5]);
           
           for (int x=0;x<3;x++)
             {
               //diffuse+spec light intensity formula thing
-              tri->m_vcolour[v+x]+=(((tri->m_colour[3]*tri->m_colour[x]*diff)+(tri->m_colour[4]*spec))*(((1/pow(m_maxLight,.5)))));
-
-              if (tri->m_vcolour[v+x]>1)
+              tri->m_vcolour[v+x]+=((tri->m_colour[3]*tri->m_colour[x]*diff)+(tri->m_colour[4]*spec))*(1/pow(m_maxLight,.5));
+              
+              if (tri->m_vcolour[v+x]>1.0)
                 {
                   tri->m_vcolour[v+x]=1;
                 }
 
-              if (tri->m_vcolour[v+x]<0)
+              if (tri->m_vcolour[v+x]<0.0)
                 {
                   tri->m_vcolour[v+x]=0;
                 }
             }
 
           clight=clight->m_next;
-        }      
+        }
+
+
+      /* printf("%f %f %f\n",tri->m_vcolour[v],tri->m_vcolour[v+1],tri->m_vcolour[v+2]); */
     }   
 }
 
@@ -443,21 +453,25 @@ void rast::objN(iobj* tri)
 
 void rast::intColour(float& triU,float& triV,iobj* tri)
 {
+  /* tri->printVcolour(); */
+  
   for (int x=0;x<3;x++)
     {
-      m_colourF[x]=tri->m_colour[x]*(1-triU-triV);
+      m_colourF[x]=tri->m_vcolour[x]*(1-triU-triV);
+    }
+
+  /* printf("intc: %f %f %f\n",m_colourF[0],m_colourF[1],m_colourF[2]); */
+  
+  for (int x=0;x<3;x++)
+    {
+      m_colourF[x]+=tri->m_vcolour[x+3]*triU;
     }
 
   for (int x=0;x<3;x++)
     {
-      m_colourF[x]+=tri->m_colour[x+3]*triU;
+      m_colourF[x]+=tri->m_vcolour[x+6]*triV;
     }
-
-  for (int x=0;x<3;x++)
-    {
-      m_colourF[x]+=tri->m_colour[x+6]*triV;
-    }
-
+  
   for (int x=0;x<3;x++)
     {
       if (m_colourF[x]>1)
