@@ -3,7 +3,7 @@
  cmsc 435 proj2
  represents different types of objects used in intersecting,
  including spheres polygons and lights. stores data as 1d array
- and floats as linked list*/
+ and doubles as linked list*/
 
 #include "iobj.h"
 
@@ -15,7 +15,7 @@ iobj::iobj()
 }
 
 //set stuff constructor
-iobj::iobj(int type,float* data,float* tdata,float* colour,iobj* next)
+iobj::iobj(int type,double* data,double* tdata,double* colour,iobj* next)
 :m_type(type),m_data(data),m_tdata(tdata),m_colour(colour),m_next(next),
   m_zDep(1)
 {

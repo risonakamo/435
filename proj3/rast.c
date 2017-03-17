@@ -18,7 +18,7 @@ rast::rast(rayp* raypars)
       m_from[x]=raypars->m_from[x];
       m_at[x]=raypars->m_at[x];
       m_up[x]=raypars->m_up[x];
-      m_background[x]=raypars->m_background[x]*255;
+      m_background[x]=(unsigned char)(raypars->m_background[x]*255);
       m_backgroundF[x]=raypars->m_background[x];
     }
 }
@@ -35,7 +35,7 @@ void rast::calcVec()
 
   //pixel grid size, supports only squares right now
   m_psize=pow(m_dim,2);
-  m_img=new float*[m_psize]; //hopefully this inits to null...
+  m_img=new double*[m_psize]; //hopefully this inits to null...
 
   for (int x=0;x<m_psize;x++)
     {
@@ -94,7 +94,7 @@ void rast::rasterise()
 /*       return; */
 /*     } */
 
-/*   float fromSub[12]; */
+/*   double fromSub[12]; */
 /*   tri->m_tdata[3]=1; */
 /*   tri->m_tdata[7]=1; */
 /*   tri->m_tdata[11]=1;   */
@@ -219,16 +219,17 @@ void rast::calcBoundBox(iobj* tri)
 
   for (int x=4;x<12;x+=4)
     {
-      m_boundBox[0]=min(tri->m_tdata[x],m_boundBox[0]);
-      m_boundBox[1]=min(tri->m_tdata[x+1],m_boundBox[1]);
-      m_boundBox[2]=max(tri->m_tdata[x],m_boundBox[2]);
-      m_boundBox[3]=max(tri->m_tdata[x+1],m_boundBox[3]);
+      m_boundBox[0]=floor(min(tri->m_tdata[x],m_boundBox[0]));
+      m_boundBox[1]=floor(min(tri->m_tdata[x+1],m_boundBox[1]));
+      m_boundBox[2]=floor(max(tri->m_tdata[x],m_boundBox[2]));
+      m_boundBox[3]=floor(max(tri->m_tdata[x+1],m_boundBox[3]));
     }
 
-  /* for (int x=0;x<4;x++) */
-  /*   { */
-  /*     printf("%f ",m_boundBox[x]); */
-  /*   } */
+  for (int x=0;x<4;x++)
+    {
+      printf("%f ",m_boundBox[x]);
+    }
+  printf("\n");
 }
 
 void rast::boundFill(iobj* tri)
@@ -237,8 +238,8 @@ void rast::boundFill(iobj* tri)
 
   int boxSize=(m_boundBox[3]-m_boundBox[1])*(m_boundBox[2]-m_boundBox[0]);
 
-  float x=m_boundBox[0];
-  float y=m_boundBox[1];
+  int x=m_boundBox[0];
+  int y=m_boundBox[1];
 
   while (1)
     {
@@ -301,9 +302,9 @@ void rast::fillP(int x,int y,iobj* tri)
   m_baryTF[3]=dot(m_baryT[1],m_baryT[1]);
   m_baryTF[4]=dot(m_baryT[1],m_baryT[2]);
 
-  float id=1/(m_baryTF[0]*m_baryTF[3]-m_baryTF[1]*m_baryTF[1]);
-  float u=(m_baryTF[3]*m_baryTF[2]-m_baryTF[1]*m_baryTF[4])*id;
-  float v=(m_baryTF[0]*m_baryTF[4]-m_baryTF[1]*m_baryTF[2])*id;
+  double id=1/(m_baryTF[0]*m_baryTF[3]-m_baryTF[1]*m_baryTF[1]);
+  double u=(m_baryTF[3]*m_baryTF[2]-m_baryTF[1]*m_baryTF[4])*id;
+  double v=(m_baryTF[0]*m_baryTF[4]-m_baryTF[1]*m_baryTF[2])*id;
 
   //if in triangle
   if (u>=0 && v>=0 && u+v<1)
@@ -311,7 +312,7 @@ void rast::fillP(int x,int y,iobj* tri)
       int pos=x+((m_dim-y-1)*m_dim);
       /* printf("%i\n",pos); */
 
-      float zDep=((1-u-v)*tri->m_data[2])+(u*tri->m_data[5])+(v*tri->m_data[8]);
+      double zDep=((1-u-v)*tri->m_data[2])+(u*tri->m_data[5])+(v*tri->m_data[8]);
       
       //if fragment exists and z is closer than current obj
       if (m_img[pos] && m_img[pos][3]>zDep)
@@ -323,7 +324,7 @@ void rast::fillP(int x,int y,iobj* tri)
       //if no img
       if (!m_img[pos])
         {
-          m_img[pos]=new float[4];
+          m_img[pos]=new double[4];
         }
 
       //tempory solid colour
@@ -345,8 +346,8 @@ void rast::fillP(int x,int y,iobj* tri)
 
 void rast::writeImg()
 {
-  FILE* f=fopen(m_ofile.c_str(),"w");  
-  fprintf(f,"P6 %d %d 255\n",m_dim,m_dim);
+  FILE* f=fopen(m_ofile.c_str(),"wb");
+  fprintf(f,"P6 %i %i 255\n",m_dim,m_dim);
   
   for (int x=0;x<m_psize;x++)
     {
@@ -402,8 +403,8 @@ void rast::iLight(iobj* tri)
           normalize(m_haf);
           normalize(m_lray);
 
-          float diff=max(0.0,dot(m_objN[0],m_lray));
-          float spec=pow(max(0.0,dot(m_objN[0],m_haf)),tri->m_colour[5]);
+          double diff=max(0.0,dot(m_objN[0],m_lray));
+          double spec=pow(max(0.0,dot(m_objN[0],m_haf)),tri->m_colour[5]);
           
           for (int x=0;x<3;x++)
             {
@@ -451,7 +452,7 @@ void rast::objN(iobj* tri)
     }
 }
 
-void rast::intColour(float& triU,float& triV,iobj* tri)
+void rast::intColour(double& triU,double& triV,iobj* tri)
 {
   /* tri->printVcolour(); */
   

@@ -32,20 +32,20 @@ class rayp
 
   /*--public vars--*/
   //various math-related data terms
-  float m_from[3];
-  float m_at[3];
-  float m_up[3];
+  double m_from[3];
+  double m_at[3];
+  double m_up[3];
   int m_angle;
   int m_res[2];
   
-  float m_background[3]; 
-  float m_hither;
-  float* m_fill;
+  double m_background[3]; 
+  double m_hither;
+  double* m_fill;
 
   string m_ofile; //name of output file
 
   /*--data stuff--*/
-  iobj* m_adata; /*any data, uses new iobj, holds float array able to represent
+  iobj* m_adata; /*any data, uses new iobj, holds double array able to represent
                    both spheres and polygons, dont have to be seperate*/
   iobj* m_light; //light objs have to be seperate though
   int m_maxLight; //number of lights
@@ -60,7 +60,7 @@ class rayp
 
   void fanTriangle(int dim); //split polygon to triangles
 
-  int checkFloat(string &a); //check if input was float
+  int checkDouble(string &a); //check if input was double
   
   /*--mode:--
     0=no mode
@@ -81,14 +81,14 @@ class rayp
   int m_mc; //mode count
   
   /*--circle temps--*/
-  float* m_tc; //tc temp circle
+  double* m_tc; //tc temp circle
 
   /*--polygon temps--*/
   int m_pc; //max point count of current polygon
-  float** m_tpg; //temp polygon
-  float** m_tpg2; //temp polygon 2
-  float* m_tp; //tp temp point
-  float* m_tp2;
+  double** m_tpg; //temp polygon
+  double** m_tpg2; //temp polygon 2
+  double* m_tp; //tp temp point
+  double* m_tp2;
   int m_pctr; //point counter
   int m_pctr2; //point counter2
 };
