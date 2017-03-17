@@ -306,8 +306,10 @@ void rast::fillP(int x,int y,iobj* tri)
       int pos=x+((m_dim-y-1)*m_dim);
       /* printf("%i\n",pos); */
 
+      float zDep=((1-u-v)*tri->m_data[2])+(u*tri->m_data[5])+(v*tri->m_data[8]);
+      
       //if fragment exists and z is closer than current obj
-      if (m_img[pos] && m_img[pos][3]>tri->m_zDep)
+      if (m_img[pos] && m_img[pos][3]>zDep)
         {
           /* printf("%f %f\n",m_img[pos]->m_zDep,tri->m_zDep); */
           return;
@@ -319,20 +321,20 @@ void rast::fillP(int x,int y,iobj* tri)
           m_img[pos]=new float[4];
         }
 
-      //tempory solid colour
-      for (int z=0;z<3;z++)
-        {
-          m_img[pos][z]=tri->m_colour[z];
-        }
-      
-      /* intColour(u,v,tri); */
-          
+      /* //tempory solid colour */
       /* for (int z=0;z<3;z++) */
       /*   { */
-      /*     m_img[pos][z]=m_colourF[z]; */
+      /*     m_img[pos][z]=tri->m_colour[z]; */
       /*   } */
+      
+      intColour(u,v,tri);
+          
+      for (int z=0;z<3;z++)
+        {
+          m_img[pos][z]=m_colourF[z];
+        }
 
-      m_img[pos][3]=tri->m_zDep;
+      m_img[pos][3]=zDep;
     }
 }
 
@@ -443,17 +445,17 @@ void rast::intColour(float& triU,float& triV,iobj* tri)
 {
   for (int x=0;x<3;x++)
     {
-      m_colourF[x]=tri->m_vcolour[x]*(1-triU-triV);
+      m_colourF[x]=tri->m_colour[x]*(1-triU-triV);
     }
 
   for (int x=0;x<3;x++)
     {
-      m_colourF[x]+=tri->m_vcolour[x+3]*triU;
+      m_colourF[x]+=tri->m_colour[x+3]*triU;
     }
 
   for (int x=0;x<3;x++)
     {
-      m_colourF[x]+=tri->m_vcolour[x+6]*triV;
+      m_colourF[x]+=tri->m_colour[x+6]*triV;
     }
 
   for (int x=0;x<3;x++)
