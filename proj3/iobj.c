@@ -16,8 +16,7 @@ iobj::iobj()
 
 //set stuff constructor
 iobj::iobj(int type,double* data,double* tdata,double* colour,iobj* next)
-:m_type(type),m_data(data),m_tdata(tdata),m_colour(colour),m_next(next),
-  m_zDep(1)
+:m_type(type),m_data(data),m_tdata(tdata),m_colour(colour),m_next(next)
 {
   for (int x=0;x<9;x++)
     {

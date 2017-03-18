@@ -67,19 +67,17 @@ void rast::rasterise()
           break;
         }
       
-      Mcam(cobj);
+      Mcam(cobj); 
+      MP(cobj);      
+      MZdiv(cobj);
       /* /\*--tdataprinter--*\/ */
       /* /\* cobj->print(); *\/ */
       /* cobj->printTdata(); */
       /* printf("\n"); */
-      /* /\*----------------*\/            */
-      MP(cobj);      
-      MZdiv(cobj);
+      /* /\*----------------*\/    */   
       Morth(cobj);
       Mvp(cobj);
       iLight(cobj);
-
-      cobj->printTdata();
       
       boundFill(cobj);
       
@@ -142,18 +140,14 @@ void rast::Mcam(iobj* tri)
         }
 
       tri->m_tdata[x+3]=1;
-
-      if (x==0)
-        {
-          tri->m_zDep=tri->m_tdata[2];
-          /* printf("z=%f\n",tri->m_zDep); */
-        }
-
-      else
-        {
-          tri->m_zDep=max(tri->m_zDep,tri->m_tdata[x+2]);
-        }
     }
+
+  for (int x=0;x<3;x++)
+    {
+      tri->m_zDep[x]=tri->m_tdata[(x*4)+2];
+      /* printf("%f ",tri->m_zDep[x]); */
+    }
+  /* cout<<endl; */
 }
 
 void rast::MP(iobj* tri)
@@ -319,11 +313,6 @@ void rast::bCord3(double xpos,double ypos,iobj* tri,double& Ra,double& Rb,double
   Rb=bCord3F(2,0,xpos,ypos,tri)/bCord3F(2,0,tri->m_tdata[4],tri->m_tdata[5],tri);
 
   Rr=bCord3F(0,1,xpos,ypos,tri)/bCord3F(0,1,tri->m_tdata[8],tri->m_tdata[9],tri);
-
-  if (xpos==200 && ypos==150)
-    {
-      printf("%f\n",Ra);
-    }
 }
 
 //fvv(x,y) function thing from textbook (pg165)
@@ -360,7 +349,7 @@ void rast::fillP(int xpos,int ypos,iobj* tri)
       int pos=xpos+((m_dim-ypos-1)*m_dim);
       /* printf("%i\n",pos); */
 
-      double zDep=(u*tri->m_data[2])+(v*tri->m_data[5])+(r*tri->m_data[8]);
+      double zDep=(u*tri->m_zDep[0])+(v*tri->m_zDep[1])+(r*tri->m_zDep[2]);
       
       //if fragment exists and z is closer than current obj
       if (m_img[pos] && m_img[pos][3]>zDep)
