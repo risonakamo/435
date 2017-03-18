@@ -1,4 +1,4 @@
-ofiles=rats.o slVector.o rayp.o iobj.o rast.o
+ofiles=rats.o slVector.o rayp.o iobj.o rast.o ilit.o
 
 rats: $(ofiles)
 	g++ $(ofiles) -o rats
@@ -14,6 +14,9 @@ iobj.o: iobj.c iobj.h
 
 rast.o: rast.h rast.c
 	g++ -c rast.c
+
+ilit.o: ilit.h ilit.c
+	g++ -c ilit.c
 
 slVector.o: ../common/slVector.H ../common/slVector.cpp
 	g++ -c ../common/slVector.cpp

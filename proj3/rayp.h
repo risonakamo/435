@@ -14,6 +14,7 @@
 #include <cstdlib>
 
 #include "iobj.h"
+#include "ilit.h"
 
 using namespace std;
 
@@ -47,7 +48,7 @@ class rayp
   /*--data stuff--*/
   iobj* m_adata; /*any data, uses new iobj, holds double array able to represent
                    both spheres and polygons, dont have to be seperate*/
-  iobj* m_light; //light objs have to be seperate though
+  ilit* m_light; //light objs have to be seperate though
   int m_maxLight; //number of lights
   
  private:

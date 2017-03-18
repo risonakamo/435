@@ -9,6 +9,7 @@
 #include "../common/slVector.H"
 #include "rayp.h"
 #include "iobj.h"
+#include "ilit.h"
 
 using namespace std;
 
@@ -73,7 +74,7 @@ class rast
   SlVector3* m_ppointsV; //pixel points vector
                          //size should be psize
 
-  iobj* m_light; //lights list
+  ilit* m_light; //lights list
   double m_maxLight; //max lights (not really data but goes with m lights)
   iobj* m_adata; //alldata list
   double** m_img; //image data

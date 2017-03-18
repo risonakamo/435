@@ -434,7 +434,7 @@ int rayp::lparse(string &a)
           newLightData[x+3]=1;
         }
       
-      iobj* newLight=new iobj(4,newLightData,NULL,NULL,m_light);
+      ilit* newLight=new ilit(newLightData,NULL,m_light);
       m_light=newLight;
     }
   

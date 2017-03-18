@@ -410,7 +410,7 @@ void rast::writeImg()
 
 void rast::iLight(iobj* tri)
 {
-  iobj* clight; //current light
+  ilit* clight; //current light
 
   objN(tri);
   normalize(m_objN[0]);
