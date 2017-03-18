@@ -37,10 +37,14 @@ class rast
   void calcBoundBox(iobj* tri); //calc bound box and put in m_boundBox
   void fillP(int xpos,int ypos,iobj* tri); /*checks if a 2d point is inside a triangle's
                                       transformed 2d form, fills in img array*/
-
+  void bCord(int xpos,int ypos,iobj* tri,double& Ru,double& Rv);
+  void bCord2(int xpos,int ypos,iobj* tri,double& Ru,double &Rv);
+  void bCord3(double xpos,double ypos,iobj* tri,double& Ra,double& Rb,double& Rr);
+  double bCord3F(int v1,int v2,double xpos,double ypos,iobj* tri);
+  
   void iLight(iobj* tri);
   void objN(iobj* tri);
-  void intColour(double triU,double triV,iobj* tri);
+  void intColour(double triU,double triV,double triR,iobj* tri);
   
   void writeImg(); //write colours from img array
     
@@ -80,7 +84,7 @@ class rast
   /*--calcboundbox stuff--*/
   double m_boundBox[4]; //bounding box [min x,min y,max x,max y]
 
-  /*--fillP temps--*/
+  /*--bcord2 temps--*/
   SlVector3 m_baryT[3]; //temp bary vectors
   double m_baryTF[5]; //temp dot products
 

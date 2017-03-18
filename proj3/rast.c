@@ -78,6 +78,8 @@ void rast::rasterise()
       Morth(cobj);
       Mvp(cobj);
       iLight(cobj);
+
+      cobj->printTdata();
       
       boundFill(cobj);
       
@@ -271,16 +273,20 @@ void rast::boundFill(iobj* tri)
   /*   } */
 }
 
-//check if point x y is in tri
-//looks at tri's tdata
-void rast::fillP(int xpos,int ypos,iobj* tri)
+void rast::bCord(int xpos,int ypos,iobj* tri,double& Ru,double& Rv)
 {
-  if (xpos>=m_dim || xpos<0 || ypos>=m_dim || ypos<0)
-    {
-      return;
-    }
+  float d=1/(((tri->m_tdata[9]-tri->m_tdata[5])*(tri->m_tdata[0]-tri->m_tdata[4]))+
+             ((tri->m_tdata[4]-tri->m_tdata[8])*(tri->m_tdata[1]-tri->m_tdata[5])));
   
-  //setting vectors
+  Ru=(((tri->m_tdata[9]-tri->m_tdata[5])*(xpos-tri->m_tdata[4]))+
+      ((tri->m_tdata[4]-tri->m_tdata[8])*(ypos-tri->m_tdata[5])))*d;
+
+  Rv=(((tri->m_tdata[5]-tri->m_tdata[1])*(xpos-tri->m_tdata[4]))+
+      ((tri->m_tdata[0]-tri->m_tdata[4])*(ypos-tri->m_tdata[5])))*d;
+}
+
+void rast::bCord2(int xpos,int ypos,iobj* tri,double& Ru,double &Rv)
+{
   for (int z=0;z<2;z++)
     {
       m_baryT[0][z]=tri->m_tdata[8+z]-tri->m_tdata[z];
@@ -302,16 +308,59 @@ void rast::fillP(int xpos,int ypos,iobj* tri)
   m_baryTF[4]=dot(m_baryT[1],m_baryT[2]);
 
   double id=1/(m_baryTF[0]*m_baryTF[3]-m_baryTF[1]*m_baryTF[1]);
-  double u=(m_baryTF[3]*m_baryTF[2]-m_baryTF[1]*m_baryTF[4])*id;
-  double v=(m_baryTF[0]*m_baryTF[4]-m_baryTF[1]*m_baryTF[2])*id;
+  Ru=(m_baryTF[3]*m_baryTF[2]-m_baryTF[1]*m_baryTF[4])*id;
+  Rv=(m_baryTF[0]*m_baryTF[4]-m_baryTF[1]*m_baryTF[2])*id;
+}
 
+void rast::bCord3(double xpos,double ypos,iobj* tri,double& Ra,double& Rb,double& Rr)
+{  
+  Ra=bCord3F(1,2,xpos,ypos,tri)/bCord3F(1,2,tri->m_tdata[0],tri->m_tdata[1],tri);
+
+  Rb=bCord3F(2,0,xpos,ypos,tri)/bCord3F(2,0,tri->m_tdata[4],tri->m_tdata[5],tri);
+
+  Rr=bCord3F(0,1,xpos,ypos,tri)/bCord3F(0,1,tri->m_tdata[8],tri->m_tdata[9],tri);
+
+  if (xpos==200 && ypos==150)
+    {
+      printf("%f\n",Ra);
+    }
+}
+
+//fvv(x,y) function thing from textbook (pg165)
+double rast::bCord3F(int v1,int v2,double xpos,double ypos,iobj* tri)
+{
+  v1*=4;
+  v2*=4;
+  
+  return ((tri->m_tdata[v1+1]-tri->m_tdata[v2+1])*xpos)+
+    ((tri->m_tdata[v2]-tri->m_tdata[v1])*ypos)+
+    (tri->m_tdata[v1]*tri->m_tdata[v2+1])-
+    (tri->m_tdata[v2]*tri->m_tdata[v1+1]);
+}
+
+//check if point x y is in tri
+//looks at tri's tdata
+void rast::fillP(int xpos,int ypos,iobj* tri)
+{
+  if (xpos>=m_dim || xpos<0 || ypos>=m_dim || ypos<0)
+    {
+      return;
+    }
+
+  double u;
+  double v;
+  double r;
+  bCord3(xpos,ypos,tri,u,v,r);
+
+  /* printf("%f %f %f\n",u,v,r); */
+  
   //if in triangle
-  if (u>=0 && v>=0 && u+v<1)
+  if (u>0 && v>0 && r>0)
     {
       int pos=xpos+((m_dim-ypos-1)*m_dim);
       /* printf("%i\n",pos); */
 
-      double zDep=((1-u-v)*tri->m_data[2])+(u*tri->m_data[5])+(v*tri->m_data[8]);
+      double zDep=(u*tri->m_data[2])+(v*tri->m_data[5])+(r*tri->m_data[8]);
       
       //if fragment exists and z is closer than current obj
       if (m_img[pos] && m_img[pos][3]>zDep)
@@ -329,18 +378,18 @@ void rast::fillP(int xpos,int ypos,iobj* tri)
       /* tri->printVcolour(); */
       /* printf("\n"); */
 
-      intColour(u,v,tri);
+      /* intColour(u,v,r,tri); */
       
-      for (int z=0;z<3;z++)
-        {
-          m_img[pos][z]=m_colourF[z];
-        }
-
-      /* //tempory solid colour */
       /* for (int z=0;z<3;z++) */
       /*   { */
-      /*     m_img[pos][z]=tri->m_vcolour[z]; */
+      /*     m_img[pos][z]=m_colourF[z]; */
       /*   } */
+
+      //tempory solid colour
+      for (int z=0;z<3;z++)
+        {
+          m_img[pos][z]=tri->m_vcolour[z];
+        }
       
       m_img[pos][3]=zDep;
     }
@@ -457,25 +506,25 @@ void rast::objN(iobj* tri)
     }
 }
 
-void rast::intColour(double triU,double triV,iobj* tri)
+void rast::intColour(double triU,double triV,double triR,iobj* tri)
 {
   /* tri->printVcolour(); */
 
   for (int x=0;x<3;x++)
     {
-      m_colourF[x]=tri->m_vcolour[x]*(1-triU-triV);
+      m_colourF[x]=tri->m_vcolour[x]*triU;
     }
 
   /* printf("intc: %f %f %f\n",m_colourF[0],m_colourF[1],m_colourF[2]); */
   
   for (int x=0;x<3;x++)
     {
-      m_colourF[x]+=tri->m_vcolour[x+3]*triU;
+      m_colourF[x]+=tri->m_vcolour[x+3]*triV;
     }
 
   for (int x=0;x<3;x++)
     {
-      m_colourF[x]+=tri->m_vcolour[x+6]*triV;
+      m_colourF[x]+=tri->m_vcolour[x+6]*triR;
     }
   
   /* for (int x=0;x<3;x++) */
