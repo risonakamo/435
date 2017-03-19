@@ -429,9 +429,7 @@ void rast::iLight(iobj* tri)
           for (int x=0;x<3;x++)
             {
               m_objN[0][x]=tri->m_ndata[x+v];
-              printf("%f ",m_objN[0][x]);
             }
-          printf("\n");
 
           /* normalize(m_objN[0]); */
         }
@@ -481,7 +479,7 @@ void rast::iLight(iobj* tri)
     }
   
   /* tri->printVcolour(); */
-  printf("\n");
+  /* printf("\n"); */
 }
 
 void rast::objN(iobj* tri)
@@ -529,17 +527,16 @@ void rast::intColour(double triU,double triV,double triR,iobj* tri)
       m_colourF[x]+=tri->m_vcolour[x+6]*triR;
     }
   
-  /* for (int x=0;x<3;x++) */
-  /*   { */
-  /*     if (m_colourF[x]>1.0) */
-  /*       { */
-  /*         m_colourF[x]=1; */
-  /*       } */
-
-  /*     if (m_colourF[x]<0.0); */
-  /*     { */
-  /*       printf("%f\n",m_colourF[x]); */
-  /*       m_colourF[x]=0; */
-  /*     } */
-  /*   } */
+  for (int x=0;x<3;x++)
+    {
+      if (m_colourF[x]>1.00000000000000000)
+        {
+          m_colourF[x]=1;
+        }
+      
+      if (m_colourF[x]<0)
+      {
+        m_colourF[x]=0;
+      }
+    }
 }
