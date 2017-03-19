@@ -367,18 +367,18 @@ void rast::fillP(int xpos,int ypos,iobj* tri)
       /* tri->printVcolour(); */
       /* printf("\n"); */
 
-      /* intColour(u,v,r,tri); */
+      intColour(u,v,r,tri);
       
-      /* for (int z=0;z<3;z++) */
-      /*   { */
-      /*     m_img[pos][z]=m_colourF[z]; */
-      /*   } */
-
-      //tempory solid colour
       for (int z=0;z<3;z++)
         {
-          m_img[pos][z]=tri->m_vcolour[z];
+          m_img[pos][z]=m_colourF[z];
         }
+
+      /* //tempory solid colour */
+      /* for (int z=0;z<3;z++) */
+      /*   { */
+      /*     m_img[pos][z]=tri->m_vcolour[z]; */
+      /*   } */
       
       m_img[pos][3]=zDep;
     }
@@ -413,7 +413,6 @@ void rast::iLight(iobj* tri)
   ilit* clight; //current light
 
   objN(tri);
-  normalize(m_objN[0]);
   
   //for 3 vertices in tri
   for (int v=0;v<9;v+=3)
@@ -423,6 +422,18 @@ void rast::iLight(iobj* tri)
       for (int x=0;x<3;x++)
         {
           tri->m_vcolour[v+x]=0;
+        }
+
+      if (tri->m_ndata)
+        {
+          for (int x=0;x<3;x++)
+            {
+              m_objN[0][x]=tri->m_ndata[x+v];
+              printf("%f ",m_objN[0][x]);
+            }
+          printf("\n");
+
+          /* normalize(m_objN[0]); */
         }
       
       //for eahc light
@@ -439,7 +450,7 @@ void rast::iLight(iobj* tri)
               m_lray[x]=clight->m_data[x]-tri->m_data[x+v];
               m_haf[x]=m_lray[x]-(tri->m_data[x+v]-m_from[x]);
             }
-            
+          
           normalize(m_haf);
           normalize(m_lray);
 
@@ -468,9 +479,9 @@ void rast::iLight(iobj* tri)
 
       /* printf("%f %f %f\n",tri->m_vcolour[v],tri->m_vcolour[v+1],tri->m_vcolour[v+2]); */
     }
-
+  
   /* tri->printVcolour(); */
-  /* printf("\n"); */
+  printf("\n");
 }
 
 void rast::objN(iobj* tri)
@@ -481,7 +492,7 @@ void rast::objN(iobj* tri)
     }
 
   //triangle
-  if (tri->m_type==2)
+  if (tri->m_type==2 && !tri->m_ndata)
     {
       //triangles are stored in size 9 array
       for (int x=0;x<3;x++)
@@ -491,6 +502,8 @@ void rast::objN(iobj* tri)
         }
 
       m_objN[0]=cross(m_objN[1],m_objN[2]);
+      normalize(m_objN[0]);
+      
       return;
     }
 }
