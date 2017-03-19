@@ -346,7 +346,7 @@ void rayp::pparse(string &a,int dim)
       //up triangles
       if (m_pctr>=3)
         {
-          fanTriangle(3);
+          fanTriangle(dim);
         }      
     }
 
@@ -362,9 +362,16 @@ void rayp::pparse(string &a,int dim)
 void rayp::fanTriangle(int dim)
 {
   //3 points for dim numbers each
+  int odim=dim;
   dim*=3;
   m_tp=new double[dim];
-  m_tp2=new double[12];
+  m_tp2=new double[12]; //transform normal array
+
+  /* for (int x=0;x<dim/3;x++) */
+  /*   { */
+  /*     printf("%f ",m_tpg[1][x]); */
+  /*   } */
+  /* printf("\n"); */
   
   int y=0;
   int z=0;
@@ -387,7 +394,7 @@ void rayp::fanTriangle(int dim)
 
       z++;
 
-      if (z>2)
+      if (z>odim-1)
         {
           z=0;
           y++;
@@ -403,8 +410,17 @@ void rayp::fanTriangle(int dim)
     }
 
   if (dim==18)
-    {
+    {      
       t=new iobj(3,m_tp,m_tp2,m_fill,m_adata);
+
+      /* cout<<"first:"<<endl; */
+      /* t->print(); */
+      
+      t->splitN();
+
+      /* cout<<"second:"<<endl; */
+      /* t->print(); */
+
     }
   
   m_adata=t;

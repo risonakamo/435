@@ -29,6 +29,8 @@ class iobj
   void printTdata();
 
   void printVcolour();
+
+  void splitN();
   
   /*type of shape thing:
    0=undefined
@@ -39,6 +41,8 @@ class iobj
   int m_type;
   double* m_data; //double array of data
   double* m_tdata; //transform data
+  double*
+    m_ndata; //normal data
   double m_zDep[3]; //closest zdepth of triangle
   double* m_colour; /*colour array, potentially a shared pointer
                       with other objs with same coloured*/
@@ -46,7 +50,6 @@ class iobj
   iobj* m_next; //link to next object
 
  private:
-  
 };
 
 #endif
