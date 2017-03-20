@@ -1,9 +1,8 @@
-/*rayp.h - ray parser
+/*rayp.h - ray parser rasteriser mod
   khang ngo
-  cmsc 435 proj 2
-  includes rayp object and flink2.  rayp object handles
-  nff file parsing to be passed onto the rayd which does
-  the math work*/
+  cmsc 435 proj 3
+  parses nff files.  same as ray tracer parser repurposed for
+  rasteriser*/
 
 #ifndef rayp_h
 #define rayp_h

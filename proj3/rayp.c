@@ -1,9 +1,8 @@
-/*rayp.c - ray parser
+/*rayp.c - ray parser rasteriser mod
   khang ngo
-  cmsc 435 proj 2
-  includes rayp object and flink2.  rayp object handles
-  nff file parsing to be passed onto the rayd which does
-  the math work*/
+  cmsc 435 proj 3
+  parses nff files.  same as ray tracer parser repurposed for
+  rasteriser*/
 
 #include "rayp.h"
 
@@ -366,12 +365,6 @@ void rayp::fanTriangle(int dim)
   dim*=3;
   m_tp=new double[dim];
   m_tp2=new double[12]; //transform normal array
-
-  /* for (int x=0;x<dim/3;x++) */
-  /*   { */
-  /*     printf("%f ",m_tpg[1][x]); */
-  /*   } */
-  /* printf("\n"); */
   
   int y=0;
   int z=0;
@@ -412,15 +405,8 @@ void rayp::fanTriangle(int dim)
   if (dim==18)
     {      
       t=new iobj(3,m_tp,m_tp2,m_fill,m_adata);
-
-      /* cout<<"first:"<<endl; */
-      /* t->print(); */
       
       t->splitN();
-
-      /* cout<<"second:"<<endl; */
-      /* t->print(); */
-
     }
   
   m_adata=t;

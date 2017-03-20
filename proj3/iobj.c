@@ -1,9 +1,8 @@
-/*iobj.c - intersection object
+/*iobj.c - intersection object rasteriser version
  khang ngo
- cmsc 435 proj2
- represents different types of objects used in intersecting,
- including spheres polygons and lights. stores data as 1d array
- and doubles as linked list*/
+ cmsc 435 proj3
+ contains data for rasterisation triangle.  stores transform data,
+ normal data, colour data, depth. acts as linked list*/
 
 #include "iobj.h"
 
@@ -81,6 +80,7 @@ void iobj::print()
   cout<<endl;
 }
 
+//print transform data
 void iobj::printTdata()
 {
   int y=0;
@@ -97,6 +97,7 @@ void iobj::printTdata()
     }
 }
 
+//print vertex colours
 void iobj::printVcolour()
 {
   int y=0;

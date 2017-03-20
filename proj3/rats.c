@@ -1,3 +1,9 @@
+/*rats.c - rasteriser main
+ khang ngo
+ cmsc 435 proj3
+ main driver for rasteriser.  pretty much the same
+ as ray tracer's rat from proj2*/
+
 using namespace std;
 
 #include <iostream>
@@ -14,7 +20,7 @@ int main(int argc,char* argv[])
   string oname="output.ppm";
   if (argc>3 ||  argc<2)
     {
-      cout<<"rat <input nff filename> <output ppm filename>"<<endl;
+      cout<<"rats <input nff filename> <output ppm filename>"<<endl;
       return 0;      
     }
   

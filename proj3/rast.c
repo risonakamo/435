@@ -1,3 +1,8 @@
+/*rast.c - rasteriser
+ khang ngo
+ cmsc 435 proj3
+ uses data from a rayp obj to perform rasterisation*/
+
 #include "rast.h"
 
 rast::rast()
@@ -29,7 +34,7 @@ void rast::calcVec()
   //was called
   if (m_dim==0)
     {
-      cout<<"rayd2 calcvec: not all variables set"<<endl;
+      cout<<"rast calcvec: not all variables set"<<endl;
       return;
     }
 
@@ -56,69 +61,40 @@ void rast::calcVec()
   normalize(m_v);
 }
 
+//main pipeline process thing
 void rast::rasterise()
 {
   iobj* cobj=m_adata;
-  
+
+  //for all triangles
   while (1)
     {
       if (!cobj)
         {
           break;
         }
-      
+
+      //M transforms
       Mcam(cobj); 
       MP(cobj);      
       MZdiv(cobj);
-      /* /\*--tdataprinter--*\/ */
-      /* /\* cobj->print(); *\/ */
-      /* cobj->printTdata(); */
-      /* printf("\n"); */
-      /* /\*----------------*\/    */   
       Morth(cobj);
       Mvp(cobj);
+
+      //lighting the vertices
       iLight(cobj);
-      
+
+      //boundbox/filled pixels
       boundFill(cobj);
       
       cobj=cobj->m_next;
     }
 
+  //write img
   writeImg();  
 }
 
-/* void rast::Mcam_old(iobj* tri) */
-/* { */
-/*   if (tri->m_type!=2 && tri->m_type!=3) */
-/*     { */
-/*       return; */
-/*     } */
-
-/*   double fromSub[12]; */
-/*   tri->m_tdata[3]=1; */
-/*   tri->m_tdata[7]=1; */
-/*   tri->m_tdata[11]=1;   */
-  
-/*   for (int x=0;x<3;x++) */
-/*     { */
-/*       fromSub[x]=tri->m_data[x]-m_from[x]; */
-/*       fromSub[x+3]=tri->m_data[x+3]-m_from[x]; */
-/*       fromSub[x+6]=tri->m_data[x+6]-m_from[x]; */
-/*     } */
-
-/*   tri->m_tdata[0]=(m_u[0]*fromSub[0])+(m_u[1]*fromSub[1])+(m_u[2]*fromSub[2]); */
-/*   tri->m_tdata[1]=(m_v[0]*fromSub[0])+(m_v[1]*fromSub[1])+(m_v[2]*fromSub[2]); */
-/*   tri->m_tdata[2]=(m_w[0]*fromSub[0])+(m_w[1]*fromSub[1])+(m_w[2]*fromSub[2]); */
-
-/*   tri->m_tdata[4]=(m_u[0]*fromSub[4])+(m_u[1]*fromSub[5])+(m_u[2]*fromSub[6]); */
-/*   tri->m_tdata[5]=(m_v[0]*fromSub[4])+(m_v[1]*fromSub[5])+(m_v[2]*fromSub[6]); */
-/*   tri->m_tdata[6]=(m_w[0]*fromSub[4])+(m_w[1]*fromSub[6])+(m_w[2]*fromSub[6]); */
-
-/*   tri->m_tdata[8]=(m_u[0]*fromSub[8])+(m_u[1]*fromSub[9])+(m_u[2]*fromSub[10]); */
-/*   tri->m_tdata[9]=(m_v[0]*fromSub[8])+(m_v[1]*fromSub[9])+(m_v[2]*fromSub[10]); */
-/*   tri->m_tdata[10]=(m_w[0]*fromSub[8])+(m_w[1]*fromSub[9])+(m_w[2]*fromSub[10]); */
-/* } */
-
+//camera transform
 void rast::Mcam(iobj* tri)
 {
   int z=0;
@@ -145,11 +121,10 @@ void rast::Mcam(iobj* tri)
   for (int x=0;x<3;x++)
     {
       tri->m_zDep[x]=tri->m_tdata[(x*4)+2];
-      /* printf("%f ",tri->m_zDep[x]); */
     }
-  /* cout<<endl; */
 }
 
+//perspective transform
 void rast::MP(iobj* tri)
 {
   for (int x=0;x<12;x+=4)
@@ -166,6 +141,7 @@ void rast::MP(iobj* tri)
     }
 }
 
+//orthogonal transform
 void rast::Morth(iobj* tri)
 {
   for (int x=0;x<12;x+=4)
@@ -181,6 +157,7 @@ void rast::Morth(iobj* tri)
     }
 }
 
+//viewport transform..or something
 void rast::Mvp(iobj* tri)
 {   
   for (int x=0;x<12;x+=4)
@@ -195,6 +172,7 @@ void rast::Mvp(iobj* tri)
     }
 }
 
+//Z divide
 void rast::MZdiv(iobj* tri)
 {
   for (int x=0;x<12;x+=4)
@@ -206,38 +184,21 @@ void rast::MZdiv(iobj* tri)
     }
 }
 
-void rast::calcBoundBox(iobj* tri)
-{
-  m_boundBox[0]=tri->m_tdata[0];
-  m_boundBox[1]=tri->m_tdata[1];
-  m_boundBox[2]=tri->m_tdata[0];
-  m_boundBox[3]=tri->m_tdata[1];
-
-  for (int x=4;x<12;x+=4)
-    {
-      m_boundBox[0]=ceil(min(tri->m_tdata[x],m_boundBox[0]));
-      m_boundBox[1]=ceil(min(tri->m_tdata[x+1],m_boundBox[1]));
-      m_boundBox[2]=ceil(max(tri->m_tdata[x],m_boundBox[2]));
-      m_boundBox[3]=ceil(max(tri->m_tdata[x+1],m_boundBox[3]));
-    }
-
-  /* for (int x=0;x<4;x++) */
-  /*   { */
-  /*     printf("%f ",m_boundBox[x]); */
-  /*   } */
-  /* printf("\n"); */
-}
-
+//loop over bound box, filling in img array with
+//pixels if it covers
 void rast::boundFill(iobj* tri)
 {
+  //get boundbox and bound box dimensions
   calcBoundBox(tri);  
   int boxSize=(m_boundBox[3]-m_boundBox[1])*(m_boundBox[2]-m_boundBox[0]);
 
   int x=m_boundBox[0];
   int y=m_boundBox[1];
-  
+
+  //loop over bound box
   while (1)
     {
+      //test x y for inside triangle, fill img array
       fillP(x,y,tri);
       x++;
 
@@ -252,60 +213,26 @@ void rast::boundFill(iobj* tri)
           break;
         }
     }
-
-   
-  /* for (int z=0;z<boxSize;z++) */
-  /*   { */
-  /*     fillP(x,y,tri); */
-  /*     x++; */
-
-  /*     if (x>m_boundBox[2]) */
-  /*       { */
-  /*         x=m_boundBox[0]; */
-  /*         y++; */
-  /*       } */
-  /*   } */
 }
 
-void rast::bCord(int xpos,int ypos,iobj* tri,double& Ru,double& Rv)
+//calculate bound box from triangle
+void rast::calcBoundBox(iobj* tri)
 {
-  float d=1/(((tri->m_tdata[9]-tri->m_tdata[5])*(tri->m_tdata[0]-tri->m_tdata[4]))+
-             ((tri->m_tdata[4]-tri->m_tdata[8])*(tri->m_tdata[1]-tri->m_tdata[5])));
-  
-  Ru=(((tri->m_tdata[9]-tri->m_tdata[5])*(xpos-tri->m_tdata[4]))+
-      ((tri->m_tdata[4]-tri->m_tdata[8])*(ypos-tri->m_tdata[5])))*d;
+  m_boundBox[0]=tri->m_tdata[0];
+  m_boundBox[1]=tri->m_tdata[1];
+  m_boundBox[2]=tri->m_tdata[0];
+  m_boundBox[3]=tri->m_tdata[1];
 
-  Rv=(((tri->m_tdata[5]-tri->m_tdata[1])*(xpos-tri->m_tdata[4]))+
-      ((tri->m_tdata[0]-tri->m_tdata[4])*(ypos-tri->m_tdata[5])))*d;
+  for (int x=4;x<12;x+=4)
+    {
+      m_boundBox[0]=ceil(min(tri->m_tdata[x],m_boundBox[0]));
+      m_boundBox[1]=ceil(min(tri->m_tdata[x+1],m_boundBox[1]));
+      m_boundBox[2]=ceil(max(tri->m_tdata[x],m_boundBox[2]));
+      m_boundBox[3]=ceil(max(tri->m_tdata[x+1],m_boundBox[3]));
+    }
 }
 
-void rast::bCord2(int xpos,int ypos,iobj* tri,double& Ru,double &Rv)
-{
-  for (int z=0;z<2;z++)
-    {
-      m_baryT[0][z]=tri->m_tdata[8+z]-tri->m_tdata[z];
-      m_baryT[1][z]=tri->m_tdata[4+z]-tri->m_tdata[z];
-    }
-  
-  m_baryT[2][0]=xpos-tri->m_tdata[0];
-  m_baryT[2][1]=ypos-tri->m_tdata[1];
-  
-  for (int z=0;z<3;z++)
-    {
-      m_baryT[z][2]=0;
-    }
-
-  m_baryTF[0]=dot(m_baryT[0],m_baryT[0]);
-  m_baryTF[1]=dot(m_baryT[0],m_baryT[1]);
-  m_baryTF[2]=dot(m_baryT[0],m_baryT[2]);
-  m_baryTF[3]=dot(m_baryT[1],m_baryT[1]);
-  m_baryTF[4]=dot(m_baryT[1],m_baryT[2]);
-
-  double id=1/(m_baryTF[0]*m_baryTF[3]-m_baryTF[1]*m_baryTF[1]);
-  Ru=(m_baryTF[3]*m_baryTF[2]-m_baryTF[1]*m_baryTF[4])*id;
-  Rv=(m_baryTF[0]*m_baryTF[4]-m_baryTF[1]*m_baryTF[2])*id;
-}
-
+//calculate bary coords a b r from x y and triangle's vertices
 void rast::bCord3(double xpos,double ypos,iobj* tri,double& Ra,double& Rb,double& Rr)
 {  
   Ra=bCord3F(1,2,xpos,ypos,tri)/bCord3F(1,2,tri->m_tdata[0],tri->m_tdata[1],tri);
@@ -340,50 +267,43 @@ void rast::fillP(int xpos,int ypos,iobj* tri)
   double v;
   double r;
   bCord3(xpos,ypos,tri,u,v,r);
-
-  /* printf("%f %f %f\n",u,v,r); */
   
   //if in triangle
   if (u>0 && v>0 && r>0)
     {
+      //convert x y to img array index
       int pos=xpos+((m_dim-ypos-1)*m_dim);
-      /* printf("%i\n",pos); */
 
+      //z depth interpolation
       double zDep=(u*tri->m_zDep[0])+(v*tri->m_zDep[1])+(r*tri->m_zDep[2]);
       
-      //if fragment exists and z is closer than current obj
+      //if fragment exists and z is closer than current obj, do nothing
       if (m_img[pos] && m_img[pos][3]>zDep)
         {
-          /* printf("%f %f\n",m_img[pos]->m_zDep,tri->m_zDep); */
           return;
         }
 
-      //if no img
+      //if nothing at pixel currently
       if (!m_img[pos])
         {
           m_img[pos]=new double[4];
-        }
-            
-      /* tri->printVcolour(); */
-      /* printf("\n"); */
+        }            
 
+      //interpolate colour
       intColour(u,v,r,tri);
-      
+
+      //setting colour
       for (int z=0;z<3;z++)
         {
           m_img[pos][z]=m_colourF[z];
         }
 
-      /* //tempory solid colour */
-      /* for (int z=0;z<3;z++) */
-      /*   { */
-      /*     m_img[pos][z]=tri->m_vcolour[z]; */
-      /*   } */
-      
+      //setting z dep
       m_img[pos][3]=zDep;
     }
 }
 
+//write img to file
 void rast::writeImg()
 {
   FILE* f=fopen(m_ofile.c_str(),"wb");
@@ -408,22 +328,27 @@ void rast::writeImg()
     }
 }
 
+//calculate vertex colour for a triangle
 void rast::iLight(iobj* tri)
 {
   ilit* clight; //current light
 
+  //calc triangle normal
   objN(tri);
   
   //for 3 vertices in tri
   for (int v=0;v<9;v+=3)
     {
       clight=m_light; //current light
-      
+
+      //initialise colour vector
       for (int x=0;x<3;x++)
         {
           tri->m_vcolour[v+x]=0;
         }
 
+      //if the triangle has vertex normals (its a pp),
+      //use those instead
       if (tri->m_ndata)
         {
           for (int x=0;x<3;x++)
@@ -473,15 +398,10 @@ void rast::iLight(iobj* tri)
 
           clight=clight->m_next;
         }
-
-
-      /* printf("%f %f %f\n",tri->m_vcolour[v],tri->m_vcolour[v+1],tri->m_vcolour[v+2]); */
     }
-  
-  /* tri->printVcolour(); */
-  /* printf("\n"); */
 }
 
+//calc triangle normal
 void rast::objN(iobj* tri)
 {
   if (!tri)
@@ -489,10 +409,9 @@ void rast::objN(iobj* tri)
       return;
     }
 
-  //triangle
+  //triangle and doesnt have normal data (not a pp)
   if (tri->m_type==2 && !tri->m_ndata)
     {
-      //triangles are stored in size 9 array
       for (int x=0;x<3;x++)
         {
           m_objN[1][x]=tri->m_data[x]-tri->m_data[x+3];              
@@ -506,6 +425,7 @@ void rast::objN(iobj* tri)
     }
 }
 
+//interpolate colour
 void rast::intColour(double triU,double triV,double triR,iobj* tri)
 {
   /* tri->printVcolour(); */
@@ -514,8 +434,6 @@ void rast::intColour(double triU,double triV,double triR,iobj* tri)
     {
       m_colourF[x]=tri->m_vcolour[x]*triU;
     }
-
-  /* printf("intc: %f %f %f\n",m_colourF[0],m_colourF[1],m_colourF[2]); */
   
   for (int x=0;x<3;x++)
     {
@@ -529,12 +447,12 @@ void rast::intColour(double triU,double triV,double triR,iobj* tri)
   
   for (int x=0;x<3;x++)
     {
-      if (m_colourF[x]>1.00000000000000000)
+      if (m_colourF[x]>1)
         {
           m_colourF[x]=1;
         }
       
-      if (m_colourF[x]<0)
+      if (m_colourF[x]<0.0000000000000000000000000000000000000000000000000000000000000000000000)
         {
           m_colourF[x]=0;
         }
