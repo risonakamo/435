@@ -268,7 +268,7 @@ void rast::fillP(int xpos,int ypos,iobj* tri)
   double r;
   bCord3(xpos,ypos,tri,u,v,r);
   
-  //if in triangle
+  //if in triangle, do blending
   if (u>0 && v>0 && r>0)
     {
       //convert x y to img array index
