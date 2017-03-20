@@ -535,8 +535,8 @@ void rast::intColour(double triU,double triV,double triR,iobj* tri)
         }
       
       if (m_colourF[x]<0)
-      {
-        m_colourF[x]=0;
-      }
+        {
+          m_colourF[x]=0;
+        }
     }
 }
