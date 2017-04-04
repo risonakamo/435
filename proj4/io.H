@@ -1,17 +1,23 @@
 #ifndef IO_H
 #define IO_H
 #include <vector>
-#include "slVector.H"
+#include "../common/slVector.H"
 
 class SlTri {
 public:
-  int indices[3];
-  inline int &operator[](const unsigned int &i) { return indices[i];};
-  inline int operator[](const unsigned int &i) const { return indices[i];};
-  inline void set(int x, int y, int z) {indices[0] = x; indices[1] = y; indices[2] = z;};
   inline SlTri(int x, int y, int z) {indices[0] = x; indices[1] = y; indices[2] = z;};
+  
   inline SlTri() {};
+
+  inline void set(int x, int y, int z) {indices[0] = x; indices[1] = y; indices[2] = z;};
+  
+  inline int &operator[](const unsigned int &i) { return indices[i];};
+  
+  inline int operator[](const unsigned int &i) const { return indices[i];};
+
   inline SlTri &operator=(const SlTri &that);
+
+  int indices[3];
 };
 
 inline SlTri &SlTri::operator=(const SlTri &that) {

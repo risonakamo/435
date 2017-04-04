@@ -1,6 +1,7 @@
 #include "io.H"
 #include <iostream>
 #include <fstream>
+#include <float.h>
 
 #ifdef __APPLE__
 #define MAX std::numeric_limits<double>::max()
