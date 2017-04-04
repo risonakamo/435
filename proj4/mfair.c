@@ -9,30 +9,35 @@
 
 using namespace std;
 
-void writefile(vector<sVtex> &pts2,vector<SlTri> &tri);
+void writefile(char* filename,vector<sVtex> &pts2,vector<SlTri> &tri);
 
-int main()
+int main(int argc,char* argv[])
 {
+  if (argc!=2)
+    {
+      cout<<"missing argument"<<endl;
+      return 0;
+    }
+  
   float lamb=1;
   float dt=1;
   int iter=1;
-  
+
   vector<SlVector3> pts;
   vector<SlTri> tri;
-
   vector<sVtex> pts2;
   
-  readObjFile("tests/bunny.obj",pts,tri);
+  readObjFile(argv[1],pts,tri);
 
   for (int x=0;x<pts.size();x++)
     {
       pts2.push_back(sVtex(pts[x]));
     }
 
-  /* for (int x=0;x<pts.size();x++) */
-  /*   { */
-  /*     pts2[x].printP(); */
-  /*   } */
+  for (int x=0;x<pts.size();x++)
+    {
+      pts2[x].printP();
+    }
   
   for (int y=0;y<iter;y++)
     {
@@ -52,14 +57,14 @@ int main()
       /*   } */
     }
 
-  writefile(pts2,tri);
+  writefile("output.obj",pts2,tri);
   
   return 0;
 }
 
-void writefile(vector<sVtex> &pts2,vector<SlTri> &tri)
+void writefile(char* filename,vector<sVtex> &pts2,vector<SlTri> &tri)
 {
-  FILE* f=fopen("output.obj","wb");
+  FILE* f=fopen(filename,"wb");
 
   for (int x=0;x<pts2.size();x++)
     {
@@ -69,7 +74,7 @@ void writefile(vector<sVtex> &pts2,vector<SlTri> &tri)
 
   for (int x=0;x<tri.size();x++)
     {
-      fprintf(f,"f %i %i %i\n",tri[x][0],tri[x][1],tri[x][2]);
+      fprintf(f,"f %i %i %i\n",tri[x][0]+1,tri[x][1]+1,tri[x][2]+1);
       /* outfile<<"f "<<tri[x][0]<<" "<<tri[x][1]<<" "<<tri[x][2]<<endl; */
     }
 
