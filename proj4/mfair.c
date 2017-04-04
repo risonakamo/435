@@ -22,17 +22,17 @@ int main()
 
   vector<sVtex> pts2;
   
-  readObjFile("tests/a.obj",pts,tri);
+  readObjFile("tests/bunny.obj",pts,tri);
 
   for (int x=0;x<pts.size();x++)
     {
       pts2.push_back(sVtex(pts[x]));
     }
 
-  for (int x=0;x<pts.size();x++)
-    {
-      pts2[x].printP();
-    }
+  /* for (int x=0;x<pts.size();x++) */
+  /*   { */
+  /*     pts2[x].printP(); */
+  /*   } */
   
   for (int y=0;y<iter;y++)
     {
@@ -46,10 +46,10 @@ int main()
           pts2[x].update(lamb,dt);
         }
 
-      for (int x=0;x<pts.size();x++)
-        {
-          pts2[x].printP();
-        }
+      /* for (int x=0;x<pts.size();x++) */
+      /*   { */
+      /*     pts2[x].printP(); */
+      /*   } */
     }
 
   writefile(pts2,tri);
@@ -59,19 +59,18 @@ int main()
 
 void writefile(vector<sVtex> &pts2,vector<SlTri> &tri)
 {
-  ofstream outfile;
-  outfile.open("output.obj");
+  FILE* f=fopen("output.obj","wb");
 
   for (int x=0;x<pts2.size();x++)
     {
-      outfile<<"v "<<(*(pts2[x].m_pt))[0]<<" "<<(*(pts2[x].m_pt))[1]<<" "<<(*(pts2[x].m_pt))[2]<<"\n";
+      fprintf(f,"v %f %f %f\n",(*(pts2[x].m_pt))[0],(*(pts2[x].m_pt))[1],(*(pts2[x].m_pt))[2]);
+      /* outfile<<"v "<<(*(pts2[x].m_pt))[0]<<" "<<(*(pts2[x].m_pt))[1]<<" "<<(*(pts2[x].m_pt))[2]<<endl; */
     }
 
   for (int x=0;x<tri.size();x++)
     {
-      
-      outfile<<"f "<<tri[x][0]<<" "<<tri[x][1]<<" "<<tri[x][2]<<"\n";
+      fprintf(f,"f %i %i %i\n",tri[x][0],tri[x][1],tri[x][2]);
+      /* outfile<<"f "<<tri[x][0]<<" "<<tri[x][1]<<" "<<tri[x][2]<<endl; */
     }
 
-  outfile.close();
 }
