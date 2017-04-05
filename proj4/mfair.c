@@ -50,6 +50,8 @@ int main(int argc,char* argv[])
       for (int x=0;x<tri.size();x++)
         {
           pts2[tri[x][0]].umbrella(pts2[tri[x][1]],pts2[tri[x][2]]);
+          pts2[tri[x][1]].umbrella(pts2[tri[x][0]],pts2[tri[x][2]]);
+          pts2[tri[x][2]].umbrella(pts2[tri[x][0]],pts2[tri[x][1]]);
         }
   
       for (int x=0;x<pts2.size();x++)
@@ -58,10 +60,10 @@ int main(int argc,char* argv[])
           pts2[x].reset();
         }
 
-      /* for (int x=0;x<pts.size();x++) */
-      /*   { */
-      /*     pts2[x].printP(); */
-      /*   } */
+      // for (int x=0;x<pts2.size();x++)
+      //   {
+      //     pts2[x].printP();
+      //   }
     }
 
   writefile("output.obj",pts2,tri);

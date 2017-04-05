@@ -17,7 +17,7 @@ class sVtex
   void reset();
 
   void printP();
-  
+
   SlVector3* m_pt; //vertex point (x,y,z)
   SlVector3 m_plac; //placian
   float m_m;  //m value
