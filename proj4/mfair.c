@@ -9,7 +9,7 @@
 
 using namespace std;
 
-void writefile(char* filename,vector<sVtex> &pts2,vector<SlTri> &tri);
+void writefile(const char* filename,vector<sVtex> &pts2,vector<SlTri> &tri);
 
 int main(int argc,char* argv[])
 {
@@ -21,7 +21,7 @@ int main(int argc,char* argv[])
   
   float lamb=1;
   float dt=1;
-  int iter=1;
+  int iter=50;
 
   vector<SlVector3> pts;
   vector<SlTri> tri;
@@ -34,10 +34,16 @@ int main(int argc,char* argv[])
       pts2.push_back(sVtex(pts[x]));
     }
 
-  for (int x=0;x<pts.size();x++)
-    {
-      pts2[x].printP();
-    }
+  /* for (int x=0;x<pts.size();x++) */
+  /*   { */
+  /*     pts2[x].printP(); */
+  /*   } */
+
+  /* //print triangles */
+  /* for (int x=0;x<tri.size();x++) */
+  /*   { */
+  /*     printf("%i %i %i\n",tri[x][0],tri[x][1],tri[x][2]); */
+  /*   } */
   
   for (int y=0;y<iter;y++)
     {
@@ -49,6 +55,7 @@ int main(int argc,char* argv[])
       for (int x=0;x<pts2.size();x++)
         {
           pts2[x].update(lamb,dt);
+          pts2[x].reset();
         }
 
       /* for (int x=0;x<pts.size();x++) */
@@ -62,7 +69,7 @@ int main(int argc,char* argv[])
   return 0;
 }
 
-void writefile(char* filename,vector<sVtex> &pts2,vector<SlTri> &tri)
+void writefile(const char* filename,vector<sVtex> &pts2,vector<SlTri> &tri)
 {
   FILE* f=fopen(filename,"wb");
 

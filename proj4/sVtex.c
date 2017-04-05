@@ -21,8 +21,19 @@ void sVtex::update(float lamb,float dt)
   
   for (int x=0;x<3;x++)
     {
-      (*m_pt)[x]+=(lamb*dt)*(m_plac[x]/m_m);
+      m_plac[x]/=m_m;
+      (*m_pt)[x]+=(lamb*dt)*m_plac[x];
     }
+}
+
+void sVtex::reset()
+{
+  for (int x=0;x<3;x++)
+    {
+      m_plac[x]=0;
+    }
+
+  m_m=0;
 }
 
 void sVtex::printP()
