@@ -13,15 +13,16 @@ void writefile(const char* filename,vector<sVtex> &pts2,vector<SlTri> &tri);
 
 int main(int argc,char* argv[])
 {
-  if (argc!=2)
+  if (argc!=6)
     {
-      cout<<"missing argument"<<endl;
+      cout<<"missing some arguments"<<endl;
+      cout<<"mfair <input obj> <output obj> <lambda> <dt> <iterations>"<<endl;
       return 0;
     }
   
-  float lamb=1;
-  float dt=1;
-  int iter=50;
+  float lamb=atof(argv[3]);
+  float dt=atof(argv[4]);
+  int iter=atof(argv[5]);
 
   vector<SlVector3> pts;
   vector<SlTri> tri;
@@ -34,17 +35,6 @@ int main(int argc,char* argv[])
       pts2.push_back(sVtex(pts[x]));
     }
 
-  /* for (int x=0;x<pts.size();x++) */
-  /*   { */
-  /*     pts2[x].printP(); */
-  /*   } */
-
-  /* //print triangles */
-  /* for (int x=0;x<tri.size();x++) */
-  /*   { */
-  /*     printf("%i %i %i\n",tri[x][0],tri[x][1],tri[x][2]); */
-  /*   } */
-  
   for (int y=0;y<iter;y++)
     {
       for (int x=0;x<tri.size();x++)
@@ -59,14 +49,9 @@ int main(int argc,char* argv[])
           pts2[x].update(lamb,dt);
           pts2[x].reset();
         }
-
-      // for (int x=0;x<pts2.size();x++)
-      //   {
-      //     pts2[x].printP();
-      //   }
     }
 
-  writefile("output.obj",pts2,tri);
+  writefile(argv[2],pts2,tri);
   
   return 0;
 }
@@ -78,13 +63,11 @@ void writefile(const char* filename,vector<sVtex> &pts2,vector<SlTri> &tri)
   for (int x=0;x<pts2.size();x++)
     {
       fprintf(f,"v %f %f %f\n",(*(pts2[x].m_pt))[0],(*(pts2[x].m_pt))[1],(*(pts2[x].m_pt))[2]);
-      /* outfile<<"v "<<(*(pts2[x].m_pt))[0]<<" "<<(*(pts2[x].m_pt))[1]<<" "<<(*(pts2[x].m_pt))[2]<<endl; */
     }
 
   for (int x=0;x<tri.size();x++)
     {
       fprintf(f,"f %i %i %i\n",tri[x][0]+1,tri[x][1]+1,tri[x][2]+1);
-      /* outfile<<"f "<<tri[x][0]<<" "<<tri[x][1]<<" "<<tri[x][2]<<endl; */
     }
 
 }
