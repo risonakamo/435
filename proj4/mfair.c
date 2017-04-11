@@ -1,3 +1,9 @@
+/*mfair.c - mesh fair
+  khang ngo
+  cmsc 435 proj4
+  performs mesh fairing on obj files using umbrella function and potentially
+  other various smoothing operators.*/
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -9,6 +15,7 @@
 
 using namespace std;
 
+//file write
 void writefile(const char* filename,vector<sVtex> &pts2,vector<SlTri> &tri);
 
 int main(int argc,char* argv[])
@@ -30,20 +37,25 @@ int main(int argc,char* argv[])
   
   readObjFile(argv[1],pts,tri);
 
+  //converting points vector to sVtex vector
   for (int x=0;x<pts.size();x++)
     {
       pts2.push_back(sVtex(pts[x]));
     }
 
+  //for y iterations
   for (int y=0;y<iter;y++)
     {
+      //for every triangle
       for (int x=0;x<tri.size();x++)
         {
+          //umbrella every vertex with other vertices of triangle
           pts2[tri[x][0]].umbrella(pts2[tri[x][1]],pts2[tri[x][2]]);
           pts2[tri[x][1]].umbrella(pts2[tri[x][0]],pts2[tri[x][2]]);
           pts2[tri[x][2]].umbrella(pts2[tri[x][0]],pts2[tri[x][1]]);
         }
   
+      //for every vertex
       for (int x=0;x<pts2.size();x++)
         {
           pts2[x].update(lamb,dt);
