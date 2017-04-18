@@ -1,11 +1,16 @@
-viewer: slVector.o viewer.o
-	c++ viewer.o slVector.o -O3 -Wno-deprecated -lglut32win -lopengl32 -lglu32 -o viewer
+ofiles=bird.o bs.o slVector.o
+
+bird: $(ofiles)
+	g++ $(ofiles) -o bird
+
+bird.o: bird.c
+	g++ -c bird.c
+
+bs.o: bs.h bs.c
+	g++ -c bs.c
 
 slVector.o: ../common/slVector.H ../common/slVector.cpp
-	c++ -c ../common/slVector.cpp
-
-viewer.o: viewer.cpp
-	c++ -c -lglut32win -lopengl32 -lglu32 viewer.cpp
+	g++ -c ../common/slVector.cpp
 
 clean:
-	rm -f *.o *~ *.exe viewer
+	rm -f *.o *~ bird.exe bird
