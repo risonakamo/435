@@ -6,3 +6,6 @@ slVector.o: ../common/slVector.H ../common/slVector.cpp
 
 viewer.o: viewer.cpp
 	c++ -c -lglut32win -lopengl32 -lglu32 viewer.cpp
+
+clean:
+	rm -f *.o *~ *.exe viewer
