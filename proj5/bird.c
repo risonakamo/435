@@ -1,10 +1,6 @@
-#include <iostream>
+#include "bird.h"
 
-#include "bs.h"
+bird::bird()
+{
 
-using namespace std;
-
-int main(int argc,char* argv[])
-{  
-  bs bob("tests/simple.in");
 }
