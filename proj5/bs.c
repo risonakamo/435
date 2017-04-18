@@ -41,15 +41,17 @@ void bs::printPars()
   cout<<endl;
 }
 
+//bstring boidstring
 void bs::parseBoid(string bstring)
 {
   stringstream stream(bstring);
   string a;
   int bcount=0;
 
-  vector<SlVector3>* bvec;
+  vector<SlVector3>* bvec; //boid vec (points or vels)
   SlVector3 newvec;
-  
+
+  //boid mode (point or vel)
   if (t_bmode==0)
     {
       bvec=&m_points;
@@ -104,4 +106,9 @@ void bs::printVecs()
     {
       cout<<m_vels[x]<<endl;
     }
+}
+
+void bs::boutput()
+{
+  
 }

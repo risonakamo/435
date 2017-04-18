@@ -22,6 +22,8 @@ class bs
   void loadFile(const string filename);
 
   void parseBoid(string bstring);
+
+  void boutput();
   
   void printPars();
   void printVecs();
@@ -32,7 +34,7 @@ class bs
   vector<SlVector3> m_points;
   vector<SlVector3> m_vels;
 
-  int t_bmode;
+  int t_bmode; //parseboid temp
 };
 
 #endif
