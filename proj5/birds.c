@@ -11,5 +11,6 @@ int main(int argc,char* argv[])
   bob.printPars();
   // bob.printVecs();
 
-  bob.run();
+  // bob.run();
+  bob.treeTest();
 }

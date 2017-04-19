@@ -10,6 +10,7 @@
 #include <vector>
 
 #include "../common/slVector.H"
+#include "kdTree.H"
 
 using namespace std;
 
@@ -28,6 +29,7 @@ class bs
   /*-- debug --*/
   void printPars();
   void printVecs();
+  void treeTest();
   
  private:
   /*-- initialise --*/
@@ -37,13 +39,16 @@ class bs
   /*-- output --*/
   void boutput();
 
+  /*-- important stuff --*/
   FILE* m_f;
   float m_pars[12];
+  KDTree* m_tree;
 
   int m_frames;
   vector<SlVector3> m_points;
   vector<SlVector3> m_vels;
 
+  /*-- temps --*/
   int t_bmode; //parseboid temp
 };
 

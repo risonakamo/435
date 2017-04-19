@@ -158,3 +158,16 @@ void bs::run()
     boutput();
   }
 }
+
+void bs::treeTest()
+{
+  m_tree=new KDTree(m_points);
+
+  vector<int> result;
+  m_tree->neighbors(m_points,m_points[0],10,.00000001,result);
+
+  for (int x=0;x<result.size();x++)
+  {
+    cout<<result[x]<<endl;
+  }
+}
