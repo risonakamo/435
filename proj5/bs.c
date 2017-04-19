@@ -16,7 +16,6 @@ void bs::loadFile(const string filename,const string outfile)
 {
   fstream infile;
   infile.open(filename.c_str());
-
   string a;
 
   for (int x=0;x<12;x++)
@@ -38,7 +37,10 @@ void bs::loadFile(const string filename,const string outfile)
 
 void bs::calc()
 {
-  m_frames=m_pars[10]*30;
+  m_frames=int(m_pars[10])*30;
+  m_maxNbour=int(m_pars[2]);
+  m_numBirds=int(m_pars[11]);
+  m_tree=new KDTree(m_points);
 }
 
 void bs::printPars()
@@ -135,7 +137,7 @@ void bs::run()
 {
   for (int x=0;x<m_frames;x++)
   {
-    for (int y=0;y<int(m_pars[11]);y++)
+    for (int y=0;y<m_numBirds;y++)
     {
       m_points[y]+=m_vels[y];
 
@@ -161,8 +163,6 @@ void bs::run()
 
 void bs::treeTest()
 {
-  m_tree=new KDTree(m_points);
-
   vector<int> result;
   m_tree->neighbors(m_points,m_points[0],10,.00000001,result);
 

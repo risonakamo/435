@@ -44,6 +44,8 @@ class bs
   float m_pars[12];
   KDTree* m_tree;
 
+  int m_numBirds;
+  int m_maxNbour;
   int m_frames;
   vector<SlVector3> m_points;
   vector<SlVector3> m_vels;
