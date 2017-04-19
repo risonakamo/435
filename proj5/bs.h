@@ -8,6 +8,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <cmath>
 
 #include "../common/slVector.H"
 #include "kdTree.H"
@@ -38,9 +39,10 @@ class bs
 
   /*-- run stuff --*/
   void boundCheck(SlVector3 &point,SlVector3 &vel);
-  void centreForce(SlVector3 &point,vector<int> &nbours);
-  void matchVel(SlVector3 &point,vector<int> &nbours);
-
+  void centreForce(SlVector3 &point,vector<int> &nbours,int &iself);
+  void matchVel(SlVector3 &point,vector<int> &nbours,int &iself);
+  void colliForce(SlVector3 &point,vector<int> &nbours,int &iself);
+  
   /*-- output --*/
   void boutput();
 

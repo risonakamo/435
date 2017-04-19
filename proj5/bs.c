@@ -81,22 +81,16 @@ void bs::parseBoid(string bstring)
       if (bcount==0)
         {
           newvec[0]=atof(a.erase(0,1).c_str());
-          
-          /* cout<<a.erase(0,1)<<endl; */
         }
 
       if (bcount==1)
         {
           newvec[1]=atof(a.c_str());
-          
-          /* cout<<a<<endl; */
         }
 
       if (bcount==2)
         {
           newvec[2]=atof(a.erase(a.size()-1,1).c_str());
-          
-          /* cout<<a.erase(a.size()-1,1)<<endl; */
         }
 
       bcount++;
@@ -148,15 +142,16 @@ void bs::run()
 
       if (nbours.size()!=0)
       {
-        centreForce(m_points[y],nbours);
-        matchVel(m_points[y],nbours);
+        centreForce(m_points[y],nbours,y);
+        matchVel(m_points[y],nbours,y);
+        colliForce(m_points[y],nbours,y);
 
         m_vels[y]+=(t_force*(m_pars[9]/m_pars[3]));
       }
       
       m_vels[y]*=m_pars[8];
 
-      m_points[y]+=m_vels[y]/30;
+      m_points[y]+=m_vels[y]*m_pars[9];
 
       boundCheck(m_points[y],m_vels[y]);
     }
@@ -165,13 +160,8 @@ void bs::run()
   }
 }
 
-void bs::centreForce(SlVector3 &point,vector<int> &nbours)
+void bs::colliForce(SlVector3 &point,vector<int> &nbours,int &iself)
 {
-  if (nbours.size()==0)
-  {
-    return;
-  }
-
   //t vec being used as centre point
   t_vec[0]=0;
   t_vec[1]=0;
@@ -179,6 +169,32 @@ void bs::centreForce(SlVector3 &point,vector<int> &nbours)
 
   for (int x=0;x<nbours.size();x++)
   {
+    if (nbours[x]==iself)
+    {
+      continue;
+    }
+
+      // cout<<pow(mag(point-m_points[nbours[x]]),3)<<endl;
+    t_vec+=(point-m_points[nbours[x]])/pow(mag(point-m_points[nbours[x]]),3);
+  }
+
+  t_force+=t_vec*m_pars[4];
+}
+
+void bs::centreForce(SlVector3 &point,vector<int> &nbours,int &iself)
+{
+  //t vec being used as centre point
+  t_vec[0]=0;
+  t_vec[1]=0;
+  t_vec[2]=0;
+
+  for (int x=0;x<nbours.size();x++)
+  {
+    if (nbours[x]==iself)
+    {
+      continue;
+    }
+
     t_vec+=m_points[nbours[x]];
   }
 
@@ -187,7 +203,7 @@ void bs::centreForce(SlVector3 &point,vector<int> &nbours)
   t_force+=(t_vec-point)*m_pars[5];
 }
 
-void bs::matchVel(SlVector3 &point,vector<int> &nbours)
+void bs::matchVel(SlVector3 &point,vector<int> &nbours,int &iself)
 {
   //t vec being used as neighbour velocity
   t_vec[0]=0;
@@ -196,6 +212,11 @@ void bs::matchVel(SlVector3 &point,vector<int> &nbours)
 
   for (int x=0;x<nbours.size();x++)
   {
+    if (nbours[x]==iself)
+    {
+      continue;
+    }
+
     t_vec+=m_vels[nbours[x]];
   }
 
