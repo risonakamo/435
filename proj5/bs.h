@@ -17,9 +17,10 @@ class bs
 {
  public:
   bs();
-  bs(const string filename);
+  bs(const string filename,const string outfile);
   
-  void loadFile(const string filename);
+  void loadFile(const string filename,const string outfile);
+  void calc();
 
   void parseBoid(string bstring);
 
@@ -29,8 +30,10 @@ class bs
   void printVecs();
   
  private:
+  FILE* m_f;
   float m_pars[12];
 
+  int m_frames;
   vector<SlVector3> m_points;
   vector<SlVector3> m_vels;
 

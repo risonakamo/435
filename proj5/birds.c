@@ -6,8 +6,10 @@ using namespace std;
 
 int main(int argc,char* argv[])
 {  
-  bs bob("tests/simple.in");
+  bs bob("tests/simple.in","output.out");
 
   bob.printPars();
   bob.printVecs();
+
+  bob.boutput();
 }

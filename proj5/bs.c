@@ -6,13 +6,13 @@ bs::bs()
   
 }
 
-bs::bs(const string filename)
+bs::bs(const string filename,const string outfile)
 :t_bmode(0)
 {
-  loadFile(filename);
+  loadFile(filename,outfile);
 }
 
-void bs::loadFile(const string filename)
+void bs::loadFile(const string filename,const string outfile)
 {
   fstream infile;
   infile.open(filename.c_str());
@@ -29,6 +29,16 @@ void bs::loadFile(const string filename)
     {
       parseBoid(a);
     }
+
+    calc();
+
+    m_f=fopen(outfile.c_str(),"w");
+    fprintf(m_f,"%i\n",m_frames);
+}
+
+void bs::calc()
+{
+  m_frames=m_pars[10]*30;
 }
 
 void bs::printPars()
@@ -110,5 +120,10 @@ void bs::printVecs()
 
 void bs::boutput()
 {
-  
+  fprintf(m_f,"%i\n",int(m_pars[11]));
+  for (int x=0;x<m_points.size();x++)
+  {
+    fprintf(m_f,"[%f,%f,%f][%f,%f,%f]\n",m_points[x][0],m_points[x][1],m_points[x][2],
+                                         m_vels[x][0],m_vels[x][1],m_vels[x][2]);
+  }
 }
