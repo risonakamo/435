@@ -1,13 +1,13 @@
 #include "bs.h"
 
 bs::bs()
-:t_bmode(0)
+:t_bmode(0),t_force(0,0,0)
 {
   
 }
 
 bs::bs(const string filename,const string outfile)
-:t_bmode(0)
+:t_bmode(0),t_force(0,0,0)
 {
   loadFile(filename,outfile);
 }
@@ -139,25 +139,100 @@ void bs::run()
   {
     for (int y=0;y<m_numBirds;y++)
     {
-      m_points[y]+=m_vels[y];
+      t_force[0]=0;
+      t_force[1]=0;
+      t_force[2]=0;
 
-      if (m_points[y][0]>.5 || m_points[y][0]<-.5)
-      {
-        m_vels[y][0]=-m_vels[y][0];
-      }
+      vector<int> nbours;
+      m_tree->neighbors(m_points,m_points[y],m_maxNbour,m_pars[1],nbours);
 
-      if (m_points[y][1]>.25 || m_points[y][1]<-.25)
+      if (nbours.size()!=0)
       {
-        m_vels[y][1]=-m_vels[y][1];
-      }
+        centreForce(m_points[y],nbours);
+        matchVel(m_points[y],nbours);
 
-      if (m_points[y][2]>.125 || m_points[y][2]<-.125)
-      {
-        m_vels[y][2]=-m_vels[y][2];
+        m_vels[y]+=(t_force*(m_pars[9]/m_pars[3]));
       }
+      
+      m_vels[y]*=m_pars[8];
+
+      m_points[y]+=m_vels[y]/30;
+
+      boundCheck(m_points[y],m_vels[y]);
     }
 
     boutput();
+  }
+}
+
+void bs::centreForce(SlVector3 &point,vector<int> &nbours)
+{
+  if (nbours.size()==0)
+  {
+    return;
+  }
+
+  //t vec being used as centre point
+  t_vec[0]=0;
+  t_vec[1]=0;
+  t_vec[2]=0;
+
+  for (int x=0;x<nbours.size();x++)
+  {
+    t_vec+=m_points[nbours[x]];
+  }
+
+  t_vec/=nbours.size();
+
+  t_force+=(t_vec-point)*m_pars[5];
+}
+
+void bs::matchVel(SlVector3 &point,vector<int> &nbours)
+{
+  //t vec being used as neighbour velocity
+  t_vec[0]=0;
+  t_vec[1]=0;
+  t_vec[2]=0;
+
+  for (int x=0;x<nbours.size();x++)
+  {
+    t_vec+=m_vels[nbours[x]];
+  }
+
+  t_vec/=nbours.size();
+  t_force+=(t_vec-point)*m_pars[6];
+}
+
+void bs::boundCheck(SlVector3 &point,SlVector3 &vel)
+{
+  if (point[0]>.5)
+  {
+    vel[0]=-abs(vel[0]);
+  }
+
+  if (point[0]<-.5)
+  {
+    vel[0]=abs(vel[0]);
+  }
+
+  if (point[1]>.25)
+  {
+    vel[1]=-abs(vel[1]);
+  }
+
+  if (point[1]<-.25)
+  {
+    vel[1]=abs(vel[1]);
+  }
+
+  if (point[2]>.125)
+  {
+    vel[2]=-abs(vel[2]);
+  }
+
+  if (point[2]<-.125)
+  {
+    vel[2]=abs(vel[2]);
   }
 }
 

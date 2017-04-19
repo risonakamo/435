@@ -36,6 +36,11 @@ class bs
   void calc();
   void parseBoid(string bstring);
 
+  /*-- run stuff --*/
+  void boundCheck(SlVector3 &point,SlVector3 &vel);
+  void centreForce(SlVector3 &point,vector<int> &nbours);
+  void matchVel(SlVector3 &point,vector<int> &nbours);
+
   /*-- output --*/
   void boutput();
 
@@ -52,6 +57,9 @@ class bs
 
   /*-- temps --*/
   int t_bmode; //parseboid temp
+
+  SlVector3 t_force;
+  SlVector3 t_vec;
 };
 
 #endif
