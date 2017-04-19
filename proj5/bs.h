@@ -19,17 +19,24 @@ class bs
   bs();
   bs(const string filename,const string outfile);
   
+  /*-- initialise stuff --*/
   void loadFile(const string filename,const string outfile);
-  void calc();
-
-  void parseBoid(string bstring);
-
-  void boutput();
   
+  /*-- run --*/
+  void run();
+
+  /*-- debug --*/
   void printPars();
   void printVecs();
   
  private:
+  /*-- initialise --*/
+  void calc();
+  void parseBoid(string bstring);
+
+  /*-- output --*/
+  void boutput();
+
   FILE* m_f;
   float m_pars[12];
 

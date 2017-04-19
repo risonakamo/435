@@ -121,9 +121,40 @@ void bs::printVecs()
 void bs::boutput()
 {
   fprintf(m_f,"%i\n",int(m_pars[11]));
+
   for (int x=0;x<m_points.size();x++)
   {
     fprintf(m_f,"[%f,%f,%f][%f,%f,%f]\n",m_points[x][0],m_points[x][1],m_points[x][2],
                                          m_vels[x][0],m_vels[x][1],m_vels[x][2]);
+  }
+
+  fprintf(m_f,"0\n");
+}
+
+void bs::run()
+{
+  for (int x=0;x<m_frames;x++)
+  {
+    for (int y=0;y<int(m_pars[11]);y++)
+    {
+      m_points[y]+=m_vels[y];
+
+      if (m_points[y][0]>.5 || m_points[y][0]<-.5)
+      {
+        m_vels[y][0]=-m_vels[y][0];
+      }
+
+      if (m_points[y][1]>.25 || m_points[y][1]<-.25)
+      {
+        m_vels[y][1]=-m_vels[y][1];
+      }
+
+      if (m_points[y][2]>.125 || m_points[y][2]<-.125)
+      {
+        m_vels[y][2]=-m_vels[y][2];
+      }
+    }
+
+    boutput();
   }
 }
