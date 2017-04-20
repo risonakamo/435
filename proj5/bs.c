@@ -425,6 +425,13 @@ void bs::foodForce(SlVector3 &point)
   {
     if (m_foodT[fbours[x]]==-1)
     {
+      if (mag(m_foods[fbours[x]]-point)<m_pars[0]*2)
+      {
+        m_foodT[fbours[x]]=-2;
+        m_currFood--;
+        continue;
+      }
+
       t_vec+=m_foods[fbours[x]]-point;
     }
   }
