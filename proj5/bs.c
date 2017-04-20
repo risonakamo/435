@@ -1,13 +1,13 @@
 #include "bs.h"
 
 bs::bs()
-:t_bmode(0),t_force(0,0,0)
+:t_bmode(0),t_force(0,0,0),t_fmode(0)
 {
   
 }
 
 bs::bs(const string filename,const string outfile)
-:t_bmode(0),t_force(0,0,0)
+:t_bmode(0),t_force(0,0,0),t_fmode(0)
 {
   loadFile(filename,outfile);
 }
@@ -24,15 +24,26 @@ void bs::loadFile(const string filename,const string outfile)
       m_pars[x]=atof(a.c_str());
     }
 
-  // for (int x=0;x<int(m_pars[11])*2;x++)
+  m_numBirds=int(m_pars[11]);
+  for (int x=0;x<m_numBirds*2;x++)
+  {
+    infile>>a;
+    parseBoid(a);
+  }
+
+  infile>>a;
+  m_numFood=atoi(a.c_str());
+
+  for (int x=0;x<m_numFood*3;x++)
+  {
+    infile>>a;
+    parseFood(a);
+  }
+
+  // while (infile>>a)
   // {
   //   parseBoid(a);
   // }
-
-  while (infile>>a)
-  {
-    parseBoid(a);
-  }
 
   calc();
 
@@ -44,7 +55,6 @@ void bs::calc()
 {
   m_frames=int(m_pars[10])*30;
   m_maxNbour=int(m_pars[2]);
-  m_numBirds=int(m_pars[11]);
   m_tree=new KDTree(m_points);
 }
 
@@ -58,13 +68,63 @@ void bs::printPars()
   cout<<endl;
 }
 
+void bs::parseFood(string &fstring)
+{  
+  vector<SlVector3>* fvec;
+  if (t_fmode==0)
+  {
+    fvec=&m_foods;
+    t_fmode++;
+  }
+
+  else if (t_fmode==1)
+  {
+    fvec=&m_foodVel;
+    t_fmode++;
+  }
+
+  else
+  {
+    t_fmode=0;
+
+    m_foodT.push_back(atoi(fstring.c_str()));
+    return;
+  }
+
+  stringstream stream(fstring);
+  string a;
+  SlVector3 newvec;
+  int bcount=0;
+
+  while (getline(stream,a,','))
+  {
+    if (bcount==0)
+    {
+      newvec[0]=atof(a.erase(0,1).c_str());
+    }
+
+    if (bcount==1)
+    {
+      newvec[1]=atof(a.c_str());
+    }
+
+    if (bcount==2)
+    {
+      newvec[2]=atof(a.erase(a.size()-1,1).c_str());
+    }
+
+    bcount++;
+  }
+
+  fvec->push_back(newvec);
+}
+
 //bstring boidstring
 void bs::parseBoid(string bstring)
 {
   stringstream stream(bstring);
   string a;
   int bcount=0;
-
   vector<SlVector3>* bvec; //boid vec (points or vels)
   SlVector3 newvec;
 
@@ -117,6 +177,12 @@ void bs::printVecs()
     {
       cout<<m_vels[x]<<endl;
     }
+
+  cout<<"foods"<<endl;
+  for (int x=0;x<m_foods.size();x++)
+  {
+    cout<<m_foods[x]<<" "<<m_foodVel[x]<<" "<<m_foodT[x]<<endl;
+  }
 }
 
 void bs::boutput()

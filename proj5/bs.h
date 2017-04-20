@@ -36,6 +36,7 @@ class bs
   /*-- initialise --*/
   void calc();
   void parseBoid(string bstring);
+  void parseFood(string &fstring);
 
   /*-- run stuff --*/
   void boundCheck(SlVector3 &point,SlVector3 &vel);
@@ -54,11 +55,18 @@ class bs
   int m_numBirds;
   int m_maxNbour;
   int m_frames;
+  int m_numFood;
+
   vector<SlVector3> m_points;
   vector<SlVector3> m_vels;
 
+  vector<SlVector3> m_foods;
+  vector<SlVector3> m_foodVel;
+  vector<int> m_foodT;
+
   /*-- temps --*/
   int t_bmode; //parseboid temp
+  int t_fmode;
 
   SlVector3 t_force;
   SlVector3 t_vec;
