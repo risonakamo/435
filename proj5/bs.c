@@ -56,6 +56,7 @@ void bs::calc()
   m_frames=int(m_pars[10])*30;
   m_maxNbour=int(m_pars[2]);
   m_tree=new KDTree(m_points);
+  m_ftree=new KDTree(m_foods);
 }
 
 void bs::printPars()
@@ -227,6 +228,7 @@ void bs::run()
         centreForce(m_points[y],nbours,y);
         matchVel(m_points[y],nbours,y);
         colliForce(m_points[y],nbours,y);
+        foodForce(m_points[y]);
 
         m_vels[y]+=(t_force*(m_pars[9]/m_pars[3]));
       }
@@ -400,4 +402,24 @@ void bs::treeTest()
   {
     cout<<result[x]<<endl;
   }
+}
+
+void bs::foodForce(SlVector3 &point)
+{
+  t_vec[0]=0;
+  t_vec[1]=0;
+  t_vec[2]=0;
+
+  vector<int> fbours;
+  m_ftree->neighbors(m_foods,point,m_maxNbour,m_pars[1],fbours);
+
+  for (int x=0;x<fbours.size();x++)
+  {
+    if (m_foodT[fbours[x]]==-1)
+    {
+      t_vec+=m_foods[fbours[x]]-point;
+    }
+  }
+
+  t_force+=t_vec*m_pars[7];
 }

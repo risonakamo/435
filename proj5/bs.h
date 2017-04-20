@@ -39,11 +39,14 @@ class bs
   void parseFood(string &fstring);
 
   /*-- run stuff --*/
-  void boundCheck(SlVector3 &point,SlVector3 &vel);
   void centreForce(SlVector3 &point,vector<int> &nbours,int &iself);
   void matchVel(SlVector3 &point,vector<int> &nbours,int &iself);
   void colliForce(SlVector3 &point,vector<int> &nbours,int &iself);
+  void foodForce(SlVector3 &point);
+
+  void boundCheck(SlVector3 &point,SlVector3 &vel);
   void foodSnap(SlVector3 &food);
+
   /*-- output --*/
   void boutput();
 
@@ -51,6 +54,7 @@ class bs
   FILE* m_f;
   float m_pars[12];
   KDTree* m_tree;
+  KDTree* m_ftree;
 
   int m_numBirds;
   int m_maxNbour;
