@@ -29,7 +29,7 @@ int main(int argc,char* argv[])
   bs bob(argv[1],ofile);
 
   bob.printPars();
-  bob.printVecs();
+  // bob.printVecs();
 
   bob.run();
   // bob.treeTest();

@@ -56,10 +56,12 @@ class bs
   int m_maxNbour;
   int m_frames;
   int m_numFood;
+  int m_currFood;
 
   vector<SlVector3> m_points;
   vector<SlVector3> m_vels;
 
+  vector<int> m_activeFood;
   vector<SlVector3> m_foods;
   vector<SlVector3> m_foodVel;
   vector<int> m_foodT;

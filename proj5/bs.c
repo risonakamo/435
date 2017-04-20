@@ -1,13 +1,13 @@
 #include "bs.h"
 
 bs::bs()
-:t_bmode(0),t_force(0,0,0),t_fmode(0)
+:t_bmode(0),t_force(0,0,0),t_fmode(0),m_currFood(0)
 {
   
 }
 
 bs::bs(const string filename,const string outfile)
-:t_bmode(0),t_force(0,0,0),t_fmode(0)
+:t_bmode(0),t_force(0,0,0),t_fmode(0),m_currFood(0)
 {
   loadFile(filename,outfile);
 }
@@ -187,21 +187,32 @@ void bs::printVecs()
 
 void bs::boutput()
 {
-  fprintf(m_f,"%i\n",int(m_pars[11]));
-
+  fprintf(m_f,"%i\n",m_numBirds);
   for (int x=0;x<m_points.size();x++)
   {
     fprintf(m_f,"[%f,%f,%f][%f,%f,%f]\n",m_points[x][0],m_points[x][1],m_points[x][2],
                                          m_vels[x][0],m_vels[x][1],m_vels[x][2]);
   }
 
-  fprintf(m_f,"0\n");
+  fprintf(m_f,"%i\n",m_currFood);
+  for (int x=0;x<m_currFood;x++)
+  {
+    fprintf(m_f,"[%f,%f,%f]\n",m_foods[m_activeFood[x]][0],m_foods[m_activeFood[x]][1],
+                               m_foods[m_activeFood[x]][2]);
+  }
 }
 
 void bs::run()
 {
+  int s=-1;
   for (int x=0;x<m_frames;x++)
   {
+    if (x%30==0)
+    {
+      s++;
+    }
+
+    //for all birds
     for (int y=0;y<m_numBirds;y++)
     {
       t_force[0]=0;
@@ -225,6 +236,24 @@ void bs::run()
       m_points[y]+=m_vels[y]*m_pars[9];
 
       boundCheck(m_points[y],m_vels[y]);
+    }
+
+    //for all foods check if some become active
+    for (int y=0;y<m_foods.size();y++)
+    {
+      if (m_foodT[y]==s)
+      {
+        cout<<y<<" active"<<endl;
+        m_activeFood.push_back(y);
+        m_foodT[y]=-1;
+        m_currFood++;
+      }
+    }
+
+    //for all active foods
+    for (int y=0;y<m_currFood;y++)
+    {
+      m_foods[y]+=m_foodVel[y];
     }
 
     boutput();
