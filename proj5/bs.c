@@ -243,7 +243,6 @@ void bs::run()
     {
       if (m_foodT[y]==s)
       {
-        cout<<y<<" active"<<endl;
         m_activeFood.push_back(y);
         m_foodT[y]=-1;
         m_currFood++;
@@ -253,10 +252,45 @@ void bs::run()
     //for all active foods
     for (int y=0;y<m_currFood;y++)
     {
-      m_foods[y]+=m_foodVel[y];
+      m_foods[y]+=m_foodVel[y]*m_pars[9];
+
+      foodSnap(m_foods[y]);
     }
 
     boutput();
+  }
+}
+
+void bs::foodSnap(SlVector3 &food)
+{
+  if (food[0]>.5)
+  {
+    food[0]=.5;
+  }
+
+  else if (food[0]<-.5)
+  {
+    food[0]=-.5;
+  }
+
+  if (food[1]>.25)
+  {
+    food[1]=.25;
+  }
+
+  else if (food[1]<-.25)
+  {
+    food[1]=-.25;
+  }
+
+  if (food[2]>.125)
+  {
+    food[2]=.125;
+  }
+
+  else if (food[2]<-.125)
+  {
+    food[2]=.125;
   }
 }
 
@@ -331,7 +365,7 @@ void bs::boundCheck(SlVector3 &point,SlVector3 &vel)
     vel[0]=-abs(vel[0]);
   }
 
-  if (point[0]<-.5)
+  else if (point[0]<-.5)
   {
     vel[0]=abs(vel[0]);
   }
@@ -341,7 +375,7 @@ void bs::boundCheck(SlVector3 &point,SlVector3 &vel)
     vel[1]=-abs(vel[1]);
   }
 
-  if (point[1]<-.25)
+  else if (point[1]<-.25)
   {
     vel[1]=abs(vel[1]);
   }
@@ -351,7 +385,7 @@ void bs::boundCheck(SlVector3 &point,SlVector3 &vel)
     vel[2]=-abs(vel[2]);
   }
 
-  if (point[2]<-.125)
+  else if (point[2]<-.125)
   {
     vel[2]=abs(vel[2]);
   }

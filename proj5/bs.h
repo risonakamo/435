@@ -43,7 +43,7 @@ class bs
   void centreForce(SlVector3 &point,vector<int> &nbours,int &iself);
   void matchVel(SlVector3 &point,vector<int> &nbours,int &iself);
   void colliForce(SlVector3 &point,vector<int> &nbours,int &iself);
-  
+  void foodSnap(SlVector3 &food);
   /*-- output --*/
   void boutput();
 
