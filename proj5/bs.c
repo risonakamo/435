@@ -196,10 +196,13 @@ void bs::boutput()
   }
 
   fprintf(m_f,"%i\n",m_currFood);
-  for (int x=0;x<m_currFood;x++)
+  for (int x=0;x<m_numFood;x++)
   {
-    fprintf(m_f,"[%f,%f,%f]\n",m_foods[m_activeFood[x]][0],m_foods[m_activeFood[x]][1],
-                               m_foods[m_activeFood[x]][2]);
+    if (m_foodT[x]==-1)
+    {
+      fprintf(m_f,"[%f,%f,%f]\n",m_foods[m_activeFood[x]][0],m_foods[m_activeFood[x]][1],
+                                    m_foods[m_activeFood[x]][2]);
+    }
   }
 }
 
@@ -249,15 +252,22 @@ void bs::run()
         m_foodT[y]=-1;
         m_currFood++;
       }
+
+      if (m_foodT[y]==-1)
+      {
+        m_foods[y]+=m_foodVel[y]*m_pars[9];
+
+        foodSnap(m_foods[y]);  
+      }
     }
 
-    //for all active foods
-    for (int y=0;y<m_currFood;y++)
-    {
-      m_foods[y]+=m_foodVel[y]*m_pars[9];
+    // //for all active foods
+    // for (int y=0;y<m_currFood;y++)
+    // {
+    //   m_foods[y]+=m_foodVel[y]*m_pars[9];
 
-      foodSnap(m_foods[y]);
-    }
+    //   foodSnap(m_foods[y]);
+    // }
 
     boutput();
   }
