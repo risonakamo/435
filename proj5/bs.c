@@ -24,15 +24,20 @@ void bs::loadFile(const string filename,const string outfile)
       m_pars[x]=atof(a.c_str());
     }
 
+  // for (int x=0;x<int(m_pars[11])*2;x++)
+  // {
+  //   parseBoid(a);
+  // }
+
   while (infile>>a)
-    {
-      parseBoid(a);
-    }
+  {
+    parseBoid(a);
+  }
 
-    calc();
+  calc();
 
-    m_f=fopen(outfile.c_str(),"w");
-    fprintf(m_f,"%i\n",m_frames);
+  m_f=fopen(outfile.c_str(),"w");
+  fprintf(m_f,"%i\n",m_frames);
 }
 
 void bs::calc()
