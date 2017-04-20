@@ -200,8 +200,7 @@ void bs::boutput()
   {
     if (m_foodT[x]==-1)
     {
-      fprintf(m_f,"[%f,%f,%f]\n",m_foods[m_activeFood[x]][0],m_foods[m_activeFood[x]][1],
-                                    m_foods[m_activeFood[x]][2]);
+      fprintf(m_f,"[%f,%f,%f]\n",m_foods[x][0],m_foods[x][1],m_foods[x][2]);
     }
   }
 }
@@ -248,7 +247,6 @@ void bs::run()
     {
       if (m_foodT[y]==s)
       {
-        m_activeFood.push_back(y);
         m_foodT[y]=-1;
         m_currFood++;
       }

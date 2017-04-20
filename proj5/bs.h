@@ -65,7 +65,6 @@ class bs
   vector<SlVector3> m_points;
   vector<SlVector3> m_vels;
 
-  vector<int> m_activeFood;
   vector<SlVector3> m_foods;
   vector<SlVector3> m_foodVel;
   vector<int> m_foodT;
