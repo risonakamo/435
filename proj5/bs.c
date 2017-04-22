@@ -1,3 +1,9 @@
+/*bs.c - boid system
+  khang ngo
+  cmsc 435 proj 5
+  takes in input file and performs calculation of boid movements
+  using a variety of forces.*/
+
 #include "bs.h"
 
 bs::bs()
