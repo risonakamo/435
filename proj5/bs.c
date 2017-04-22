@@ -253,7 +253,7 @@ void bs::run()
       m_tree->neighbors(m_points,m_points[y],m_maxNbour,m_pars[1],nbours);
 
       //if there were actually any neighbours
-      if (nbours.size()!=0)
+      if (nbours.size()>1)
       {
         //do the force stuff
         centreForce(m_points[y],nbours,y);
@@ -373,7 +373,7 @@ void bs::centreForce(SlVector3 &point,vector<int> &nbours,int &iself)
     t_vec+=m_points[nbours[x]];
   }
 
-  t_vec/=nbours.size();
+  t_vec/=(nbours.size()-1);
 
   t_force+=(t_vec-point)*m_pars[5];
 }
@@ -396,7 +396,7 @@ void bs::matchVel(SlVector3 &point,vector<int> &nbours,int &iself)
     t_vec+=m_vels[nbours[x]];
   }
 
-  t_vec/=nbours.size();
+  t_vec/=(nbours.size()-1);
   t_force+=(t_vec-point)*m_pars[6];
 }
 

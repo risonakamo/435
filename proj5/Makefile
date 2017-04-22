@@ -1,4 +1,4 @@
-ofiles=bs.o slVector.o bird.o kdTree.o
+ofiles=bs.o slVector.o birds.o kdTree.o
 
 birds: $(ofiles)
 	g++ $(ofiles) -o birds
@@ -6,8 +6,8 @@ birds: $(ofiles)
 bs.o: bs.h bs.c
 	g++ -c bs.c
 
-bird.o: bird.h bird.c
-	g++ -c bird.c
+birds.o: birds.c
+	g++ -c birds.c
 
 slVector.o: ../common/slVector.H ../common/slVector.cpp
 	g++ -c ../common/slVector.cpp
