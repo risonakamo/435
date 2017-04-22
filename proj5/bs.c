@@ -12,18 +12,21 @@ bs::bs(const string filename,const string outfile)
   loadFile(filename,outfile);
 }
 
+//main file load
 void bs::loadFile(const string filename,const string outfile)
 {
   fstream infile;
   infile.open(filename.c_str());
   string a;
 
+  //read input variables
   for (int x=0;x<12;x++)
     {
       infile>>a;
       m_pars[x]=atof(a.c_str());
     }
 
+  //get num birds and read birds
   m_numBirds=int(m_pars[11]);
   for (int x=0;x<m_numBirds*2;x++)
   {
@@ -31,20 +34,18 @@ void bs::loadFile(const string filename,const string outfile)
     parseBoid(a);
   }
 
+  //read num foods
   infile>>a;
   m_numFood=atoi(a.c_str());
 
+  //parse foods
   for (int x=0;x<m_numFood*3;x++)
   {
     infile>>a;
     parseFood(a);
   }
 
-  // while (infile>>a)
-  // {
-  //   parseBoid(a);
-  // }
-
+  //calc frames and store nbours
   m_frames=int(m_pars[10])*30;
   m_maxNbour=int(m_pars[2]);
 
@@ -52,6 +53,7 @@ void bs::loadFile(const string filename,const string outfile)
   fprintf(m_f,"%i\n",m_frames);
 }
 
+//debug print pars
 void bs::printPars()
 {
   cout<<"pars"<<endl;
@@ -62,8 +64,11 @@ void bs::printPars()
   cout<<endl;
 }
 
+//parse food line
 void bs::parseFood(string &fstring)
 {  
+  //deciding to put into velocity or food
+  //point array
   vector<SlVector3>* fvec;
   if (t_fmode==0)
   {
@@ -85,6 +90,7 @@ void bs::parseFood(string &fstring)
     return;
   }
 
+  //split commas
   stringstream stream(fstring);
   string a;
   SlVector3 newvec;
@@ -113,7 +119,7 @@ void bs::parseFood(string &fstring)
   fvec->push_back(newvec);
 }
 
-//bstring boidstring
+//parse boid string
 void bs::parseBoid(string bstring)
 {
   stringstream stream(bstring);
@@ -158,6 +164,7 @@ void bs::parseBoid(string bstring)
   bvec->push_back(newvec);
 }
 
+//debug print all points
 void bs::printVecs()
 {
   cout<<"points:"<<endl;
@@ -179,6 +186,7 @@ void bs::printVecs()
   }
 }
 
+//output current state
 void bs::boutput()
 {
   fprintf(m_f,"%i\n",m_numBirds);
@@ -198,11 +206,15 @@ void bs::boutput()
   }
 }
 
+//main program loop
 void bs::run()
 {
   int s=-1;
+
+  //for all frames
   for (int x=0;x<m_frames;x++)
   {
+    //updating seconds count for food timing
     if (x%30==0)
     {
       s++;
@@ -217,6 +229,7 @@ void bs::run()
 
       vector<int> nbours;
 
+      //reinitialising tree
       if (m_tree)
       {
         delete m_tree;
@@ -230,20 +243,27 @@ void bs::run()
       m_tree=new KDTree(m_points);
       m_ftree=new KDTree(m_foods);
 
+      //getting neighbours
       m_tree->neighbors(m_points,m_points[y],m_maxNbour,m_pars[1],nbours);
 
+      //if there were actually any neighbours
       if (nbours.size()!=0)
       {
+        //do the force stuff
         centreForce(m_points[y],nbours,y);
         matchVel(m_points[y],nbours,y);
         colliForce(m_points[y],nbours,y);
-        foodForce(m_points[y]);
-
-        m_vels[y]+=(t_force*(m_pars[9]/m_pars[3]));
       }
-      
+
+      foodForce(m_points[y]);
+
+      //update velocity
+      m_vels[y]+=(t_force*(m_pars[9]/m_pars[3]));
+
+      //damp velocity
       m_vels[y]*=m_pars[8];
 
+      //update position
       m_points[y]+=m_vels[y]*m_pars[9];
 
       boundCheck(m_points[y],m_vels[y]);
@@ -252,12 +272,15 @@ void bs::run()
     //for all foods check if some become active
     for (int y=0;y<m_foods.size();y++)
     {
+      //if food time is equal to current seconds time
       if (m_foodT[y]==s)
       {
+        //set time to -1 to indicate active
         m_foodT[y]=-1;
         m_currFood++;
       }
 
+      //for all active foods
       if (m_foodT[y]==-1)
       {
         m_foods[y]+=m_foodVel[y]*m_pars[9];
@@ -266,18 +289,11 @@ void bs::run()
       }
     }
 
-    // //for all active foods
-    // for (int y=0;y<m_currFood;y++)
-    // {
-    //   m_foods[y]+=m_foodVel[y]*m_pars[9];
-
-    //   foodSnap(m_foods[y]);
-    // }
-
     boutput();
   }
 }
 
+//bound snap food
 void bs::foodSnap(SlVector3 &food)
 {
   if (food[0]>.5)
@@ -311,6 +327,7 @@ void bs::foodSnap(SlVector3 &food)
   }
 }
 
+//collision force
 void bs::colliForce(SlVector3 &point,vector<int> &nbours,int &iself)
 {
   //t vec being used as centre point
@@ -325,13 +342,14 @@ void bs::colliForce(SlVector3 &point,vector<int> &nbours,int &iself)
       continue;
     }
 
-      // cout<<pow(mag(point-m_points[nbours[x]]),3)<<endl;
     t_vec+=(point-m_points[nbours[x]])/pow(mag(point-m_points[nbours[x]]),3);
   }
 
   t_force+=t_vec*m_pars[4];
 }
 
+
+//centering force
 void bs::centreForce(SlVector3 &point,vector<int> &nbours,int &iself)
 {
   //t vec being used as centre point
@@ -354,6 +372,7 @@ void bs::centreForce(SlVector3 &point,vector<int> &nbours,int &iself)
   t_force+=(t_vec-point)*m_pars[5];
 }
 
+//velocity matching force
 void bs::matchVel(SlVector3 &point,vector<int> &nbours,int &iself)
 {
   //t vec being used as neighbour velocity
@@ -375,6 +394,7 @@ void bs::matchVel(SlVector3 &point,vector<int> &nbours,int &iself)
   t_force+=(t_vec-point)*m_pars[6];
 }
 
+//bird bound check
 void bs::boundCheck(SlVector3 &point,SlVector3 &vel)
 {
   if (point[0]>.5)
@@ -408,6 +428,7 @@ void bs::boundCheck(SlVector3 &point,SlVector3 &vel)
   }
 }
 
+//debug
 void bs::treeTest()
 {
   vector<int> result;
@@ -419,6 +440,7 @@ void bs::treeTest()
   }
 }
 
+//food force
 void bs::foodForce(SlVector3 &point)
 {
   t_vec[0]=0;
@@ -430,10 +452,13 @@ void bs::foodForce(SlVector3 &point)
 
   for (int x=0;x<fbours.size();x++)
   {
+    //for all active foods only
     if (m_foodT[fbours[x]]==-1)
     {
+      //if distance is within current point
       if (mag(m_foods[fbours[x]]-point)<m_pars[0]*2)
       {
+        //marked as eaten
         m_foodT[fbours[x]]=-2;
         m_currFood--;
         continue;
