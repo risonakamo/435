@@ -1,13 +1,13 @@
 #include "bs.h"
 
 bs::bs()
-:t_bmode(0),t_force(0,0,0),t_fmode(0),m_currFood(0)
+:t_bmode(0),t_force(0,0,0),t_fmode(0),m_currFood(0),m_tree(NULL),m_ftree(NULL)
 {
   
 }
 
 bs::bs(const string filename,const string outfile)
-:t_bmode(0),t_force(0,0,0),t_fmode(0),m_currFood(0)
+:t_bmode(0),t_force(0,0,0),t_fmode(0),m_currFood(0),m_tree(NULL),m_ftree(NULL)
 {
   loadFile(filename,outfile);
 }
@@ -45,18 +45,11 @@ void bs::loadFile(const string filename,const string outfile)
   //   parseBoid(a);
   // }
 
-  calc();
+  m_frames=int(m_pars[10])*30;
+  m_maxNbour=int(m_pars[2]);
 
   m_f=fopen(outfile.c_str(),"w");
   fprintf(m_f,"%i\n",m_frames);
-}
-
-void bs::calc()
-{
-  m_frames=int(m_pars[10])*30;
-  m_maxNbour=int(m_pars[2]);
-  m_tree=new KDTree(m_points);
-  m_ftree=new KDTree(m_foods);
 }
 
 void bs::printPars()
@@ -223,6 +216,20 @@ void bs::run()
       t_force[2]=0;
 
       vector<int> nbours;
+
+      if (m_tree)
+      {
+        delete m_tree;
+      }
+
+      if (m_ftree)
+      {
+        delete m_ftree;
+      }
+      
+      m_tree=new KDTree(m_points);
+      m_ftree=new KDTree(m_foods);
+
       m_tree->neighbors(m_points,m_points[y],m_maxNbour,m_pars[1],nbours);
 
       if (nbours.size()!=0)
