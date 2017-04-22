@@ -17,7 +17,8 @@ usage:
 
 implementation notes:
 -i used the given kdtree, but apparently we have to rebuild the tree
-each time, so it might not really be faster than checking every distance
+each time, so it ended up feeling kind of slow (probably slower than
+checking every distance)
 -the viewer files and viewer-related stuff were for compiling/using viewer
 on windows
 
