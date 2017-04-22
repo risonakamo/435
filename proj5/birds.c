@@ -1,3 +1,9 @@
+/*birds.c - boids simulator driver
+  khang ngo
+  cmsc 435 proj 5
+  driver program for boids system.  utilises the bs
+  object.*/
+
 #include <iostream>
 #include <string>
 
@@ -29,8 +35,6 @@ int main(int argc,char* argv[])
   bs bob(argv[1],ofile);
 
   bob.printPars();
-  // bob.printVecs();
 
   bob.run();
-  // bob.treeTest();
 }
