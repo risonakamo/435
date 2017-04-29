@@ -289,7 +289,11 @@ void bs::run()
       //for all active foods
       if (m_foodT[y]==-1)
       {
+        //.0003
         m_foods[y]+=m_foodVel[y]*m_pars[9];
+
+        m_foods[y][0]+=float((rand()%100)-50)/100000;
+        m_foods[y][2]+=float((rand()%100)-50)/100000;
 
         foodSnap(m_foods[y]);  
       }
