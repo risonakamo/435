@@ -1,40 +1,24 @@
-#define cimg_display 0
+#include "seam.h"
 
-#include <iostream>
-
-#include "pixl.h"
-#include "CImg.h"
-#include "../common/slVector.H"
-
-using namespace cimg_library;
-
-int main(int argc,char* argv[])
+seam::seam()
 {
-  if (argc<2)
-  {
-    std::cout<<"invalid input"<<std::endl;
-    return 0;
-  }
 
-  CImg<double> inputimg(argv[1]);
-  inputimg.RGBtoLab();
+}
 
-  pixl* pixls[inputimg.width()*inputimg.height()];
-
-  int iheight=inputimg.height();
-  int iwidth=inputimg.width();
+seam::seam(char* inputfile)
+:m_inputimg(inputfile),m_height(m_inputimg.height()),m_width(m_inputimg.width())
+{
+  m_pixls=new pixl*[m_height*m_width];
 
   int i=0;
-  for (int x=0;x<iwidth;x++)
+  for (int x=0;x<m_width;x++)
   {
-    for (int y=0;y<iheight;y++)
+    for (int y=0;y<m_height;y++)
     {
-      pixls[i]=new pixl(inputimg(x,y,0),inputimg(x,y,1),inputimg(x,y,2));
+      m_pixls[i]=new pixl(m_inputimg(x,y,0),m_inputimg(x,y,1),m_inputimg(x,y,2));
       i++;
     }
   }
 
-  pixls[0]->printLab();
-
-  return 0;
+  std::cout<<m_pixls[0]->m_lab<<std::endl;
 }

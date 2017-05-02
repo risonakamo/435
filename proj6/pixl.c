@@ -11,8 +11,3 @@ pixl::pixl(double l,double a,double b)
 {
 
 }
-
-void pixl::printLab()
-{
-  cout<<m_lab;
-}

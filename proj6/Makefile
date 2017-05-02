@@ -1,10 +1,13 @@
-ofiles=slVector.o seam.o pixl.o
+ofiles=slVector.o seam.o pixl.o iseam.o
 
 seam: $(ofiles)
 	g++ $(ofiles) -o seam
 
-seam.o: seam.c CImg.h
+seam.o: seam.c seam.h CImg.h
 	g++ -c seam.c
+
+iseam.o: iseam.c
+	g++ -c iseam.c
 
 pixl.o: pixl.c pixl.h
 	g++ -c pixl.c
