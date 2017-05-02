@@ -28,6 +28,7 @@ class seam
 
  private:
   void calcEnergy(int xpos,int ypos,int cpixl,int grey);
+  void seamTrace(int pos);
 
   CImg<double> m_inputimg;
 

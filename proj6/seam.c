@@ -190,7 +190,20 @@ void seam::outputgrey()
 void seam::seamTrace()
 {
   m_inputimg.LabtoRGB();
-  pixl* c=m_pixls[m_minSeam];
+
+  // for (int x=0;x<m_width;x++)
+  // {
+  //   seamTrace(x+((m_height-1)*m_width));
+  // }
+
+  seamTrace(m_minSeam);
+
+  m_inputimg.save_png("bob2.png");
+}
+
+void seam::seamTrace(int pos)
+{
+  pixl* c=m_pixls[pos];
 
   while (1)
   {
@@ -205,8 +218,6 @@ void seam::seamTrace()
 
     c=m_pixls[c->m_parent];
   }
-
-  m_inputimg.save_png("bob2.png");
 }
 
 void seam::printEnergy()
