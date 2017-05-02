@@ -34,8 +34,8 @@ seam::seam(char* inputfile)
     }
   }
 
-  std::cout<<m_maxEnergy<<std::endl;
-  std::cout<<m_pixls[0]->m_lab<<std::endl;
+  // std::cout<<m_maxEnergy<<std::endl;
+  // std::cout<<m_pixls[0]->m_lab<<std::endl;
 }
 
 void seam::calcEnergy(int xpos,int ypos,int cpixl)
@@ -90,7 +90,7 @@ void seam::calcEnergy(int xpos,int ypos,int cpixl)
   m_pixls[cpixl]->m_energy=pow(sqrMag((t_epixls[1]->m_lab)-(t_epixls[0]->m_lab))+
                            sqrMag((t_epixls[2]->m_lab)-(t_epixls[3]->m_lab)),.5);
 
-  std::cout<<m_pixls[cpixl]->m_energy<<std::endl;                         
+  // std::cout<<m_pixls[cpixl]->m_energy<<std::endl;                         
 
   m_maxEnergy=max(m_maxEnergy,m_pixls[cpixl]->m_energy);                          
 }
@@ -101,9 +101,9 @@ void seam::outputgrey()
 
   int i=0;
   double a;
-  for (int x=0;x<m_width;x++)
+  for (int y=0;y<m_height;y++)
   {
-    for (int y=0;y<m_height;y++)
+    for (int x=0;x<m_width;x++)
     {
       // std::cout<<m_pixls[i]->m_energy<<std::endl;
 
