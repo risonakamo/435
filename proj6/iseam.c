@@ -14,8 +14,6 @@ int main(int argc,char* argv[])
 
   bob.calcEnergy(0);
 
-  bob.printEnergy();
-
   bob.seamTrace();
 
   // bob.outputgrey();

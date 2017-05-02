@@ -11,14 +11,14 @@ seam::seam(char* inputfile)
 {
   m_pixls=new pixl*[m_height*m_width];
 
-  // m_inputimg.RGBtoLab();
+  m_inputimg.RGBtoLab();
 
   int i=0;
   for (int y=0;y<m_height;y++)
   {
     for (int x=0;x<m_width;x++)
     {
-      m_pixls[i]=new pixl(m_inputimg(x,y,0),m_inputimg(x,y,1),m_inputimg(x,y,2));
+      m_pixls[i]=new pixl(m_inputimg(x,y,0),m_inputimg(x,y,1),m_inputimg(x,y,2),x,y,i);
       i++;
     }
   }
@@ -119,7 +119,7 @@ void seam::calcEnergy(int xpos,int ypos,int cpixl,int grey)
     }
   }
 
-  cout<<cmin<<" "<<minparent<<endl;
+  // cout<<cmin<<" "<<minparent<<endl;
 
   m_pixls[cpixl]->m_energy+=cmin;
   m_pixls[cpixl]->m_parent=minparent;
@@ -189,26 +189,24 @@ void seam::outputgrey()
 
 void seam::seamTrace()
 {
+  m_inputimg.LabtoRGB();
   pixl* c=m_pixls[m_minSeam];
-
-  cout<<m_minSeam<<" ";
 
   while (1)
   {
-    if (!c)
+    if (!c || c->m_parent<0)
     {
-      return;
+      break;
     }
 
-    cout<<c->m_parent<<" ";
-
-    if (c->m_parent<0)
-    {
-      return;
-    }
+    m_inputimg(c->m_pos[0],c->m_pos[1],0)=0;
+    m_inputimg(c->m_pos[0],c->m_pos[1],1)=0;
+    m_inputimg(c->m_pos[0],c->m_pos[1],2)=0;
 
     c=m_pixls[c->m_parent];
   }
+
+  m_inputimg.save_png("bob2.png");
 }
 
 void seam::printEnergy()
