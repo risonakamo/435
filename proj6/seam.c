@@ -93,6 +93,34 @@ void seam::calcEnergy(int xpos,int ypos,int cpixl)
   // std::cout<<m_pixls[cpixl]->m_energy<<std::endl;                         
 
   m_maxEnergy=max(m_maxEnergy,m_pixls[cpixl]->m_energy);                          
+
+  //top
+  if (ypos-1<0)
+  {
+    return;
+  }
+
+  //far left edge
+  if (xpos-1<0)
+  {
+    m_pixls[cpixl]->m_energy+=min(m_pixls[xpox+((ypos-1)*m_width)]->m_energy,
+                                  m_pixls[(xpos+1)+((ypos-1)*m_width)]->m_energy);
+  }
+
+  //far right edge
+  else if (xpos+1>=m_width)
+  {
+    m_pixls[cpixl]->m_energy+=min(m_pixls[xpox+((ypos-1)*m_width)]->m_energy,
+                                  m_pixls[(xpos-1)+((ypos-1)*m_width)]->m_energy);
+  }
+
+  //normal
+  else
+  {
+    m_pixls[cpixl]->m_energy+=min(m_pixls[xpox+((ypos-1)*m_width)]->m_energy,
+                                  m_pixls[(xpos+1)+((ypos-1)*m_width)]->m_energy,
+                                  m_pixls[(xpos-1)+((ypos-1)*m_width)]->m_energy);
+  }
 }
 
 void seam::outputgrey()
