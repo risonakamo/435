@@ -12,5 +12,7 @@ int main(int argc,char* argv[])
 
   seam bob(argv[1]);
 
+  bob.outputgrey();
+
   return 0;
 }

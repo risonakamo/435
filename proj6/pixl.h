@@ -13,10 +13,11 @@ class pixl
   pixl(double l,double a,double b);
 
   SlVector3 m_lab;
+  int m_parent;
+  double m_energy;
 
  private:
-  int m_parent;
-  int m_energy;
+  
 };
 
 #endif
