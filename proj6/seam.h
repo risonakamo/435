@@ -19,11 +19,16 @@ class seam
 
   seam(char* inputfile);
 
-  void calcEnergy(int xpos,int ypos,int cpixl);
+  void calcEnergy(int grey);
+  void seamTrace();
+
+  void printEnergy();
 
   void outputgrey();
 
  private:
+  void calcEnergy(int xpos,int ypos,int cpixl,int grey);
+
   CImg<double> m_inputimg;
 
   int m_height;
@@ -34,6 +39,7 @@ class seam
   pixl* t_epixls[4]; //energy pixls
 
   double m_maxEnergy;
+  int m_minSeam;
 };
 
 #endif

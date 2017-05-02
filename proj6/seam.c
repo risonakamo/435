@@ -7,7 +7,7 @@ seam::seam()
 
 seam::seam(char* inputfile)
 :m_inputimg(inputfile),m_height(m_inputimg.height()),m_width(m_inputimg.width()),
- m_maxEnergy(-1)
+ m_maxEnergy(-1),m_minSeam(-1)
 {
   m_pixls=new pixl*[m_height*m_width];
 
@@ -23,22 +23,25 @@ seam::seam(char* inputfile)
     }
   }
 
-  i=0;
-  for (int x=0;x<m_height;x++)
-  {
-    for (int y=0;y<m_width;y++)
-    {
-      calcEnergy(y,x,i);
-      // std::cout<<m_pixls[i]->m_energy<<std::endl;
-      i++;
-    }
-  }
-
   // std::cout<<m_maxEnergy<<std::endl;
   // std::cout<<m_pixls[0]->m_lab<<std::endl;
 }
 
-void seam::calcEnergy(int xpos,int ypos,int cpixl)
+void seam::calcEnergy(int grey)
+{
+  int i=0;
+  for (int x=0;x<m_height;x++)
+  {
+    for (int y=0;y<m_width;y++)
+    {
+      calcEnergy(y,x,i,grey);
+      // std::cout<<m_pixls[i]->m_energy<<std::endl;
+      i++;
+    }
+  }
+}
+
+void seam::calcEnergy(int xpos,int ypos,int cpixl,int grey)
 {
   if (xpos-1<0)
   {
@@ -94,33 +97,67 @@ void seam::calcEnergy(int xpos,int ypos,int cpixl)
 
   m_maxEnergy=max(m_maxEnergy,m_pixls[cpixl]->m_energy);                          
 
-  //top
-  if (ypos-1<0)
+  //if top row or doing greyscale dont add previous energies
+  if (ypos-1<0 || grey!=0)
   {
     return;
   }
 
-  //far left edge
-  if (xpos-1<0)
+  double cmin=-1;
+  int minparent=-1;
+  for (int x=-1;x<=1;x++)
   {
-    m_pixls[cpixl]->m_energy+=min(m_pixls[xpox+((ypos-1)*m_width)]->m_energy,
-                                  m_pixls[(xpos+1)+((ypos-1)*m_width)]->m_energy);
+    if (xpos+x<0 || xpos+x>=m_width)
+    {
+      continue;
+    }
+
+    if (cmin==-1 || m_pixls[(xpos+x)+((ypos-1)*m_width)]->m_energy<cmin)
+    {
+      cmin=m_pixls[(xpos+x)+((ypos-1)*m_width)]->m_energy;
+      minparent=(xpos+x)+((ypos-1)*m_width);
+    }
   }
 
-  //far right edge
-  else if (xpos+1>=m_width)
+  cout<<cmin<<" "<<minparent<<endl;
+
+  m_pixls[cpixl]->m_energy+=cmin;
+  m_pixls[cpixl]->m_parent=minparent;
+
+  if (ypos+1>=m_height && (m_minSeam==-1 || m_pixls[cpixl]->m_energy<m_pixls[m_minSeam]->m_energy))
   {
-    m_pixls[cpixl]->m_energy+=min(m_pixls[xpox+((ypos-1)*m_width)]->m_energy,
-                                  m_pixls[(xpos-1)+((ypos-1)*m_width)]->m_energy);
+    m_minSeam=cpixl;
   }
 
-  //normal
-  else
-  {
-    m_pixls[cpixl]->m_energy+=min(m_pixls[xpox+((ypos-1)*m_width)]->m_energy,
-                                  m_pixls[(xpos+1)+((ypos-1)*m_width)]->m_energy,
-                                  m_pixls[(xpos-1)+((ypos-1)*m_width)]->m_energy);
-  }
+  // cout<<m_pixls[cpixl]->m_energy<<" "<<m_minSeam<<endl;
+
+  // //top
+  // if (ypos-1<0)
+  // {
+  //   return;
+  // }
+
+  // //far left edge
+  // if (xpos-1<0)
+  // {
+  //   m_pixls[cpixl]->m_energy+=min(m_pixls[xpox+((ypos-1)*m_width)]->m_energy,
+  //                                 m_pixls[(xpos+1)+((ypos-1)*m_width)]->m_energy);
+  // }
+
+  // //far right edge
+  // else if (xpos+1>=m_width)
+  // {
+  //   m_pixls[cpixl]->m_energy+=min(m_pixls[xpox+((ypos-1)*m_width)]->m_energy,
+  //                                 m_pixls[(xpos-1)+((ypos-1)*m_width)]->m_energy);
+  // }
+
+  // //normal
+  // else
+  // {
+  //   m_pixls[cpixl]->m_energy+=min(m_pixls[xpox+((ypos-1)*m_width)]->m_energy,
+  //                                 m_pixls[(xpos+1)+((ypos-1)*m_width)]->m_energy,
+  //                                 m_pixls[(xpos-1)+((ypos-1)*m_width)]->m_energy);
+  // }
 }
 
 void seam::outputgrey()
@@ -148,4 +185,45 @@ void seam::outputgrey()
   }
 
   m_inputimg.save_png("bob.png");
+}
+
+void seam::seamTrace()
+{
+  pixl* c=m_pixls[m_minSeam];
+
+  cout<<m_minSeam<<" ";
+
+  while (1)
+  {
+    if (!c)
+    {
+      return;
+    }
+
+    cout<<c->m_parent<<" ";
+
+    if (c->m_parent<0)
+    {
+      return;
+    }
+
+    c=m_pixls[c->m_parent];
+  }
+}
+
+void seam::printEnergy()
+{
+  int y=0;
+  for (int x=0;x<m_width*m_height;x++)
+  {
+    cout<<m_pixls[x]->m_energy<<" ";
+
+    y++;
+
+    if (y>=m_width)
+    {
+      cout<<endl;
+      y=0;
+    }
+  }
 }

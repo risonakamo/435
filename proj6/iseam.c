@@ -12,7 +12,13 @@ int main(int argc,char* argv[])
 
   seam bob(argv[1]);
 
-  bob.outputgrey();
+  bob.calcEnergy(0);
+
+  bob.printEnergy();
+
+  bob.seamTrace();
+
+  // bob.outputgrey();
 
   return 0;
 }
