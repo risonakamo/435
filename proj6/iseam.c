@@ -12,11 +12,24 @@ int main(int argc,char* argv[])
 
   seam bob(argv[1]);
 
-  bob.calcEnergy(0);
+  bob.outputPixl();
 
-  bob.seamTrace();
+  // bob.calcEnergy(0);
 
-  // bob.outputgrey();
+  // for (int x=0;x<2;x++)
+  // {
+  //   bob.calcEnergy(0);
+  //   cout<<"a"<<endl;
+
+  //   bob.seamTrace();
+  //   cout<<"b"<<endl;
+
+  //   bob.rebuildImg();
+  //   cout<<"c"<<endl;
+  // }
+
+  // bob.outputPixl();
+  // cout<<"d"<<endl;
 
   return 0;
 }
