@@ -12,12 +12,16 @@ int main(int argc,char* argv[])
 
   seam bob(argv[1]);
 
-  for (int x=0;x<200;x++)
+  bob.rotateImg();
+
+  for (int x=0;x<300;x++)
   {
     bob.calcEnergy();
     bob.seamTrace();
     bob.rebuildImg();
   }
+
+  bob.rotateImg();
 
   bob.outputPixl();
 

@@ -160,7 +160,7 @@ void seam::rebuildImg()
     }
   }
 
-  // delete m_pixls;
+  delete m_pixls;
   m_pixls=m_pixls2;
 }
 
@@ -199,4 +199,26 @@ void seam::outputPixl()
 
   newimg.LabtoRGB();
   newimg.save_png("pout.png");
+}
+
+void seam::rotateImg()
+{
+  m_pixls2=new pixl*[m_width*m_height];
+
+  int i=0;
+  for (int y=0;y<m_height;y++)
+  {
+    for (int x=0;x<m_width;x++)
+    {
+      m_pixls2[y+(x*m_height)]=m_pixls[i];
+      i++;
+    }
+  }
+
+  delete m_pixls;
+  m_pixls=m_pixls2;
+
+  int t=m_width;
+  m_width=m_height;
+  m_height=t;
 }

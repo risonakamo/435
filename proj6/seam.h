@@ -20,10 +20,14 @@ class seam
 
   void calcEnergy(); //calculates energy into pixls array, put grey=1
                              //to skip adding min parents
-  void seamTrace();
+  void seamTrace(); //trace from min seam upwards, mark
+                    //index -1 for rebuildimg
 
-  void rebuildImg();
-  void outputPixl();
+  void rebuildImg(); //rebuild pixl array by removing index=-1
+                     //marked pixls
+  void outputPixl(); //output img currently in pixl array
+
+  void rotateImg();
 
   /*-- debug --*/
   void printEnergy(); //print all energies
