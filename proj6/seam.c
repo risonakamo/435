@@ -243,7 +243,7 @@ void seam::rebuildImg()
   {
     // cout<<x<<endl;
 
-    if (m_pixls[x]->m_index>0)
+    if (m_pixls[x]->m_index>=0)
     {
       m_pixls2[i]=m_pixls[x];
       m_pixls2[i]->m_energy=-1;
