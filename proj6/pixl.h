@@ -15,7 +15,6 @@ class pixl
   SlVector3 m_lab;
   int m_parent;
   int m_index;
-  int m_pos[2];
   double m_energy;
 
  private:
