@@ -18,26 +18,24 @@ class seam
   seam();
   seam(char* inputfile); //constructor builds pixl array
 
-  void calcEnergy(); //calculates energy into pixls array, put grey=1
-                             //to skip adding min parents
-  void seamTrace(); //trace from min seam upwards, mark
-                    //index -1 for rebuildimg
-
-  void rebuildImg(); //rebuild pixl array by removing index=-1
-                     //marked pixls
-  void outputPixl(); //output img currently in pixl array
-
-  void rotateImg(); //do transpose of pixl matrix
-
-  void resize(int width,int height);
+  void resize(int width,int height,const char* ofile);
 
   /*-- debug --*/
   void printEnergy(); //print all energies
 
  private:
- /*-- helper functions --*/
   void calcEnergy(int xpos,int ypos,int cpixl);
   void seamTrace(int pos);
+
+  void calcEnergy(); //calculates energy into pixls array
+  void seamTrace(); //trace from min seam upwards, mark
+                    //index -1 for rebuildimg
+
+  void rebuildImg(); //rebuild pixl array by removing index=-1
+                     //marked pixls
+  void outputPixl(const char* ofile); //output img currently in pixl array
+
+  void rotateImg(); //do transpose of pixl matrix
 
   CImg<double> m_inputimg; //main input cimg
 

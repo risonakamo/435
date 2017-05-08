@@ -181,7 +181,7 @@ void seam::printEnergy()
   }
 }
 
-void seam::outputPixl()
+void seam::outputPixl(const char* ofile)
 {
   CImg<double> newimg(m_width,m_height,m_inputimg.depth(),m_inputimg.spectrum(),0);
   
@@ -198,7 +198,16 @@ void seam::outputPixl()
   }
 
   newimg.LabtoRGB();
-  newimg.save_png("pout.png");
+
+  if (strstr(ofile,"png"))
+  {
+    newimg.save_png(ofile);
+  }
+
+  else if (strstr(ofile,"jpg"))
+  {
+    newimg.save_jpeg(ofile);
+  }
 }
 
 void seam::rotateImg()
@@ -223,7 +232,7 @@ void seam::rotateImg()
   m_height=t;
 }
 
-void seam::resize(int width,int height)
+void seam::resize(int width,int height,const char* ofile)
 {
   int witers=m_width-width;
   int hiters=m_height-height;
@@ -246,5 +255,5 @@ void seam::resize(int width,int height)
 
   rotateImg();
 
-  outputPixl();
+  outputPixl(ofile);
 }
