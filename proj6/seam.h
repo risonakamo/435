@@ -27,7 +27,9 @@ class seam
                      //marked pixls
   void outputPixl(); //output img currently in pixl array
 
-  void rotateImg();
+  void rotateImg(); //do transpose of pixl matrix
+
+  void resize(int width,int height);
 
   /*-- debug --*/
   void printEnergy(); //print all energies

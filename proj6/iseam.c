@@ -4,26 +4,15 @@ using namespace std;
 
 int main(int argc,char* argv[])
 {
-  if (argc<2)
+  if (argc<5)
   {
-    cout<<"invalid inputs"<<endl;
+    cout<<"seam <input file> <output file> <new width> <new height>"<<endl;
     return 0;
   }
 
   seam bob(argv[1]);
 
-  bob.rotateImg();
-
-  for (int x=0;x<300;x++)
-  {
-    bob.calcEnergy();
-    bob.seamTrace();
-    bob.rebuildImg();
-  }
-
-  bob.rotateImg();
-
-  bob.outputPixl();
+  bob.resize(atoi(argv[3]),atoi(argv[4]));
 
   return 0;
 }

@@ -222,3 +222,29 @@ void seam::rotateImg()
   m_width=m_height;
   m_height=t;
 }
+
+void seam::resize(int width,int height)
+{
+  int witers=m_width-width;
+  int hiters=m_height-height;
+
+  for (int x=0;x<witers;x++)
+  {
+    calcEnergy();
+    seamTrace();
+    rebuildImg();
+  }
+
+  rotateImg();
+
+  for (int x=0;x<hiters;x++)
+  {
+    calcEnergy();
+    seamTrace();
+    rebuildImg();
+  }
+
+  rotateImg();
+
+  outputPixl();
+}
