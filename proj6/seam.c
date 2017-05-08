@@ -97,7 +97,7 @@ void seam::calcEnergy(int xpos,int ypos,int cpixl)
       continue;
     }
 
-    if (cmin==-1 || m_pixls[(xpos+x)+((ypos-1)*m_width)]->m_energy<cmin)
+    if (cmin==-1 || m_pixls[(xpos+x)+((ypos-1)*m_width)]->m_energy<=cmin)
     {
       cmin=m_pixls[(xpos+x)+((ypos-1)*m_width)]->m_energy;
       minparent=(xpos+x)+((ypos-1)*m_width);
@@ -108,7 +108,7 @@ void seam::calcEnergy(int xpos,int ypos,int cpixl)
   m_pixls[cpixl]->m_parent=minparent;
 
   if (ypos+1>=m_height && 
-      (m_minSeam==-1 || m_pixls[cpixl]->m_energy<m_pixls[m_minSeam]->m_energy))
+      (m_minSeam==-1 || m_pixls[cpixl]->m_energy<=m_pixls[m_minSeam]->m_energy))
   {
     m_minSeam=cpixl;
   }
@@ -154,9 +154,14 @@ void seam::rebuildImg()
     if (m_pixls[x]->m_index>=0)
     {
       m_pixls2[i]=m_pixls[x];
-      m_pixls2[i]->m_energy=-1;
+      // m_pixls2[i]->m_energy=-1;
       m_pixls2[i]->m_parent=-1;
       i++;
+    }
+
+    else
+    {
+      
     }
   }
 
