@@ -18,7 +18,7 @@ seam::seam(char* inputfile)
   {
     for (int x=0;x<m_width;x++)
     {
-      m_pixls[i]=new pixl(m_inputimg(x,y,0),m_inputimg(x,y,1),m_inputimg(x,y,2),x,y,i);
+      m_pixls[i]=new pixl(m_inputimg(x,y,0),m_inputimg(x,y,1),m_inputimg(x,y,2),i);
       i++;
     }
   }
@@ -99,9 +99,8 @@ void seam::calcEnergy(int xpos,int ypos,int cpixl)
       continue;
     }
 
-    if (cmin<0 || m_pixls[(xpos+x)+((ypos-1)*m_width)]->m_energy<=cmin)
+    if (cmin<0 || m_pixls[(xpos+x)+((ypos-1)*m_width)]->m_energy<cmin)
     {
-      cout<<m_pixls[(xpos+x)+((ypos-1)*m_width)]->m_energy<<" < "<<cmin<<endl;
       minparent=(xpos+x)+((ypos-1)*m_width);
       cmin=m_pixls[minparent]->m_energy;
     }
@@ -111,7 +110,7 @@ void seam::calcEnergy(int xpos,int ypos,int cpixl)
   m_pixls[cpixl]->m_parent=minparent;
 
   if (ypos+1>=m_height && 
-      (m_minSeam==-1 || m_pixls[cpixl]->m_energy<=m_pixls[m_minSeam]->m_energy))
+      (m_minSeam==-1 || m_pixls[cpixl]->m_energy<m_pixls[m_minSeam]->m_energy))
   {
     m_minSeam=cpixl;
   }

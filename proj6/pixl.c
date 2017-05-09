@@ -6,7 +6,7 @@ pixl::pixl()
 
 }
 
-pixl::pixl(double l,double a,double b,int x,int y,int index)
+pixl::pixl(double l,double a,double b,int index)
 :m_lab(l,a,b),m_parent(-1),m_energy(-1),m_index(index)
 {
     
