@@ -39,6 +39,7 @@ void seam::calcEnergy()
 
 void seam::calcEnergy(int xpos,int ypos,int cpixl)
 {
+  //gradient energy function check around thingy
   if (xpos-1<0)
   {
     t_epixls[0]=m_pixls[cpixl];
@@ -79,15 +80,16 @@ void seam::calcEnergy(int xpos,int ypos,int cpixl)
     t_epixls[3]=m_pixls[xpos+((ypos+1)*m_width)];
   }
 
-  m_pixls[cpixl]->m_energy=pow(sqrMag((t_epixls[1]->m_lab)-(t_epixls[0]->m_lab))+
-                           sqrMag((t_epixls[2]->m_lab)-(t_epixls[3]->m_lab)),.5);
+  m_pixls[cpixl]->m_energy=sqrt(sqrMag((t_epixls[1]->m_lab)-(t_epixls[0]->m_lab))+
+                           sqrMag((t_epixls[2]->m_lab)-(t_epixls[3]->m_lab)));
 
-  //if top row or doing greyscale dont add previous energies
+  //if top row dont do previous energy adds
   if (ypos-1<0)
   {
     return;
   }
 
+  //determining minimum previous energy
   double cmin=-1;
   int minparent=-1;
   for (int x=-1;x<=1;x++)
@@ -97,10 +99,11 @@ void seam::calcEnergy(int xpos,int ypos,int cpixl)
       continue;
     }
 
-    if (cmin==-1 || m_pixls[(xpos+x)+((ypos-1)*m_width)]->m_energy<=cmin)
+    if (cmin<0 || m_pixls[(xpos+x)+((ypos-1)*m_width)]->m_energy<=cmin)
     {
-      cmin=m_pixls[(xpos+x)+((ypos-1)*m_width)]->m_energy;
+      cout<<m_pixls[(xpos+x)+((ypos-1)*m_width)]->m_energy<<" < "<<cmin<<endl;
       minparent=(xpos+x)+((ypos-1)*m_width);
+      cmin=m_pixls[minparent]->m_energy;
     }
   }
 
@@ -157,11 +160,6 @@ void seam::rebuildImg()
       // m_pixls2[i]->m_energy=-1;
       m_pixls2[i]->m_parent=-1;
       i++;
-    }
-
-    else
-    {
-      
     }
   }
 

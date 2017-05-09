@@ -18,18 +18,19 @@ class seam
   seam();
   seam(char* inputfile); //constructor builds pixl array
 
-  void resize(int width,int height,const char* ofile);
+  void resize(int width,int height,const char* ofile); //run main resize function
 
   /*-- debug --*/
   void printEnergy(); //print all energies
 
  private:
-  void calcEnergy(int xpos,int ypos,int cpixl);
-  void seamTrace(int pos);
-
+ /*-- main loop functions --*/
   void calcEnergy(); //calculates energy into pixls array
+  void calcEnergy(int xpos,int ypos,int cpixl); //energy helper
+
   void seamTrace(); //trace from min seam upwards, mark
                     //index -1 for rebuildimg
+  void seamTrace(int pos);
 
   void rebuildImg(); //rebuild pixl array by removing index=-1
                      //marked pixls
