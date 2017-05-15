@@ -1,3 +1,10 @@
+/*seam.c - main seam object
+  khang ngo
+  cmsc 435 proj 6
+  main seam object.  loads image and does energy calculation,
+  seam tracing, and image output. stores image as array of
+  pixl objects*/
+
 #include "seam.h"
 
 seam::seam()
@@ -5,6 +12,7 @@ seam::seam()
 
 }
 
+//load cimg and create pixl array
 seam::seam(char* inputfile)
 :m_inputimg(inputfile),m_height(m_inputimg.height()),m_width(m_inputimg.width()),
  m_minSeam(-1)
@@ -24,6 +32,7 @@ seam::seam(char* inputfile)
   }
 }
 
+//calc energy for all pixl array
 void seam::calcEnergy()
 {
   int i=0;
@@ -37,6 +46,7 @@ void seam::calcEnergy()
   }
 }
 
+//calc energy for pixl at x pos, ypos, and index cpixl
 void seam::calcEnergy(int xpos,int ypos,int cpixl)
 {
   //gradient energy function check around thingy
@@ -116,12 +126,13 @@ void seam::calcEnergy(int xpos,int ypos,int cpixl)
   }
 }
 
-
+//trace minimum seam up
 void seam::seamTrace()
 {
   seamTrace(m_minSeam);
 }
 
+//trace seam with parent index and mark index -1
 void seam::seamTrace(int pos)
 {
   pixl* c=m_pixls[pos];
@@ -144,6 +155,7 @@ void seam::seamTrace(int pos)
   }
 }
 
+//rebuild pixl array by taking out marked -1s
 void seam::rebuildImg()
 {
   m_minSeam=-1;
@@ -166,6 +178,7 @@ void seam::rebuildImg()
   m_pixls=m_pixls2;
 }
 
+//debug print all energies
 void seam::printEnergy()
 {
   int y=0;
@@ -183,6 +196,7 @@ void seam::printEnergy()
   }
 }
 
+//output pixl array into specified ofile
 void seam::outputPixl(const char* ofile)
 {
   CImg<double> newimg(m_width,m_height,m_inputimg.depth(),m_inputimg.spectrum(),0);
@@ -212,6 +226,7 @@ void seam::outputPixl(const char* ofile)
   }
 }
 
+//transpose pixl array
 void seam::rotateImg()
 {
   m_pixls2=new pixl*[m_width*m_height];
@@ -234,6 +249,7 @@ void seam::rotateImg()
   m_height=t;
 }
 
+//main resize function, do resizing and write to file
 void seam::resize(int width,int height,const char* ofile)
 {
   int witers=m_width-width;

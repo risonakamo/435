@@ -1,3 +1,10 @@
+/*seam.h - main seam object
+  khang ngo
+  cmsc 435 proj 6
+  main seam object.  loads image and does energy calculation,
+  seam tracing, and image output. stores image as array of
+  pixl objects*/
+
 #ifndef SEAM_H
 #define SEAM_H
 
@@ -38,12 +45,13 @@ class seam
 
   void rotateImg(); //do transpose of pixl matrix
 
+  /*-- member vars --*/
   CImg<double> m_inputimg; //main input cimg
 
-  int m_height;
+  int m_height; //current pixl array dimensions
   int m_width;
 
-  pixl** m_pixls;
+  pixl** m_pixls; //pixl arrays
   pixl** m_pixls2;
 
   pixl* t_epixls[4]; //energy pixls

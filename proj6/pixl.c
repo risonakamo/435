@@ -1,3 +1,8 @@
+/*pixl.c - pixel object
+  khang ngo
+  cmsc 435 proj 6
+  sotres data for a single pixel, including seam parent and energy*/
+
 #include "pixl.h"
 
 pixl::pixl()
