@@ -20,9 +20,18 @@ implementation notes:
 -although i think i definitely used the energy function given in class,
 my results look different from the ones on the website...didn't really know
 what to do about that
+-while testing on windows when running it says something about
+"invalid parameter - <input file name>" and "invalid parameter - 100" or
+something, and some other errors sometimes, I just ignored this, it still works
+(i think its cimg being weird)
+-inputs and outputs need correct jpg or png extension on them or cimg
+freaks out
 
 extra credit:
-
+-webpage, accessible at https://risonakamo.github.io/435/proj6/website/
+or just open the index.html in the website folder (prob won't work if
+accessing on the gl server)
+-btw: for some reason you need the slash at the end of the url
 
 references:
 pdf from proj description

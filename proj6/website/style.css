@@ -51,6 +51,12 @@ a
     height: 400px;
 }
 
+.icase.vert img
+{
+    height: auto;
+    width: 500px;
+}
+
 .title
 {
     width: 300px;
